@@ -155,7 +155,7 @@
         {{-- Main Form Area --}}
         <main class="flex-grow w-full max-w-2xl mx-auto md:mx-0 transition-all duration-500">
             
-            <form action="{{ route('registration.store', $event->registration_token) }}" method="POST" enctype="multipart/form-data" id="regForm" @input="saveCache" @submit="clearCache"
+            <form action="{{ route('registration.store', $event->registration_token) }}" method="POST" enctype="multipart/form-data" id="regForm" @input="saveCache" @submit="handleSubmit($event)"
                   class="bg-white p-6 sm:p-10 rounded-[1.5rem] shadow-sm border border-slate-200 relative min-h-[400px]">
                 @csrf
                 
@@ -955,6 +955,33 @@ function registrationWizard() {
         
         clearCache() {
             localStorage.removeItem(this.cacheKey);
+        },
+
+        handleSubmit(event) {
+            const form = event.target;
+            
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                
+                const invalidEl = form.querySelector(':invalid');
+                if (invalidEl) {
+                    const section = invalidEl.closest('section');
+                    if (section) {
+                        const xShow = section.getAttribute('x-show');
+                        const match = xShow ? xShow.match(/step === (\d+)/) : null;
+                        if (match) {
+                            this.step = parseInt(match[1]);
+                            this.saveCache();
+                            this.$nextTick(() => {
+                                invalidEl.focus();
+                                invalidEl.reportValidity();
+                            });
+                        }
+                    }
+                }
+            } else {
+                this.clearCache();
+            }
         }
     }
 }
