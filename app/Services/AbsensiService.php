@@ -17,13 +17,31 @@ class AbsensiService
      */
     public function processScan(string $qrCode, int $sesiId, int $scannedBy): array
     {
-        // Langkah 1: Dekode QR — coba format pemisah pipa terlebih dahulu, lalu kembali ke format ARQAM-
-        $decoded = $this->decodeQr($qrCode);
+        // Pre-fetch session to get event_id for manual ID validation fallback
+        $sesi = EventSesi::find($sesiId);
+        if (!$sesi) {
+            return [
+                'status'  => 'error',
+                'message' => 'Sesi tidak ditemukan',
+            ];
+        }
+
+        if ($sesi->status === 'tutup') {
+            return [
+                'status'  => 'error',
+                'message' => 'Sesi sudah ditutup oleh admin.'
+            ];
+        }
+
+        $currentEventId = $sesi->event_id;
+
+        // Langkah 1: Dekode QR
+        $decoded = $this->decodeQr($qrCode, $currentEventId);
 
         if (!$decoded) {
             return [
                 'status'  => 'error',
-                'message' => 'QR Code tidak dikenali',
+                'message' => 'QR Code atau ID tidak dikenali',
             ];
         }
 
@@ -49,25 +67,6 @@ class AbsensiService
                 'status'  => 'error',
                 'type'    => 'not_registered',
                 'message' => 'Peserta tidak terdaftar pada event ini.'
-            ];
-        }
-
-        // Langkah 4: Periksa apakah sesi ada
-        $sesi = EventSesi::where('id', $sesiId)
-            ->where('event_id', $eventId)
-            ->first();
-
-        if (!$sesi) {
-            return [
-                'status'  => 'error',
-                'message' => 'Sesi tidak ditemukan',
-            ];
-        }
-
-        if ($sesi->status === 'tutup') {
-            return [
-                'status'  => 'error',
-                'message' => 'Sesi sudah ditutup oleh admin.'
             ];
         }
 
@@ -119,7 +118,7 @@ class AbsensiService
      * Decode QR code string.
      * Supports: "event_id|peserta_id|token" and "ARQAM-event_id-peserta_id-token"
      */
-    private function decodeQr(string $qrCode): ?array
+    private function decodeQr(string $qrCode, ?int $currentEventId = null): ?array
     {
         $qrCode = trim($qrCode);
 
@@ -168,6 +167,24 @@ class AbsensiService
             return [
                 'event_id'   => $ep->event_id,
                 'peserta_id' => $ep->peserta_id,
+                'token'      => '',
+            ];
+        }
+
+        // Format 5: Human-readable ID (e.g. ARQ-0012 or arq-12) or purely numeric ID fallback
+        $cleanCode = strtolower(trim($qrCode));
+        $pesertaId = null;
+
+        if (str_starts_with($cleanCode, 'arq-')) {
+            $pesertaId = (int) substr($cleanCode, 4);
+        } elseif (is_numeric($cleanCode)) {
+            $pesertaId = (int) $cleanCode;
+        }
+
+        if ($pesertaId && $currentEventId) {
+            return [
+                'event_id'   => $currentEventId,
+                'peserta_id' => $pesertaId,
                 'token'      => '',
             ];
         }
