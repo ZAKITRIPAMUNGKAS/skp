@@ -136,20 +136,20 @@
     /* MOBILE VIEW */
     @media (max-width: 1023px) {
         html, body { height: auto !important; overflow: auto !important; }
-        body { background-color: #ffffff; }
+        body { background-color: #f8fafc; }
         .auth-back-btn-container {
             position: static !important;
-            padding: 1.5rem 1.5rem 0.5rem 1.5rem;
-            background: #fff;
+            padding: 1.25rem 1.25rem 0.5rem 1.25rem;
+            background: transparent;
             width: 100%;
             display: block;
             box-sizing: border-box;
         }
         .auth-wrapper {
-            box-shadow: none;
-            border-radius: 0;
-            margin: 0;
-            width: 100%;
+            box-shadow: 0 10px 30px -5px rgba(26, 109, 155, 0.08);
+            border-radius: 2rem;
+            margin: 0 1rem 2rem 1rem;
+            width: calc(100% - 2rem);
             height: auto;
             min-height: auto;
             display: flex;
@@ -157,18 +157,20 @@
             transform: none !important;
             animation: none !important;
             opacity: 1 !important;
+            background-color: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
         }
         .form-container { width: 100%; height: auto; position: relative; transition: opacity 0.4s ease; left: 0; transform: none !important;}
         .overlay-container { display: none; }
         
-        .sign-in-container, .sign-up-container { padding: 2rem 1.5rem; width: 100%; position: relative; display: block; }
+        .sign-in-container, .sign-up-container { padding: 1.75rem 1.5rem; width: 100%; position: relative; display: block; }
         .sign-in-container { opacity: 1; z-index: 10; }
         .sign-up-container { opacity: 0; z-index: 1; display: none; }
 
         .auth-wrapper.right-panel-active .sign-in-container { display: none; opacity: 0; }
         .auth-wrapper.right-panel-active .sign-up-container { display: block; opacity: 1; z-index: 10; }
 
-        .mobile-tabs { display: flex; width: 100%; background: #fff; position: static; border-bottom: 1px solid #f1f5f9; padding-top: 0.5rem; }
+        .mobile-tabs { display: block; width: 100%; background: transparent; position: static; border-bottom: none; }
     }
     @media (min-width: 1024px) {
         .mobile-tabs { display: none; }
@@ -177,12 +179,12 @@
     [x-cloak] { display: none !important; }
 </style>
 
-<div class="min-h-screen flex flex-col lg:flex-row items-center justify-center p-0 lg:p-6 relative bg-gray-50/50" 
+<div class="min-h-screen flex flex-col lg:flex-row items-center justify-center p-0 lg:p-6 relative bg-slate-50" 
      x-data="{ mode: '{{ $mode ?? request()->query('mode', 'login') }}' }">
     
     <!-- Back Button -->
     <div class="auth-back-btn-container absolute top-4 left-4 lg:-top-12 lg:left-0 z-50">
-        <a href="{{ route('landing') }}" class="group flex items-center gap-2 px-4 py-2 bg-white/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-gray-100 lg:border-none rounded-full text-xs font-bold text-gray-500 hover:text-primary transition-all active:scale-95 shadow-sm lg:shadow-none">
+        <a href="{{ route('landing') }}" class="group flex items-center gap-2 px-4 py-2 bg-white lg:bg-transparent border border-gray-200 lg:border-none rounded-full text-xs font-bold text-gray-500 hover:text-primary transition-all active:scale-95 shadow-sm lg:shadow-none w-fit">
             <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>
@@ -194,13 +196,23 @@
     <div class="auth-wrapper" :class="{ 'right-panel-active': mode === 'register' }">
         
         <!-- Mobile Tabs -->
-        <div class="mobile-tabs px-8 pt-6 pb-0 flex gap-8">
-            <button @click="mode = 'login'; window.history.pushState({}, '', '?mode=login')" 
-                    class="pb-4 text-sm font-bold border-b-2 transition-all" 
-                    :class="mode === 'login' ? 'border-primary text-primary' : 'border-transparent text-gray-400'">Masuk</button>
-            <button @click="mode = 'register'; window.history.pushState({}, '', '?mode=register')" 
-                    class="pb-4 text-sm font-bold border-b-2 transition-all" 
-                    :class="mode === 'register' ? 'border-primary text-primary' : 'border-transparent text-gray-400'">Daftar Akun</button>
+        <div class="mobile-tabs px-6 pt-6 pb-2 bg-transparent">
+            <div class="bg-slate-100/80 backdrop-blur-md p-1.5 rounded-2xl flex relative w-full border border-slate-200/50">
+                <button type="button" @click="mode = 'login'; window.history.pushState({}, '', '?mode=login')" 
+                        class="w-1/2 py-3 text-sm font-bold rounded-xl transition-all relative z-10 flex items-center justify-center gap-2"
+                        :class="mode === 'login' ? 'text-primary' : 'text-slate-500'">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14.5M13 5c0 3.333 3 6 7 7-4 1-7 3.667-7 7"/></svg>
+                    Masuk
+                </button>
+                <button type="button" @click="mode = 'register'; window.history.pushState({}, '', '?mode=register')" 
+                        class="w-1/2 py-3 text-sm font-bold rounded-xl transition-all relative z-10 flex items-center justify-center gap-2"
+                        :class="mode === 'register' ? 'text-primary' : 'text-slate-500'">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                    Daftar Akun
+                </button>
+                <div class="absolute top-1.5 bottom-1.5 bg-white shadow-sm border border-slate-200/30 rounded-xl transition-all duration-300 ease-out"
+                     :style="mode === 'login' ? 'left: 6px; width: calc(50% - 9px);' : 'left: calc(50% + 3px); width: calc(50% - 9px);'"></div>
+            </div>
         </div>
 
         <!-- SIGN UP FORM -->
