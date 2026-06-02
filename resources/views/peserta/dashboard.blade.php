@@ -213,10 +213,38 @@
                                         <h4 class="text-lg font-bold {{ ($progress['pretest'] ?? false) ? 'text-gray-800' : 'text-gray-500' }}">Pretest</h4>
                                         <p class="text-sm text-gray-400">Evaluasi pemahaman awal sebelum materi dimulai.</p>
                                         @if($sesiStatus['pretest'] && !($progress['pretest'] ?? false))
-                                            <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
-                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                Durasi: {{ $sesiStatus['pretest_durasi'] }} Menit
-                                            </p>
+                                            <div x-data="{
+                                                remaining: '',
+                                                init() {
+                                                    const key = 'arqam_tes_{{ $activeEvent->id }}_pretest_target';
+                                                    const update = () => {
+                                                        const target = localStorage.getItem(key);
+                                                        if (target) {
+                                                            const diff = Math.max(0, Math.round((parseInt(target) - Date.now()) / 1000));
+                                                            if (diff <= 0) {
+                                                                this.remaining = '';
+                                                                localStorage.removeItem(key);
+                                                            } else {
+                                                                const m = Math.floor(diff / 60);
+                                                                const s = diff % 60;
+                                                                this.remaining = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                                                            }
+                                                        } else {
+                                                            this.remaining = '';
+                                                        }
+                                                    };
+                                                    update();
+                                                    setInterval(update, 1000);
+                                                }
+                                            }">
+                                                <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    <span>Durasi: {{ $sesiStatus['pretest_durasi'] }} Menit</span>
+                                                    <template x-if="remaining">
+                                                        <span class="text-red-500 ml-1 animate-pulse">(Sisa: <span x-text="remaining"></span>)</span>
+                                                    </template>
+                                                </p>
+                                            </div>
                                         @endif
                                     </div>
                                     @if($progress['pretest'] ?? false)
@@ -285,10 +313,38 @@
                                         <h4 class="text-lg font-bold {{ ($progress['posttest'] ?? false) ? 'text-gray-800' : 'text-gray-500' }}">Posttest</h4>
                                         <p class="text-sm text-gray-400">Evaluasi pemahaman akhir setelah seluruh materi selesai.</p>
                                         @if($sesiStatus['posttest'] && !($progress['posttest'] ?? false))
-                                            <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
-                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                Durasi: {{ $sesiStatus['posttest_durasi'] }} Menit
-                                            </p>
+                                            <div x-data="{
+                                                remaining: '',
+                                                init() {
+                                                    const key = 'arqam_tes_{{ $activeEvent->id }}_posttest_target';
+                                                    const update = () => {
+                                                        const target = localStorage.getItem(key);
+                                                        if (target) {
+                                                            const diff = Math.max(0, Math.round((parseInt(target) - Date.now()) / 1000));
+                                                            if (diff <= 0) {
+                                                                this.remaining = '';
+                                                                localStorage.removeItem(key);
+                                                            } else {
+                                                                const m = Math.floor(diff / 60);
+                                                                const s = diff % 60;
+                                                                this.remaining = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                                                            }
+                                                        } else {
+                                                            this.remaining = '';
+                                                        }
+                                                    };
+                                                    update();
+                                                    setInterval(update, 1000);
+                                                }
+                                            }">
+                                                <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    <span>Durasi: {{ $sesiStatus['posttest_durasi'] }} Menit</span>
+                                                    <template x-if="remaining">
+                                                        <span class="text-red-500 ml-1 animate-pulse">(Sisa: <span x-text="remaining"></span>)</span>
+                                                    </template>
+                                                </p>
+                                            </div>
                                         @endif
                                     </div>
                                     @if($progress['posttest'] ?? false)
