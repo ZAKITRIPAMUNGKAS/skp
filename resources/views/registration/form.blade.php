@@ -159,6 +159,22 @@
                   class="bg-white p-6 sm:p-10 rounded-[1.5rem] shadow-sm border border-slate-200 relative min-h-[400px]">
                 @csrf
                 
+                @if ($errors->any())
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <h4 class="text-sm font-bold">Pendaftaran Gagal. Harap periksa kembali:</h4>
+                    </div>
+                    <ul class="list-disc list-inside text-xs space-y-1 font-medium">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                
                 {{-- STEP 0: LANDING / INFO PAGE --}}
                 <section x-show="step === 0" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                     <div class="text-center py-4">
