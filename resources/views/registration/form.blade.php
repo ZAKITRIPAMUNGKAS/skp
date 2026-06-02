@@ -71,7 +71,16 @@
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    /* Style checkboxes and radios when peer is checked */
+    .peer:checked + div div {
+        border-color: #1A6D9B !important;
+        background-color: #1A6D9B !important;
+    }
+    .peer:checked + div div svg {
+        transform: scale(1) !important;
+        opacity: 1 !important;
+    }
 </style>
 @endsection
 
