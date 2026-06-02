@@ -29,8 +29,8 @@ class NotificationController extends Controller
 
         $eventId = $eventPeserta->event_id;
 
-        $pretest = SesiTes::where('event_id', $eventId)->where('tipe', 'pretest')->where('is_active', true)->exists();
-        $posttest = SesiTes::where('event_id', $eventId)->where('tipe', 'posttest')->where('is_active', true)->exists();
+        $pretest = SesiTes::where('event_id', $eventId)->where('tipe', 'pretest')->where('status', 'aktif')->exists();
+        $posttest = SesiTes::where('event_id', $eventId)->where('tipe', 'posttest')->where('status', 'aktif')->exists();
 
         return response()->json([
             'success'   => true,
