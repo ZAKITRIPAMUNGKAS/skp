@@ -1,0 +1,207 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Event;
+use App\Models\Peserta;
+use App\Models\User;
+use App\Models\EventPeserta;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+class EventRegistrationController extends Controller
+{
+    public function show(string $token)
+    {
+        $event = Event::where('registration_token', $token)->firstOrFail();
+        
+        if ($event->status === 'selesai') {
+            return view('registration.closed', compact('event'));
+        }
+
+        return view('registration.form', compact('event'));
+    }
+
+    public function store(Request $request, string $token)
+    {
+        $event = Event::where('registration_token', $token)->firstOrFail();
+
+        $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'email'        => 'nullable|email|max:255',
+            'no_hp'        => 'required|string|max:20',
+            'unit_kerja'   => 'nullable|string|max:255',
+            'foto'         => 'nullable|image|max:2048',
+            
+            // Kolom baru
+            'alamat_rumah'     => 'nullable|string',
+            'jenis_kelamin'    => 'nullable|in:L,P',
+            'nik'              => 'nullable|string',
+            'nbm'              => 'nullable|string',
+            'jabatan_aum'      => 'nullable|string',
+            'tempat_lahir'     => 'nullable|string',
+            'tanggal_lahir'    => 'nullable|date',
+            'umur'             => 'nullable|integer',
+            'status_pernikahan'=> 'nullable|string',
+            'desa_kelurahan'   => 'nullable|string',
+            'kecamatan'        => 'nullable|string',
+            'kabupaten'        => 'nullable|string',
+            'pendidikan_terakhir' => 'required|string',
+            'pendidikan_sd'    => 'nullable|string',
+            'pendidikan_smp'   => 'nullable|string',
+            'pendidikan_sma'   => 'nullable|string',
+            'pendidikan_s1'    => 'nullable|string',
+            'bahasa_dikuasai'  => 'nullable|string',
+            'kemampuan_baca_quran' => 'nullable|string',
+            'hafalan_quran_1'  => 'nullable|string',
+            'hafalan_quran_2'  => 'nullable|string',
+            'aktivitas_sholat_masjid' => 'nullable|string',
+            'aktivitas_kajian_agama'  => 'nullable|string',
+            'jumlah_buku_agama'       => 'nullable|integer',
+            'sumber_info_muhammadiyah' => 'nullable|string',
+            'langganan_suara_muhammadiyah' => 'nullable|string',
+            'lembaga_zis_diikuti'     => 'nullable|string',
+            'tokoh_berpengaruh'       => 'nullable|string',
+            'alasan_pilih_tokoh'      => 'nullable|string',
+            'keaktifan_muhammadiyah'  => 'nullable|string',
+            'keaktifan_ortom'         => 'nullable|string',
+            'organisasi_lain'         => 'nullable|string',
+            'harapan_pcm'             => 'nullable|string',
+            'harapan_mengikuti_ba'    => 'nullable|string',
+        ]);
+
+        // 1. Tangani pembuatan User (jika email disediakan) atau cari yang sudah ada
+        $username = $this->generateUsername($request->nama_lengkap);
+        $email = $request->email ?? ($username . '@arqam.test');
+        $password = config('app.default_participant_password', 'peserta123');
+
+        $user = User::where('email', $email)->orWhere('username', $username)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name'     => $request->nama_lengkap,
+                'email'    => $email,
+                'username' => $username,
+                'password' => Hash::make($password),
+                'role'     => 'peserta',
+            ]);
+        }
+
+        // 2. Handle Peserta creation/update
+        $peserta = Peserta::where('user_id', $user->id)->first();
+        
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('peserta', 'public');
+        }
+
+        $dataPeserta = $request->only([
+            'nama_lengkap', 'email', 'no_hp', 'unit_kerja',
+            'alamat_rumah', 'jenis_kelamin', 'nik', 'nbm', 'jabatan_aum',
+            'tempat_lahir', 'tanggal_lahir', 'umur', 'status_pernikahan',
+            'desa_kelurahan', 'pendidikan_terakhir', 'pendidikan_sd', 'pendidikan_smp', 'pendidikan_sma', 'pendidikan_s1',
+            'kemampuan_baca_quran', 'hafalan_quran_1',
+            'aktivitas_sholat_masjid', 'aktivitas_kajian_agama',
+            'langganan_suara_muhammadiyah',
+            'tokoh_berpengaruh', 'alasan_pilih_tokoh',
+            'organisasi_lain', 'harapan_pcm', 'harapan_mengikuti_ba'
+        ]);
+
+        // Tangani Input Array (Checkbox)
+        $arrayFields = [
+            'bahasa_dikuasai', 'sumber_info_muhammadiyah', 
+            'lembaga_zis_diikuti', 'keaktifan_muhammadiyah', 'keaktifan_ortom'
+        ];
+        foreach ($arrayFields as $field) {
+            if ($request->has($field)) {
+                $dataPeserta[$field] = is_array($request->input($field)) 
+                    ? implode(', ', $request->input($field)) 
+                    : $request->input($field);
+            }
+        }
+
+        // Tangani kolom teks/dropdown spesifik
+        $dataPeserta['kabupaten'] = $request->kabupaten_name;
+        $dataPeserta['kecamatan'] = $request->kecamatan_name;
+        
+        // Tangani angka teks dari radio
+        if ($request->has('jumlah_buku_agama_text')) {
+            $dataPeserta['jumlah_buku_agama'] = 0; // Default atau logika untuk mengekstrak angka
+            // Sebenarnya, kita bisa menyimpannya sebagai teks jika migrasi mengizinkan string, 
+            // tetapi migrasi menetapkan integer untuk jumlah_buku_agama.
+            // Saya akan mengambil angka pertama atau hanya menyimpan representasi integer.
+            preg_match('/\d+/', $request->jumlah_buku_agama_text, $matches);
+            $dataPeserta['jumlah_buku_agama'] = $matches[0] ?? 0;
+        }
+        
+        if ($fotoPath) {
+            $dataPeserta['foto'] = $fotoPath;
+        }
+
+        if (!$peserta) {
+            $dataPeserta['user_id'] = $user->id;
+            $peserta = Peserta::create($dataPeserta);
+        } else {
+            $peserta->update($dataPeserta);
+        }
+
+        // 3. Daftarkan ke Event
+        $isRegistered = EventPeserta::where('event_id', $event->id)
+            ->where('peserta_id', $peserta->id)
+            ->exists();
+
+        if (!$isRegistered) {
+            $qrToken = hash_hmac('sha256', $event->id . '-' . $peserta->id, config('app.key'));
+            $qrCode = base64_encode(json_encode([
+                'e' => $event->id,
+                'p' => $peserta->id,
+                't' => $qrToken
+            ]));
+
+            EventPeserta::create([
+                'event_id'    => $event->id,
+                'peserta_id'  => $peserta->id,
+                'qr_code'     => $qrCode,
+                'status_aktif'=> true,
+            ]);
+        }
+
+        return redirect()->route('registration.success', [
+            'token'    => $token,
+            'username' => $username,
+            'password' => $password
+        ]);
+    }
+
+    public function success(string $token)
+    {
+        $event = Event::where('registration_token', $token)->firstOrFail();
+        $username = request('username');
+        $password = request('password');
+
+        return view('registration.success', compact('event', 'username', 'password'));
+    }
+
+    private function generateUsername($name)
+    {
+        $clean = preg_replace('/[^a-zA-Z0-9]/', '', strtolower($name));
+        $initials = '';
+        foreach (explode(' ', $name) as $word) {
+            $initials .= strtolower(substr($word, 0, 1));
+        }
+        
+        $username = $initials;
+        if (strlen($username) < 2) $username = substr($clean, 0, 5);
+        
+        $count = 0;
+        $original = $username;
+        while (User::where('username', $username)->exists()) {
+            $count++;
+            $username = $original . $count;
+        }
+        
+        return $username;
+    }
+}
