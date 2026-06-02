@@ -135,8 +135,29 @@
 
     /* MOBILE VIEW */
     @media (max-width: 1023px) {
-        body { overflow: auto; }
-        .auth-wrapper { height: auto; min-height: 100vh; max-height: none; border-radius: 0; overflow-y: auto; display: flex; flex-direction: column; }
+        html, body { height: auto !important; overflow: auto !important; }
+        body { background-color: #ffffff; }
+        .auth-back-btn-container {
+            position: static !important;
+            padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+            background: #fff;
+            width: 100%;
+            display: block;
+            box-sizing: border-box;
+        }
+        .auth-wrapper {
+            box-shadow: none;
+            border-radius: 0;
+            margin: 0;
+            width: 100%;
+            height: auto;
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            transform: none !important;
+            animation: none !important;
+            opacity: 1 !important;
+        }
         .form-container { width: 100%; height: auto; position: relative; transition: opacity 0.4s ease; left: 0; transform: none !important;}
         .overlay-container { display: none; }
         
@@ -147,7 +168,7 @@
         .auth-wrapper.right-panel-active .sign-in-container { display: none; opacity: 0; }
         .auth-wrapper.right-panel-active .sign-up-container { display: block; opacity: 1; z-index: 10; }
 
-        .mobile-tabs { display: flex; width: 100%; background: #fff; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #f1f5f9; }
+        .mobile-tabs { display: flex; width: 100%; background: #fff; position: static; border-bottom: 1px solid #f1f5f9; padding-top: 0.5rem; }
     }
     @media (min-width: 1024px) {
         .mobile-tabs { display: none; }
@@ -156,11 +177,11 @@
     [x-cloak] { display: none !important; }
 </style>
 
-<div class="min-h-screen flex items-center justify-center p-0 lg:p-6 relative bg-gray-50/50" 
+<div class="min-h-screen flex flex-col lg:flex-row items-center justify-center p-0 lg:p-6 relative bg-gray-50/50" 
      x-data="{ mode: '{{ $mode ?? request()->query('mode', 'login') }}' }">
     
     <!-- Back Button -->
-    <div class="absolute top-4 left-4 lg:-top-12 lg:left-0 z-50">
+    <div class="auth-back-btn-container absolute top-4 left-4 lg:-top-12 lg:left-0 z-50">
         <a href="{{ route('landing') }}" class="group flex items-center gap-2 px-4 py-2 bg-white/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-gray-100 lg:border-none rounded-full text-xs font-bold text-gray-500 hover:text-primary transition-all active:scale-95 shadow-sm lg:shadow-none">
             <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
