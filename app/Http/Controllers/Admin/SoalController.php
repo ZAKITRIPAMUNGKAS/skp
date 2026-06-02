@@ -222,4 +222,39 @@ class SoalController extends Controller
 
         return back()->with('success', count($sourceSoals) . ' Soal ' . ucfirst($request->tipe) . ' berhasil disalin.');
     }
+
+    /**
+     * Salin soal tunggal ke event lain.
+     */
+    public function copyToEvent(Request $request, Soal $soal)
+    {
+        $request->validate([
+            'target_event_id' => 'required|exists:events,id',
+            'tipe'            => 'required|in:pretest,posttest'
+        ]);
+
+        $targetEvent = Event::findOrFail($request->target_event_id);
+
+        $latestUrutan = Soal::where('event_id', $targetEvent->id)
+            ->where('tipe', $request->tipe)
+            ->max('urutan') ?? 0;
+
+        $newSoal = Soal::create([
+            'event_id'  => $targetEvent->id,
+            'tipe'      => $request->tipe,
+            'teks_soal' => $soal->teks_soal,
+            'urutan'    => $latestUrutan + 1,
+        ]);
+
+        foreach ($soal->pilihanJawaban as $p) {
+            PilihanJawaban::create([
+                'soal_id'      => $newSoal->id,
+                'huruf'        => $p->huruf,
+                'teks_pilihan' => $p->teks_pilihan,
+                'is_correct'   => $p->is_correct,
+            ]);
+        }
+
+        return back()->with('success', 'Soal berhasil disalin ke event: ' . $targetEvent->nama_event);
+    }
 }

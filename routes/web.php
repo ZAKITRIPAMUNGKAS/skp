@@ -94,6 +94,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/events/{event}/soal/reorder', [SoalController::class, 'reorder'])->name('soal.reorder');
     Route::post('/events/{event}/soal/duplicate-posttest', [SoalController::class, 'duplicateToPosttest'])->name('soal.duplicatePosttest');
     Route::post('/events/{event}/soal/copy-from', [SoalController::class, 'copyFromEvent'])->name('soal.copyFrom');
+    Route::post('/soal/{soal}/copy-to-event', [SoalController::class, 'copyToEvent'])->name('soal.copyToEvent');
 
     // Kontrol sesi tes (buka/tutup pretest/posttest)
     Route::post('/events/{event}/sesi-tes/open', [SesiTesController::class, 'open'])->name('sesiTes.open');
