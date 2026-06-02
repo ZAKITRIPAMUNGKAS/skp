@@ -137,7 +137,7 @@
                         <div class="mt-8 text-center space-y-4 w-full">
                             <div>
                                 <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">ID Peserta</p>
-                                <p class="text-lg font-mono font-bold text-gray-800">{{ $peserta->no_hp ?? 'ARQ-'.str_pad($peserta->id, 4, '0', STR_PAD_LEFT) }}</p>
+                                <p class="text-lg font-mono font-bold text-gray-800">{{ 'ARQ-'.str_pad($peserta->id, 4, '0', STR_PAD_LEFT) }}</p>
                             </div>
                             
                             <hr class="border-dashed border-gray-200">
