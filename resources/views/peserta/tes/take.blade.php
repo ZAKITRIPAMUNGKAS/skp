@@ -278,11 +278,32 @@
                     try { this.answers = JSON.parse(saved); } catch(e) {}
                 }
 
+                // Manage countdown persistence using target timestamp
+                const timerKey = storageKey + '_target';
+                let targetTime = localStorage.getItem(timerKey);
+                
+                if (!targetTime) {
+                    // Set target timestamp (milliseconds) from now
+                    targetTime = Date.now() + (this.remainingSeconds * 1000);
+                    localStorage.setItem(timerKey, targetTime);
+                } else {
+                    targetTime = parseInt(targetTime);
+                }
+
+                // Update remaining seconds immediately
+                this.remainingSeconds = Math.max(0, Math.round((targetTime - Date.now()) / 1000));
+
+                if (this.remainingSeconds <= 0) {
+                    this.submitAnswers();
+                    return;
+                }
+
                 // Start countdown
                 this.timerInterval = setInterval(() => {
-                    this.remainingSeconds--;
+                    this.remainingSeconds = Math.max(0, Math.round((targetTime - Date.now()) / 1000));
                     if (this.remainingSeconds <= 0) {
                         clearInterval(this.timerInterval);
+                        localStorage.removeItem(timerKey);
                         this.submitAnswers();
                     }
                 }, 1000);
@@ -331,6 +352,7 @@
 
                     if (data.status === 'success') {
                         localStorage.removeItem(storageKey);
+                        localStorage.removeItem(storageKey + '_target');
                         clearInterval(this.timerInterval);
                         window.location.href = '{{ route("peserta.tes.result", [$event, $tipe]) }}';
                     }
