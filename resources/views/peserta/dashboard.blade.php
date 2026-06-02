@@ -212,6 +212,12 @@
                                     <div>
                                         <h4 class="text-lg font-bold {{ ($progress['pretest'] ?? false) ? 'text-gray-800' : 'text-gray-500' }}">Pretest</h4>
                                         <p class="text-sm text-gray-400">Evaluasi pemahaman awal sebelum materi dimulai.</p>
+                                        @if($sesiStatus['pretest'] && !($progress['pretest'] ?? false))
+                                            <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
+                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                Durasi: {{ $sesiStatus['pretest_durasi'] }} Menit
+                                            </p>
+                                        @endif
                                     </div>
                                     @if($progress['pretest'] ?? false)
                                         <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-bold uppercase tracking-wider border border-green-100">
@@ -278,6 +284,12 @@
                                     <div>
                                         <h4 class="text-lg font-bold {{ ($progress['posttest'] ?? false) ? 'text-gray-800' : 'text-gray-500' }}">Posttest</h4>
                                         <p class="text-sm text-gray-400">Evaluasi pemahaman akhir setelah seluruh materi selesai.</p>
+                                        @if($sesiStatus['posttest'] && !($progress['posttest'] ?? false))
+                                            <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
+                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                Durasi: {{ $sesiStatus['posttest_durasi'] }} Menit
+                                            </p>
+                                        @endif
                                     </div>
                                     @if($progress['posttest'] ?? false)
                                         <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-bold uppercase tracking-wider border border-green-100">

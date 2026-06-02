@@ -75,7 +75,9 @@ class DashboardController extends Controller
             $postSesi = SesiTes::where('event_id', $eventId)->where('tipe', 'posttest')->first();
 
             $sesiStatus['pretest'] = $preSesi && $preSesi->status === 'aktif';
+            $sesiStatus['pretest_durasi'] = $preSesi ? $preSesi->durasi_menit : 30;
             $sesiStatus['posttest'] = $postSesi && $postSesi->status === 'aktif';
+            $sesiStatus['posttest_durasi'] = $postSesi ? $postSesi->durasi_menit : 30;
 
             $scores = PenilaianAkhir::where('event_id', $eventId)->where('peserta_id', $peserta->id)->first();
             
