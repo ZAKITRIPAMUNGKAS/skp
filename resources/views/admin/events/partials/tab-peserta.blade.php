@@ -226,7 +226,7 @@
                         Generate password otomatis
                     </label>
                     <div x-show="!autoPass" x-transition>
-                        <input type="password" name="password" minlength="6"
+                        <input type="password" name="password" minlength="6" autocomplete="new-password"
                             class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50"
                             placeholder="Minimal 6 karakter">
                     </div>

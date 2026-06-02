@@ -113,12 +113,12 @@
                     <div x-show="changePas" x-transition class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100 mb-4">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Password Baru</label>
-                            <input type="password" name="password" minlength="6"
+                            <input type="password" name="password" minlength="6" autocomplete="new-password"
                                 class="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" minlength="6"
+                            <input type="password" name="password_confirmation" minlength="6" autocomplete="new-password"
                                 class="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none">
                         </div>
                     </div>
