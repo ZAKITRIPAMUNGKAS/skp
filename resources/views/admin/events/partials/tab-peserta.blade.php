@@ -96,12 +96,36 @@
                                 </form>
                             @endif
                         </td>
+                        @php
+                            $preDone = \App\Models\JawabanPeserta::where('event_id', $event->id)
+                                ->where('peserta_id', $p->id)
+                                ->whereHas('soal', fn($q) => $q->where('tipe', 'pretest'))
+                                ->exists();
+                            $postDone = \App\Models\JawabanPeserta::where('event_id', $event->id)
+                                ->where('peserta_id', $p->id)
+                                ->whereHas('soal', fn($q) => $q->where('tipe', 'posttest'))
+                                ->exists();
+                            $afkDone = \App\Models\AfektifJawaban::where('event_id', $event->id)
+                                ->where('peserta_id', $p->id)
+                                ->exists();
+                            $psiDone = \App\Models\PsikomotorNilai::where('event_id', $event->id)
+                                ->where('peserta_id', $p->id)
+                                ->exists();
+                        @endphp
                         <td class="px-4 py-3">
                             <div class="flex items-center justify-center gap-1.5">
-                                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-500" title="Pretest">Pre ✗</span>
-                                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-500" title="Posttest">Post ✗</span>
-                                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-500" title="Afektif">Afk ✗</span>
-                                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-500" title="Psikomotor">Psi ✗</span>
+                                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ $preDone ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-gray-50 text-gray-400 border border-gray-150' }}" title="Pretest">
+                                    Pre {{ $preDone ? '✓' : '✗' }}
+                                </span>
+                                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ $postDone ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-gray-50 text-gray-400 border border-gray-150' }}" title="Posttest">
+                                    Post {{ $postDone ? '✓' : '✗' }}
+                                </span>
+                                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ $afkDone ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-gray-50 text-gray-400 border border-gray-150' }}" title="Afektif">
+                                    Afk {{ $afkDone ? '✓' : '✗' }}
+                                </span>
+                                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ $psiDone ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-gray-50 text-gray-400 border border-gray-150' }}" title="Psikomotor">
+                                    Psi {{ $psiDone ? '✓' : '✗' }}
+                                </span>
                             </div>
                         </td>
                         <td class="px-4 py-3 text-right">
