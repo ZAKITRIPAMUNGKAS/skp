@@ -74,10 +74,25 @@ class DashboardController extends Controller
             $preSesi = SesiTes::where('event_id', $eventId)->where('tipe', 'pretest')->first();
             $postSesi = SesiTes::where('event_id', $eventId)->where('tipe', 'posttest')->first();
 
-            $sesiStatus['pretest'] = $preSesi && $preSesi->status === 'aktif';
+            $preActive = $preSesi && $preSesi->status === 'aktif';
+            $postActive = $postSesi && $postSesi->status === 'aktif';
+
+            if ($preActive && $preSesi->waktu_mulai && now()->timestamp >= ($preSesi->waktu_mulai->timestamp + ($preSesi->durasi_menit * 60))) {
+                $preSesi->update(['status' => 'tutup', 'waktu_selesai' => now()]);
+                $preActive = false;
+            }
+            if ($postActive && $postSesi->waktu_mulai && now()->timestamp >= ($postSesi->waktu_mulai->timestamp + ($postSesi->durasi_menit * 60))) {
+                $postSesi->update(['status' => 'tutup', 'waktu_selesai' => now()]);
+                $postActive = false;
+            }
+
+            $sesiStatus['pretest'] = $preActive;
             $sesiStatus['pretest_durasi'] = $preSesi ? $preSesi->durasi_menit : 30;
-            $sesiStatus['posttest'] = $postSesi && $postSesi->status === 'aktif';
+            $sesiStatus['pretest_remaining_seconds'] = $preActive && $preSesi->waktu_mulai ? max(0, ($preSesi->waktu_mulai->timestamp + ($preSesi->durasi_menit * 60)) - now()->timestamp) : 0;
+
+            $sesiStatus['posttest'] = $postActive;
             $sesiStatus['posttest_durasi'] = $postSesi ? $postSesi->durasi_menit : 30;
+            $sesiStatus['posttest_remaining_seconds'] = $postActive && $postSesi->waktu_mulai ? max(0, ($postSesi->waktu_mulai->timestamp + ($postSesi->durasi_menit * 60)) - now()->timestamp) : 0;
 
             $scores = PenilaianAkhir::where('event_id', $eventId)->where('peserta_id', $peserta->id)->first();
             

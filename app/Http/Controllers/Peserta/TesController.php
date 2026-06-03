@@ -20,6 +20,25 @@ class TesController extends Controller
     }
 
     /**
+     * Cek apakah sesi tes sudah habis waktu dan tutup otomatis di DB jika sudah.
+     */
+    private function checkAndCloseSession($eventId, $tipe)
+    {
+        $sesiTes = SesiTes::where('event_id', $eventId)->where('tipe', $tipe)->first();
+        if ($sesiTes && $sesiTes->status === 'aktif' && $sesiTes->waktu_mulai) {
+            $endTime = $sesiTes->waktu_mulai->timestamp + ($sesiTes->durasi_menit * 60);
+            if (now()->timestamp >= $endTime) {
+                $sesiTes->update([
+                    'status' => 'tutup',
+                    'waktu_selesai' => now(),
+                ]);
+                $sesiTes->status = 'tutup';
+            }
+        }
+        return $sesiTes;
+    }
+
+    /**
      * Tampilkan daftar tes pretest & posttest.
      */
     public function index()
@@ -40,6 +59,10 @@ class TesController extends Controller
         $posttestStatus = null;
 
         if ($activeEvent) {
+            // Auto close expired sessions
+            $this->checkAndCloseSession($activeEvent->id, 'pretest');
+            $this->checkAndCloseSession($activeEvent->id, 'posttest');
+
             $pretestStatus = [
                 'done' => $this->tesService->hasSubmitted($activeEvent, $peserta, 'pretest'),
                 'active' => SesiTes::where('event_id', $activeEvent->id)->where('tipe', 'pretest')->where('status', 'aktif')->exists(),
@@ -71,10 +94,8 @@ class TesController extends Controller
             ->first();
         if (!$ep) abort(403, 'Anda tidak terdaftar di event ini');
 
-        // Periksa apakah sesi tes aktif
-        $sesiTes = SesiTes::where('event_id', $event->id)
-            ->where('tipe', $tipe)
-            ->first();
+        // Periksa apakah sesi tes aktif (dan auto close jika expired)
+        $sesiTes = $this->checkAndCloseSession($event->id, $tipe);
 
         if (!$sesiTes || $sesiTes->status !== 'aktif') {
             return view('peserta.tes.closed', compact('event', 'tipe'));
@@ -102,12 +123,10 @@ class TesController extends Controller
         $peserta = auth()->user()->peserta;
         if (!$peserta) abort(403);
 
-        $sesiTes = SesiTes::where('event_id', $event->id)
-            ->where('tipe', $tipe)
-            ->where('status', 'aktif')
-            ->first();
+        // Periksa apakah sesi tes aktif (dan auto close jika expired)
+        $sesiTes = $this->checkAndCloseSession($event->id, $tipe);
 
-        if (!$sesiTes) {
+        if (!$sesiTes || $sesiTes->status !== 'aktif') {
             return redirect()->route('peserta.tes.instruction', [$event, $tipe])
                 ->with('error', 'Tes belum dibuka atau sudah ditutup');
         }
@@ -118,8 +137,15 @@ class TesController extends Controller
 
         $questions = $this->tesService->getShuffledQuestions($event, $peserta, $tipe);
 
+        // Hitung sisa detik berdasarkan waktu mulai sesi global
+        $remainingSeconds = 0;
+        if ($sesiTes->waktu_mulai) {
+            $endTime = $sesiTes->waktu_mulai->timestamp + ($sesiTes->durasi_menit * 60);
+            $remainingSeconds = max(0, $endTime - now()->timestamp);
+        }
+
         return view('peserta.tes.take', compact(
-            'event', 'tipe', 'sesiTes', 'questions'
+            'event', 'tipe', 'sesiTes', 'questions', 'remainingSeconds'
         ));
     }
 
@@ -140,6 +166,9 @@ class TesController extends Controller
         if ($this->tesService->hasSubmitted($event, $peserta, $tipe)) {
             return response()->json(['error' => 'Anda sudah mengerjakan tes ini.'], 422);
         }
+
+        // Jalankan checkAndCloseSession tapi tetap izinkan submit jawaban
+        $this->checkAndCloseSession($event->id, $tipe);
 
         $result = $this->tesService->submitAnswers(
             $event, $peserta, $tipe, $request->answers

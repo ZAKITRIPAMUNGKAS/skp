@@ -216,25 +216,22 @@
                                             <div x-data="{
                                                 remaining: '',
                                                 init() {
-                                                    const key = 'arqam_tes_{{ $activeEvent->id }}_pretest_target';
-                                                    const update = () => {
-                                                        const target = localStorage.getItem(key);
-                                                        if (target) {
-                                                            const diff = Math.max(0, Math.round((parseInt(target) - Date.now()) / 1000));
+                                                    const remainingSecs = {{ $sesiStatus['pretest_remaining_seconds'] }};
+                                                    if (remainingSecs > 0) {
+                                                        const target = Date.now() + (remainingSecs * 1000);
+                                                        const update = () => {
+                                                            const diff = Math.max(0, Math.round((target - Date.now()) / 1000));
                                                             if (diff <= 0) {
                                                                 this.remaining = '';
-                                                                localStorage.removeItem(key);
                                                             } else {
                                                                 const m = Math.floor(diff / 60);
                                                                 const s = diff % 60;
                                                                 this.remaining = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
                                                             }
-                                                        } else {
-                                                            this.remaining = '';
-                                                        }
-                                                    };
-                                                    update();
-                                                    setInterval(update, 1000);
+                                                        };
+                                                        update();
+                                                        setInterval(update, 1000);
+                                                    }
                                                 }
                                             }">
                                                 <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
@@ -313,25 +310,22 @@
                                             <div x-data="{
                                                 remaining: '',
                                                 init() {
-                                                    const key = 'arqam_tes_{{ $activeEvent->id }}_posttest_target';
-                                                    const update = () => {
-                                                        const target = localStorage.getItem(key);
-                                                        if (target) {
-                                                            const diff = Math.max(0, Math.round((parseInt(target) - Date.now()) / 1000));
+                                                    const remainingSecs = {{ $sesiStatus['posttest_remaining_seconds'] }};
+                                                    if (remainingSecs > 0) {
+                                                        const target = Date.now() + (remainingSecs * 1000);
+                                                        const update = () => {
+                                                            const diff = Math.max(0, Math.round((target - Date.now()) / 1000));
                                                             if (diff <= 0) {
                                                                 this.remaining = '';
-                                                                localStorage.removeItem(key);
                                                             } else {
                                                                 const m = Math.floor(diff / 60);
                                                                 const s = diff % 60;
                                                                 this.remaining = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
                                                             }
-                                                        } else {
-                                                            this.remaining = '';
-                                                        }
-                                                    };
-                                                    update();
-                                                    setInterval(update, 1000);
+                                                        };
+                                                        update();
+                                                        setInterval(update, 1000);
+                                                    }
                                                 }
                                             }">
                                                 <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
