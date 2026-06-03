@@ -33,4 +33,14 @@ class EventSesi extends Model
     {
         return $this->hasMany(AfektifSubAspek::class, 'sesi_id');
     }
+
+    public function sesiTes()
+    {
+        return $this->hasMany(SesiTes::class, 'event_sesi_id');
+    }
+
+    public function soal()
+    {
+        return $this->hasMany(Soal::class, 'event_sesi_id');
+    }
 }

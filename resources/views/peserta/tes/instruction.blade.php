@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', ucfirst($tipe) . ' — ' . $event->nama_event)
+@section('title', ucfirst($tipe) . ' — ' . $eventSesi->nama_sesi)
 
 @section('content')
 <div class="max-w-2xl mx-auto py-8 px-4">
@@ -13,7 +13,8 @@
                 </svg>
             </div>
             <h1 class="text-2xl font-heading font-bold mb-1">{{ ucfirst($tipe) }}</h1>
-            <p class="text-white/70 text-sm">{{ $event->nama_event }}</p>
+            <p class="text-white/80 font-semibold text-sm">{{ $eventSesi->nama_sesi }}</p>
+            <p class="text-white/60 text-xs mt-0.5">{{ $event->nama_event }}</p>
         </div>
 
         {{-- Info Cards --}}
@@ -53,7 +54,7 @@
             </div>
 
             {{-- Start Button --}}
-            <a href="{{ route('peserta.tes.take', [$event, $tipe]) }}"
+            <a href="{{ route('peserta.tes.take', [$event, $eventSesi, $tipe]) }}"
                class="w-full flex items-center justify-center gap-2 py-4 bg-primary hover:bg-primary/90 text-white text-lg font-heading font-bold rounded-2xl transition-all shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
                onclick="return confirm('Yakin mulai {{ ucfirst($tipe) }}? Timer akan langsung berjalan.')">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

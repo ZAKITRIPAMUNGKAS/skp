@@ -13,6 +13,7 @@ class SesiTes extends Model
 
     protected $fillable = [
         'event_id',
+        'event_sesi_id',
         'tipe',
         'waktu_mulai',
         'waktu_selesai',
@@ -33,5 +34,10 @@ class SesiTes extends Model
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function eventSesi()
+    {
+        return $this->belongsTo(EventSesi::class, 'event_sesi_id');
     }
 }

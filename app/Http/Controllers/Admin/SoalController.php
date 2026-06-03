@@ -32,6 +32,7 @@ class SoalController extends Controller
     {
         $request->validate([
             'tipe'            => 'required|in:pretest,posttest',
+            'event_sesi_id'   => 'required|exists:event_sesi,id',
             'teks_soal'       => 'required|string',
             'pilihan'         => 'required|array|size:4',
             'pilihan.*.teks'  => 'required|string',
@@ -39,14 +40,16 @@ class SoalController extends Controller
         ]);
 
         $maxUrutan = Soal::where('event_id', $event->id)
+            ->where('event_sesi_id', $request->event_sesi_id)
             ->where('tipe', $request->tipe)
             ->max('urutan') ?? 0;
 
         $soal = Soal::create([
-            'event_id' => $event->id,
-            'tipe'     => $request->tipe,
-            'teks_soal'=> $request->teks_soal,
-            'urutan'   => $maxUrutan + 1,
+            'event_id'      => $event->id,
+            'event_sesi_id' => $request->event_sesi_id,
+            'tipe'          => $request->tipe,
+            'teks_soal'     => $request->teks_soal,
+            'urutan'        => $maxUrutan + 1,
         ]);
 
         $hurufList = ['A', 'B', 'C', 'D'];
@@ -140,13 +143,18 @@ class SoalController extends Controller
     /**
      * Gandakan soal pretest ke posttest.
      */
-    public function duplicateToPosttest(Event $event)
+    public function duplicateToPosttest(Request $request, Event $event)
     {
-        // Hapus soal posttest yang ada
-        Soal::where('event_id', $event->id)->where('tipe', 'posttest')->delete();
+        $request->validate([
+            'event_sesi_id' => 'required|exists:event_sesi,id',
+        ]);
 
-        // Salin soal pretest
+        // Hapus soal posttest yang ada untuk materi ini
+        Soal::where('event_id', $event->id)->where('event_sesi_id', $request->event_sesi_id)->where('tipe', 'posttest')->delete();
+
+        // Salin soal pretest untuk materi ini
         $pretestSoal = Soal::where('event_id', $event->id)
+            ->where('event_sesi_id', $request->event_sesi_id)
             ->where('tipe', 'pretest')
             ->with('pilihanJawaban')
             ->orderBy('urutan')
@@ -154,10 +162,11 @@ class SoalController extends Controller
 
         foreach ($pretestSoal as $soal) {
             $newSoal = Soal::create([
-                'event_id'  => $event->id,
-                'tipe'      => 'posttest',
-                'teks_soal' => $soal->teks_soal,
-                'urutan'    => $soal->urutan,
+                'event_id'      => $event->id,
+                'event_sesi_id' => $request->event_sesi_id,
+                'tipe'          => 'posttest',
+                'teks_soal'     => $soal->teks_soal,
+                'urutan'        => $soal->urutan,
             ]);
 
             foreach ($soal->pilihanJawaban as $pilihan) {
@@ -256,5 +265,52 @@ class SoalController extends Controller
         }
 
         return back()->with('success', 'Soal berhasil disalin ke event: ' . $targetEvent->nama_event);
+    }
+
+    public function getMaterialData(Request $request, Event $event)
+    {
+        $request->validate([
+            'event_sesi_id' => 'required|exists:event_sesi,id',
+        ]);
+
+        $eventSesiId = $request->event_sesi_id;
+
+        $pretestSoal = Soal::where('event_id', $event->id)
+            ->where('event_sesi_id', $eventSesiId)
+            ->where('tipe', 'pretest')
+            ->with('pilihanJawaban')
+            ->orderBy('urutan')
+            ->get();
+
+        $posttestSoal = Soal::where('event_id', $event->id)
+            ->where('event_sesi_id', $eventSesiId)
+            ->where('tipe', 'posttest')
+            ->with('pilihanJawaban')
+            ->orderBy('urutan')
+            ->get();
+
+        $pretestSesi = \App\Models\SesiTes::where('event_id', $event->id)
+            ->where('event_sesi_id', $eventSesiId)
+            ->where('tipe', 'pretest')
+            ->first();
+
+        $posttestSesi = \App\Models\SesiTes::where('event_id', $event->id)
+            ->where('event_sesi_id', $eventSesiId)
+            ->where('tipe', 'posttest')
+            ->first();
+
+        $pretestRemainingSecs = $pretestSesi && $pretestSesi->status === 'aktif' && $pretestSesi->waktu_mulai ? max(0, ($pretestSesi->waktu_mulai->timestamp + ($pretestSesi->durasi_menit * 60)) - now()->timestamp) : 0;
+        $posttestRemainingSecs = $posttestSesi && $posttestSesi->status === 'aktif' && $posttestSesi->waktu_mulai ? max(0, ($posttestSesi->waktu_mulai->timestamp + ($posttestSesi->durasi_menit * 60)) - now()->timestamp) : 0;
+
+        return response()->json([
+            'pretestSoal' => $pretestSoal,
+            'posttestSoal' => $posttestSoal,
+            'pretestSesiStatus' => $pretestSesi?->status ?? 'belum_buka',
+            'posttestSesiStatus' => $posttestSesi?->status ?? 'belum_buka',
+            'pretestRemainingSecs' => $pretestRemainingSecs,
+            'posttestRemainingSecs' => $posttestRemainingSecs,
+            'pretestDurasi' => $pretestSesi?->durasi_menit ?? 30,
+            'posttestDurasi' => $posttestSesi?->durasi_menit ?? 30,
+        ]);
     }
 }

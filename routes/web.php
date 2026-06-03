@@ -92,6 +92,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/events/{event}/soal/{soal}', [SoalController::class, 'update'])->name('soal.update');
     Route::delete('/events/{event}/soal/{soal}', [SoalController::class, 'destroy'])->name('soal.destroy');
     Route::post('/events/{event}/soal/reorder', [SoalController::class, 'reorder'])->name('soal.reorder');
+    Route::get('/events/{event}/soal/material-data', [SoalController::class, 'getMaterialData'])->name('soal.materialData');
     Route::post('/events/{event}/soal/duplicate-posttest', [SoalController::class, 'duplicateToPosttest'])->name('soal.duplicatePosttest');
     Route::post('/events/{event}/soal/copy-from', [SoalController::class, 'copyFromEvent'])->name('soal.copyFrom');
     Route::post('/soal/{soal}/copy-to-event', [SoalController::class, 'copyToEvent'])->name('soal.copyToEvent');
@@ -143,10 +144,10 @@ Route::middleware(['auth', 'peserta'])->prefix('peserta')->name('peserta.')->gro
 
     // Pretest / Posttest
     Route::get('/tes', [TesController::class, 'index'])->name('tes.index');
-    Route::get('/tes/{event}/{tipe}', [TesController::class, 'instruction'])->name('tes.instruction');
-    Route::get('/tes/{event}/{tipe}/take', [TesController::class, 'take'])->name('tes.take');
-    Route::post('/tes/{event}/{tipe}/submit', [TesController::class, 'submit'])->name('tes.submit');
-    Route::get('/tes/{event}/{tipe}/result', [TesController::class, 'result'])->name('tes.result');
+    Route::get('/tes/{event}/{eventSesi}/{tipe}', [TesController::class, 'instruction'])->name('tes.instruction');
+    Route::get('/tes/{event}/{eventSesi}/{tipe}/take', [TesController::class, 'take'])->name('tes.take');
+    Route::post('/tes/{event}/{eventSesi}/{tipe}/submit', [TesController::class, 'submit'])->name('tes.submit');
+    Route::get('/tes/{event}/{eventSesi}/{tipe}/result', [TesController::class, 'result'])->name('tes.result');
 
     // Affective evaluation (peserta)
     Route::get('/afektif', [AfektifPesertaController::class, 'indexRoot'])->name('afektif.index_root');

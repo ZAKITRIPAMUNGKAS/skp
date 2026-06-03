@@ -125,11 +125,15 @@
         @endforeach
     </div>
 
-    {{-- Back Button --}}
-    <div class="text-center mt-8">
+    {{-- Action Buttons --}}
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+        <a href="{{ route('peserta.tes.index') }}"
+           class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/95 transition-colors shadow-sm">
+            ← Kembali ke Daftar Tes
+        </a>
         <a href="{{ route('peserta.dashboard') }}"
-           class="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 text-primary text-sm font-medium rounded-xl hover:bg-primary/20 transition-colors">
-            ← Kembali ke Dashboard
+           class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary/10 text-primary text-sm font-medium rounded-xl hover:bg-primary/20 transition-colors">
+            Ke Dashboard Utama
         </a>
     </div>
 </div>

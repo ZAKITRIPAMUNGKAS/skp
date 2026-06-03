@@ -11,19 +11,24 @@ use App\Models\Soal;
 class TesService
 {
     /**
-     * Get shuffled questions for a participant.
+     * Get shuffled questions for a participant, filtered by material.
      * Uses deterministic seed based on peserta_id for consistent ordering.
      */
-    public function getShuffledQuestions(Event $event, Peserta $peserta, string $tipe): array
+    public function getShuffledQuestions(Event $event, Peserta $peserta, string $tipe, $eventSesiId = null): array
     {
-        $soalList = Soal::where('event_id', $event->id)
-            ->where('tipe', $tipe)
-            ->with('pilihanJawaban')
+        $query = Soal::where('event_id', $event->id)
+            ->where('tipe', $tipe);
+
+        if ($eventSesiId) {
+            $query->where('event_sesi_id', $eventSesiId);
+        }
+
+        $soalList = $query->with('pilihanJawaban')
             ->orderBy('urutan')
             ->get();
 
         // Deterministic shuffle based on peserta_id
-        $seed = crc32($peserta->id . '_' . $event->id . '_' . $tipe);
+        $seed = crc32($peserta->id . '_' . $event->id . '_' . $tipe . '_' . ($eventSesiId ?? ''));
         $items = $soalList->toArray();
         mt_srand($seed);
         for ($i = count($items) - 1; $i > 0; $i--) {
@@ -48,34 +53,49 @@ class TesService
     }
 
     /**
-     * Periksa apakah peserta sudah mengirimkan jawaban untuk tipe tes ini.
+     * Periksa apakah peserta sudah mengirimkan jawaban untuk tipe tes ini (atau materi ini).
      */
-    public function hasSubmitted(Event $event, Peserta $peserta, string $tipe): bool
+    public function hasSubmitted(Event $event, Peserta $peserta, string $tipe, $eventSesiId = null): bool
     {
-        $soalIds = Soal::where('event_id', $event->id)
-            ->where('tipe', $tipe)
-            ->pluck('id');
+        $query = Soal::where('event_id', $event->id)
+            ->where('tipe', $tipe);
 
-        return JawabanPeserta::where('event_id', $event->id)
+        if ($eventSesiId) {
+            $query->where('event_sesi_id', $eventSesiId);
+        }
+
+        $soalIds = $query->pluck('id');
+
+        if ($soalIds->isEmpty()) {
+            return false;
+        }
+
+        $answeredCount = JawabanPeserta::where('event_id', $event->id)
             ->where('peserta_id', $peserta->id)
             ->whereIn('soal_id', $soalIds)
-            ->exists();
+            ->count();
+
+        return $answeredCount >= $soalIds->count();
     }
 
     /**
      * Kirim jawaban dan hitung skor.
      */
-    public function submitAnswers(Event $event, Peserta $peserta, string $tipe, array $answers): array
+    public function submitAnswers(Event $event, Peserta $peserta, string $tipe, array $answers, $eventSesiId = null): array
     {
-        $soalIds = Soal::where('event_id', $event->id)
-            ->where('tipe', $tipe)
-            ->pluck('id')
-            ->toArray();
+        $query = Soal::where('event_id', $event->id)
+            ->where('tipe', $tipe);
+
+        if ($eventSesiId) {
+            $query->where('event_sesi_id', $eventSesiId);
+        }
+
+        $soalIds = $query->pluck('id')->toArray();
 
         $correct = 0;
         $total = count($soalIds);
 
-        // Hapus semua jawaban yang ada terlebih dahulu
+        // Hapus semua jawaban yang ada terlebih dahulu untuk lingkup materi ini
         JawabanPeserta::where('event_id', $event->id)
             ->where('peserta_id', $peserta->id)
             ->whereIn('soal_id', $soalIds)
@@ -105,11 +125,24 @@ class TesService
 
         $score = $total > 0 ? round(($correct / $total) * 100, 2) : 0;
 
-        // Simpan skor di penilaian_akhir
+        // Hitung total skor keseluruhan untuk pretest/posttest di penilaian_akhir
+        $allSoals = Soal::where('event_id', $event->id)->where('tipe', $tipe)->pluck('id');
+        $allTotal = count($allSoals);
+        if ($allTotal > 0) {
+            $allCorrect = JawabanPeserta::where('event_id', $event->id)
+                ->where('peserta_id', $peserta->id)
+                ->whereIn('soal_id', $allSoals)
+                ->where('is_correct', true)
+                ->count();
+            $overallScore = round(($allCorrect / $allTotal) * 100, 2);
+        } else {
+            $overallScore = 0;
+        }
+
         $field = $tipe === 'pretest' ? 'nilai_pretest' : 'nilai_posttest';
         PenilaianAkhir::updateOrCreate(
             ['event_id' => $event->id, 'peserta_id' => $peserta->id],
-            [$field => $score]
+            [$field => $overallScore]
         );
 
         return [
@@ -123,11 +156,16 @@ class TesService
     /**
      * Dapatkan hasil tes untuk seorang peserta.
      */
-    public function getResult(Event $event, Peserta $peserta, string $tipe): ?array
+    public function getResult(Event $event, Peserta $peserta, string $tipe, $eventSesiId = null): ?array
     {
-        $soalList = Soal::where('event_id', $event->id)
-            ->where('tipe', $tipe)
-            ->with('pilihanJawaban')
+        $query = Soal::where('event_id', $event->id)
+            ->where('tipe', $tipe);
+
+        if ($eventSesiId) {
+            $query->where('event_sesi_id', $eventSesiId);
+        }
+
+        $soalList = $query->with('pilihanJawaban')
             ->orderBy('urutan')
             ->get();
 

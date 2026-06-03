@@ -13,6 +13,7 @@ class Soal extends Model
 
     protected $fillable = [
         'event_id',
+        'event_sesi_id',
         'tipe',
         'teks_soal',
         'urutan',
@@ -23,6 +24,11 @@ class Soal extends Model
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function eventSesi()
+    {
+        return $this->belongsTo(EventSesi::class, 'event_sesi_id');
     }
 
     public function pilihanJawaban()

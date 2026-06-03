@@ -1,15 +1,43 @@
 {{-- Pretest/Posttest Tab Content --}}
 @php
-    $pretestSoal = \App\Models\Soal::where('event_id', $event->id)->where('tipe', 'pretest')->with('pilihanJawaban')->orderBy('urutan')->get();
-    $posttestSoal = \App\Models\Soal::where('event_id', $event->id)->where('tipe', 'posttest')->with('pilihanJawaban')->orderBy('urutan')->get();
-    $pretestSesi  = \App\Models\SesiTes::where('event_id', $event->id)->where('tipe', 'pretest')->first();
-    $posttestSesi = \App\Models\SesiTes::where('event_id', $event->id)->where('tipe', 'posttest')->first();
+    $eventSesis = $event->sesi()->orderBy('urutan')->get();
+    $firstSesi = $eventSesis->first();
+
+    $pretestSoal = $firstSesi ? \App\Models\Soal::where('event_id', $event->id)->where('event_sesi_id', $firstSesi->id)->where('tipe', 'pretest')->with('pilihanJawaban')->orderBy('urutan')->get() : collect();
+    $posttestSoal = $firstSesi ? \App\Models\Soal::where('event_id', $event->id)->where('event_sesi_id', $firstSesi->id)->where('tipe', 'posttest')->with('pilihanJawaban')->orderBy('urutan')->get() : collect();
+    $pretestSesi  = $firstSesi ? \App\Models\SesiTes::where('event_id', $event->id)->where('event_sesi_id', $firstSesi->id)->where('tipe', 'pretest')->first() : null;
+    $posttestSesi = $firstSesi ? \App\Models\SesiTes::where('event_id', $event->id)->where('event_sesi_id', $firstSesi->id)->where('tipe', 'posttest')->first() : null;
 
     $pretestRemainingSecs = $pretestSesi && $pretestSesi->status === 'aktif' && $pretestSesi->waktu_mulai ? max(0, ($pretestSesi->waktu_mulai->timestamp + ($pretestSesi->durasi_menit * 60)) - now()->timestamp) : 0;
     $posttestRemainingSecs = $posttestSesi && $posttestSesi->status === 'aktif' && $posttestSesi->waktu_mulai ? max(0, ($posttestSesi->waktu_mulai->timestamp + ($posttestSesi->durasi_menit * 60)) - now()->timestamp) : 0;
 @endphp
 
+@if($eventSesis->isEmpty())
+    <div class="py-8">
+        <x-empty-state title="Belum ada Sesi / Materi" description="Silakan buat sesi kegiatan/materi terlebih dahulu di tab Sesi." icon="document" />
+    </div>
+@else
 <div x-data="soalManager()" x-init="init()">
+
+    {{-- Dropdown Pilih Materi/Sesi --}}
+    <div class="mb-6 bg-white rounded-2xl border border-gray-100 p-5 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+            <span class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </span>
+            <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Materi / Sesi Evaluasi</label>
+                <select x-model="selectedSesiId" @change="loadMaterialData()"
+                        class="px-3 py-1.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-800 bg-gray-50/50 cursor-pointer focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
+                    @foreach($eventSesis as $sesi)
+                        <option value="{{ $sesi->id }}">Sesi {{ $sesi->urutan }}: {{ $sesi->nama_sesi }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
 
     {{-- Sub-tabs: Pretest / Posttest --}}
     <div class="flex items-center justify-between mb-6">
@@ -154,7 +182,7 @@
 
     {{-- Add/Edit Form Modal --}}
     <div x-show="showForm" x-transition.opacity class="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-8"
-         @click.self="showForm = false">
+         @click.self="showForm = false" style="display: none;">
         <div x-show="showForm" x-transition class="bg-white rounded-2xl shadow-2xl border border-gray-100 w-full max-w-4xl mx-4">
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                 <h3 class="text-lg font-semibold font-heading text-gray-800" x-text="editingSoal ? 'Edit Soal' : 'Tambah Soal Baru'"></h3>
@@ -263,6 +291,7 @@
     </div>
 
 </div>
+@endif
 
 @push('scripts')
 <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&display=swap" rel="stylesheet">
@@ -285,6 +314,7 @@ function soalManager() {
         posttestRemaining: '',
         preTarget: 0,
         postTarget: 0,
+        selectedSesiId: {{ $firstSesi?->id ?? 0 }},
 
         get currentSoalList() { return this.subTab === 'pretest' ? this.pretestSoal : this.posttestSoal; },
         get currentSesiStatus() { return this.subTab === 'pretest' ? this.pretestSesiStatus : this.posttestSesiStatus; },
@@ -293,11 +323,9 @@ function soalManager() {
             this.durasi = {{ $pretestSesi?->durasi_menit ?? 30 }};
             
             this.$watch('subTab', (val) => {
-                if (val === 'pretest') {
-                    this.durasi = {{ $pretestSesi?->durasi_menit ?? 30 }};
-                } else {
-                    this.durasi = {{ $posttestSesi?->durasi_menit ?? 30 }};
-                }
+                this.durasi = val === 'pretest' 
+                    ? (this.pretestDurasi ?? 30)
+                    : (this.posttestDurasi ?? 30);
             });
 
             this.preTarget = this.pretestRemainingSecs > 0 ? Date.now() + (this.pretestRemainingSecs * 1000) : 0;
@@ -341,6 +369,25 @@ function soalManager() {
             setInterval(updateCountdown, 1000);
         },
 
+        async loadMaterialData() {
+            if (!this.selectedSesiId) return;
+            const res = await fetch('{{ route("admin.soal.materialData", $event) }}?event_sesi_id=' + this.selectedSesiId);
+            if (res.ok) {
+                const data = await res.json();
+                this.pretestSoal = data.pretestSoal;
+                this.posttestSoal = data.posttestSoal;
+                this.pretestSesiStatus = data.pretestSesiStatus;
+                this.posttestSesiStatus = data.posttestSesiStatus;
+                this.pretestRemainingSecs = data.pretestRemainingSecs;
+                this.posttestRemainingSecs = data.posttestRemainingSecs;
+                this.pretestDurasi = data.pretestDurasi;
+                this.posttestDurasi = data.posttestDurasi;
+                this.preTarget = this.pretestRemainingSecs > 0 ? Date.now() + (this.pretestRemainingSecs * 1000) : 0;
+                this.postTarget = this.posttestRemainingSecs > 0 ? Date.now() + (this.posttestRemainingSecs * 1000) : 0;
+                this.durasi = this.subTab === 'pretest' ? data.pretestDurasi : data.posttestDurasi;
+            }
+        },
+
         resetForm() {
             this.form = { teks_soal: '', pilihan: [{teks:''},{teks:''},{teks:''},{teks:''}], jawaban_benar: 'A' };
         },
@@ -362,7 +409,7 @@ function soalManager() {
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
-                body: JSON.stringify({ ...this.form, tipe: this.subTab }),
+                body: JSON.stringify({ ...this.form, tipe: this.subTab, event_sesi_id: this.selectedSesiId }),
             });
             const data = await res.json();
 
@@ -410,7 +457,7 @@ function soalManager() {
             const res = await fetch('{{ route("admin.sesiTes.open", $event) }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: JSON.stringify({ tipe: this.subTab, durasi_menit: this.durasi }),
+                body: JSON.stringify({ tipe: this.subTab, durasi_menit: this.durasi, event_sesi_id: this.selectedSesiId }),
             });
             if (res.ok) {
                 if (this.subTab === 'pretest') {
@@ -428,7 +475,7 @@ function soalManager() {
             const res = await fetch('{{ route("admin.sesiTes.close", $event) }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: JSON.stringify({ tipe: this.subTab }),
+                body: JSON.stringify({ tipe: this.subTab, event_sesi_id: this.selectedSesiId }),
             });
             if (res.ok) {
                 if (this.subTab === 'pretest') {
@@ -442,12 +489,13 @@ function soalManager() {
         },
 
         async duplicateToPosttest() {
-            if (!confirm('Ini akan mengganti semua soal Posttest dengan salinan soal Pretest. Lanjutkan?')) return;
+            if (!confirm('Ini akan mengganti semua soal Posttest dengan salinan soal Pretest untuk materi ini. Lanjutkan?')) return;
             const res = await fetch('{{ route("admin.soal.duplicatePosttest", $event) }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ event_sesi_id: this.selectedSesiId }),
             });
-            if (res.ok) { location.reload(); }
+            if (res.ok) { this.loadMaterialData(); }
         },
     };
 }

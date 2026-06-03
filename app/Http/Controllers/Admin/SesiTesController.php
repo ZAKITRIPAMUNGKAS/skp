@@ -15,12 +15,13 @@ class SesiTesController extends Controller
     public function open(Request $request, Event $event)
     {
         $request->validate([
-            'tipe'         => 'required|in:pretest,posttest',
-            'durasi_menit' => 'nullable|integer|min:5|max:180',
+            'tipe'          => 'required|in:pretest,posttest',
+            'event_sesi_id' => 'required|exists:event_sesi,id',
+            'durasi_menit'  => 'nullable|integer|min:5|max:180',
         ]);
 
         $sesiTes = SesiTes::updateOrCreate(
-            ['event_id' => $event->id, 'tipe' => $request->tipe],
+            ['event_id' => $event->id, 'tipe' => $request->tipe, 'event_sesi_id' => $request->event_sesi_id],
             [
                 'status'       => 'aktif',
                 'waktu_mulai'  => now(),
@@ -42,10 +43,12 @@ class SesiTesController extends Controller
     public function close(Request $request, Event $event)
     {
         $request->validate([
-            'tipe' => 'required|in:pretest,posttest',
+            'tipe'          => 'required|in:pretest,posttest',
+            'event_sesi_id' => 'required|exists:event_sesi,id',
         ]);
 
         $sesiTes = SesiTes::where('event_id', $event->id)
+            ->where('event_sesi_id', $request->event_sesi_id)
             ->where('tipe', $request->tipe)
             ->first();
 
@@ -62,9 +65,14 @@ class SesiTesController extends Controller
     /**
      * Dapatkan status sesi tes saat ini.
      */
-    public function status(Event $event, string $tipe)
+    public function status(Request $request, Event $event, string $tipe)
     {
+        $request->validate([
+            'event_sesi_id' => 'required|exists:event_sesi,id',
+        ]);
+
         $sesiTes = SesiTes::where('event_id', $event->id)
+            ->where('event_sesi_id', $request->event_sesi_id)
             ->where('tipe', $tipe)
             ->first();
 

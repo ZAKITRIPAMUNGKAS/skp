@@ -40,15 +40,42 @@ class DashboardController extends Controller
         if ($activeEvent) {
             $eventId = $activeEvent->id;
             
-            $pretestDone = JawabanPeserta::where('event_id', $eventId)
-                ->where('peserta_id', $peserta->id)
-                ->whereHas('soal', fn($q) => $q->where('tipe', 'pretest'))
-                ->exists();
+            $materials = \App\Models\EventSesi::where('event_id', $eventId)->get();
+            $tesService = app(\App\Services\TesService::class);
 
-            $posttestDone = JawabanPeserta::where('event_id', $eventId)
-                ->where('peserta_id', $peserta->id)
-                ->whereHas('soal', fn($q) => $q->where('tipe', 'posttest'))
-                ->exists();
+            $pretestTotalCount = 0;
+            $pretestDoneCount = 0;
+            $posttestTotalCount = 0;
+            $posttestDoneCount = 0;
+
+            foreach ($materials as $material) {
+                // Check if pretest is configured (has questions)
+                $hasPretest = Soal::where('event_id', $eventId)
+                    ->where('event_sesi_id', $material->id)
+                    ->where('tipe', 'pretest')
+                    ->exists();
+                if ($hasPretest) {
+                    $pretestTotalCount++;
+                    if ($tesService->hasSubmitted($activeEvent, $peserta, 'pretest', $material->id)) {
+                        $pretestDoneCount++;
+                    }
+                }
+
+                // Check if posttest is configured (has questions)
+                $hasPosttest = Soal::where('event_id', $eventId)
+                    ->where('event_sesi_id', $material->id)
+                    ->where('tipe', 'posttest')
+                    ->exists();
+                if ($hasPosttest) {
+                    $posttestTotalCount++;
+                    if ($tesService->hasSubmitted($activeEvent, $peserta, 'posttest', $material->id)) {
+                        $posttestDoneCount++;
+                    }
+                }
+            }
+
+            $pretestDone = ($pretestTotalCount > 0) ? ($pretestDoneCount >= $pretestTotalCount) : true;
+            $posttestDone = ($posttestTotalCount > 0) ? ($posttestDoneCount >= $posttestTotalCount) : true;
 
             $afektifDone = AfektifJawaban::where('event_id', $eventId)
                 ->where('peserta_id', $peserta->id)
@@ -63,36 +90,55 @@ class DashboardController extends Controller
                 ->count();
 
             $progress = [
-                'pretest'    => $pretestDone,
-                'posttest'   => $posttestDone,
-                'afektif'    => $afektifDone,
-                'angket'     => $angketDone,
-                'attended'   => $attended,
-                'total_sesi' => $activeEvent->sesi_count,
+                'pretest'        => $pretestDone,
+                'pretest_done'   => $pretestDoneCount,
+                'pretest_total'  => $pretestTotalCount,
+                'posttest'       => $posttestDone,
+                'posttest_done'  => $posttestDoneCount,
+                'posttest_total' => $posttestTotalCount,
+                'afektif'        => $afektifDone,
+                'angket'         => $angketDone,
+                'attended'       => $attended,
+                'total_sesi'     => $activeEvent->sesi_count,
             ];
 
-            $preSesi = SesiTes::where('event_id', $eventId)->where('tipe', 'pretest')->first();
-            $postSesi = SesiTes::where('event_id', $eventId)->where('tipe', 'posttest')->first();
-
-            $preActive = $preSesi && $preSesi->status === 'aktif';
-            $postActive = $postSesi && $postSesi->status === 'aktif';
-
-            if ($preActive && $preSesi->waktu_mulai && now()->timestamp >= ($preSesi->waktu_mulai->timestamp + ($preSesi->durasi_menit * 60))) {
-                $preSesi->update(['status' => 'tutup', 'waktu_selesai' => now()]);
-                $preActive = false;
+            // Find any active pretest session
+            $activePreSesis = SesiTes::where('event_id', $eventId)->where('tipe', 'pretest')->where('status', 'aktif')->get();
+            $preActive = false;
+            $preSesi = null;
+            foreach ($activePreSesis as $aps) {
+                if ($aps->waktu_mulai && now()->timestamp >= ($aps->waktu_mulai->timestamp + ($aps->durasi_menit * 60))) {
+                    $aps->update(['status' => 'tutup', 'waktu_selesai' => now()]);
+                } else {
+                    $preActive = true;
+                    $preSesi = $aps;
+                    break;
+                }
             }
-            if ($postActive && $postSesi->waktu_mulai && now()->timestamp >= ($postSesi->waktu_mulai->timestamp + ($postSesi->durasi_menit * 60))) {
-                $postSesi->update(['status' => 'tutup', 'waktu_selesai' => now()]);
-                $postActive = false;
+
+            // Find any active posttest session
+            $activePostSesis = SesiTes::where('event_id', $eventId)->where('tipe', 'posttest')->where('status', 'aktif')->get();
+            $postActive = false;
+            $postSesi = null;
+            foreach ($activePostSesis as $aps) {
+                if ($aps->waktu_mulai && now()->timestamp >= ($aps->waktu_mulai->timestamp + ($aps->durasi_menit * 60))) {
+                    $aps->update(['status' => 'tutup', 'waktu_selesai' => now()]);
+                } else {
+                    $postActive = true;
+                    $postSesi = $aps;
+                    break;
+                }
             }
 
             $sesiStatus['pretest'] = $preActive;
             $sesiStatus['pretest_durasi'] = $preSesi ? $preSesi->durasi_menit : 30;
             $sesiStatus['pretest_remaining_seconds'] = $preActive && $preSesi->waktu_mulai ? max(0, ($preSesi->waktu_mulai->timestamp + ($preSesi->durasi_menit * 60)) - now()->timestamp) : 0;
+            $sesiStatus['pretest_event_sesi_id'] = $preSesi ? $preSesi->event_sesi_id : null;
 
             $sesiStatus['posttest'] = $postActive;
             $sesiStatus['posttest_durasi'] = $postSesi ? $postSesi->durasi_menit : 30;
             $sesiStatus['posttest_remaining_seconds'] = $postActive && $postSesi->waktu_mulai ? max(0, ($postSesi->waktu_mulai->timestamp + ($postSesi->durasi_menit * 60)) - now()->timestamp) : 0;
+            $sesiStatus['posttest_event_sesi_id'] = $postSesi ? $postSesi->event_sesi_id : null;
 
             $scores = PenilaianAkhir::where('event_id', $eventId)->where('peserta_id', $peserta->id)->first();
             

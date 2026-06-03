@@ -212,6 +212,9 @@
                                     <div>
                                         <h4 class="text-lg font-bold {{ ($progress['pretest'] ?? false) ? 'text-gray-800' : 'text-gray-500' }}">Pretest</h4>
                                         <p class="text-sm text-gray-400">Evaluasi pemahaman awal sebelum materi dimulai.</p>
+                                        @if(($progress['pretest_total'] ?? 0) > 0)
+                                            <p class="text-xs text-primary font-bold mt-1">Progres: {{ $progress['pretest_done'] }} / {{ $progress['pretest_total'] }} Materi</p>
+                                        @endif
                                         @if($sesiStatus['pretest'] && !($progress['pretest'] ?? false))
                                             <div x-data="{
                                                 remaining: '',
@@ -222,7 +225,7 @@
                                                         const update = () => {
                                                             const diff = Math.max(0, Math.round((target - Date.now()) / 1000));
                                                             if (diff <= 0) {
-                                                                this.remaining = '';
+                                                                 this.remaining = '';
                                                             } else {
                                                                 const m = Math.floor(diff / 60);
                                                                 const s = diff % 60;
@@ -247,12 +250,12 @@
                                         </div>
                                     @else
                                         @if($sesiStatus['pretest'])
-                                            <a href="{{ route('peserta.tes.instruction', [$activeEvent, 'pretest']) }}" class="inline-flex items-center gap-2 px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-600 transition-all shadow-md active:scale-95">
+                                            <a href="{{ route('peserta.tes.instruction', [$activeEvent, $sesiStatus['pretest_event_sesi_id'], 'pretest']) }}" class="inline-flex items-center gap-2 px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-600 transition-all shadow-md active:scale-95">
                                                 Kerjakan Sekarang
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                             </a>
                                         @else
-                                            <span class="px-4 py-1.5 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest border border-gray-200">Sesi Belum Dibuka</span>
+                                            <a href="{{ route('peserta.tes.index') }}" class="px-4 py-1.5 bg-gray-100 text-gray-500 hover:text-primary rounded-lg text-xs font-bold uppercase tracking-widest border border-gray-200">Lihat Daftar Tes</a>
                                         @endif
                                     @endif
                                 </div>
@@ -306,6 +309,9 @@
                                     <div>
                                         <h4 class="text-lg font-bold {{ ($progress['posttest'] ?? false) ? 'text-gray-800' : 'text-gray-500' }}">Posttest</h4>
                                         <p class="text-sm text-gray-400">Evaluasi pemahaman akhir setelah seluruh materi selesai.</p>
+                                        @if(($progress['posttest_total'] ?? 0) > 0)
+                                            <p class="text-xs text-primary font-bold mt-1">Progres: {{ $progress['posttest_done'] }} / {{ $progress['posttest_total'] }} Materi</p>
+                                        @endif
                                         @if($sesiStatus['posttest'] && !($progress['posttest'] ?? false))
                                             <div x-data="{
                                                 remaining: '',
@@ -341,12 +347,12 @@
                                         </div>
                                     @else
                                         @if($sesiStatus['posttest'])
-                                            <a href="{{ route('peserta.tes.instruction', [$activeEvent, 'posttest']) }}" class="inline-flex items-center gap-2 px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-600 transition-all shadow-md active:scale-95">
+                                            <a href="{{ route('peserta.tes.instruction', [$activeEvent, $sesiStatus['posttest_event_sesi_id'], 'posttest']) }}" class="inline-flex items-center gap-2 px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-600 transition-all shadow-md active:scale-95">
                                                 Mulai Posttest
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                             </a>
                                         @else
-                                            <span class="px-4 py-1.5 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest border border-gray-200">Sesi Belum Dibuka</span>
+                                            <a href="{{ route('peserta.tes.index') }}" class="px-4 py-1.5 bg-gray-100 text-gray-500 hover:text-primary rounded-lg text-xs font-bold uppercase tracking-widest border border-gray-200">Lihat Daftar Tes</a>
                                         @endif
                                     @endif
                                 </div>

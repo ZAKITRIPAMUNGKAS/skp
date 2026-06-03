@@ -254,7 +254,7 @@
 
     <script>
     function tesApp() {
-        const storageKey = 'arqam_tes_{{ $event->id }}_{{ $tipe }}';
+        const storageKey = 'arqam_tes_{{ $event->id }}_{{ $eventSesi->id }}_{{ $tipe }}';
 
         return {
             questions: @json($questions),
@@ -329,7 +329,7 @@
                 }));
 
                 try {
-                    const res = await fetch('{{ route("peserta.tes.submit", [$event, $tipe]) }}', {
+                    const res = await fetch('{{ route("peserta.tes.submit", [$event, $eventSesi, $tipe]) }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -344,7 +344,7 @@
                         localStorage.removeItem(storageKey);
                         localStorage.removeItem(storageKey + '_target');
                         clearInterval(this.timerInterval);
-                        window.location.href = '{{ route("peserta.tes.result", [$event, $tipe]) }}';
+                        window.location.href = '{{ route("peserta.tes.result", [$event, $eventSesi, $tipe]) }}';
                     }
                 } catch (e) {
                     alert('Gagal mengirim jawaban. Silakan coba lagi.');

@@ -97,14 +97,20 @@
                             @endif
                         </td>
                         @php
-                            $preDone = \App\Models\JawabanPeserta::where('event_id', $event->id)
+                            $preSoalCount = \App\Models\Soal::where('event_id', $event->id)->where('tipe', 'pretest')->count();
+                            $preAnsweredCount = \App\Models\JawabanPeserta::where('event_id', $event->id)
                                 ->where('peserta_id', $p->id)
                                 ->whereHas('soal', fn($q) => $q->where('tipe', 'pretest'))
-                                ->exists();
-                            $postDone = \App\Models\JawabanPeserta::where('event_id', $event->id)
+                                ->count();
+                            $preDone = $preSoalCount > 0 && $preAnsweredCount >= $preSoalCount;
+
+                            $postSoalCount = \App\Models\Soal::where('event_id', $event->id)->where('tipe', 'posttest')->count();
+                            $postAnsweredCount = \App\Models\JawabanPeserta::where('event_id', $event->id)
                                 ->where('peserta_id', $p->id)
                                 ->whereHas('soal', fn($q) => $q->where('tipe', 'posttest'))
-                                ->exists();
+                                ->count();
+                            $postDone = $postSoalCount > 0 && $postAnsweredCount >= $postSoalCount;
+
                             $afkDone = \App\Models\AfektifJawaban::where('event_id', $event->id)
                                 ->where('peserta_id', $p->id)
                                 ->exists();
