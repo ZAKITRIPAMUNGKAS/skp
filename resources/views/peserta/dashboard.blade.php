@@ -239,10 +239,7 @@
                                             }">
                                                 <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                    <span>Durasi: {{ $sesiStatus['pretest_durasi'] }} Menit</span>
-                                                    <template x-if="remaining">
-                                                        <span class="text-red-500 ml-1 animate-pulse">(Sisa: <span x-text="remaining"></span>)</span>
-                                                    </template>
+                                                    <span>Durasi: <span :class="remaining ? 'text-red-500 animate-pulse font-mono' : ''" x-text="remaining ? remaining : '{{ $sesiStatus['pretest_durasi'] }} Menit'"></span></span>
                                                 </p>
                                             </div>
                                         @endif
@@ -339,10 +336,7 @@
                                             }">
                                                 <p class="text-xs text-accent font-bold mt-1 flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                    <span>Durasi: {{ $sesiStatus['posttest_durasi'] }} Menit</span>
-                                                    <template x-if="remaining">
-                                                        <span class="text-red-500 ml-1 animate-pulse">(Sisa: <span x-text="remaining"></span>)</span>
-                                                    </template>
+                                                    <span>Durasi: <span :class="remaining ? 'text-red-500 animate-pulse font-mono' : ''" x-text="remaining ? remaining : '{{ $sesiStatus['posttest_durasi'] }} Menit'"></span></span>
                                                 </p>
                                             </div>
                                         @endif

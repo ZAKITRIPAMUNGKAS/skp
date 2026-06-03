@@ -37,7 +37,7 @@
 
     {{-- Tes (Pretest / Posttest) --}}
     @if($event)
-        <a href="{{ route('peserta.tes.instruction', [$event, 'pretest']) }}"
+        <a href="{{ route('peserta.tes.index') }}"
            class="inline-flex flex-col items-center justify-center flex-1 hover:bg-gray-50 group transition-colors {{ Str::contains($currentRoute, 'peserta.tes') ? 'text-primary' : 'text-gray-500' }}">
             <svg class="w-5 h-5 mb-0.5 {{ Str::contains($currentRoute, 'peserta.tes') ? 'text-primary' : 'text-gray-400 group-hover:text-primary' }}"
                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
