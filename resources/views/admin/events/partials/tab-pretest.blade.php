@@ -4,6 +4,9 @@
     $posttestSoal = \App\Models\Soal::where('event_id', $event->id)->where('tipe', 'posttest')->with('pilihanJawaban')->orderBy('urutan')->get();
     $pretestSesi  = \App\Models\SesiTes::where('event_id', $event->id)->where('tipe', 'pretest')->first();
     $posttestSesi = \App\Models\SesiTes::where('event_id', $event->id)->where('tipe', 'posttest')->first();
+
+    $pretestRemainingSecs = $pretestSesi && $pretestSesi->status === 'aktif' && $pretestSesi->waktu_mulai ? max(0, ($pretestSesi->waktu_mulai->timestamp + ($pretestSesi->durasi_menit * 60)) - now()->timestamp) : 0;
+    $posttestRemainingSecs = $posttestSesi && $posttestSesi->status === 'aktif' && $posttestSesi->waktu_mulai ? max(0, ($posttestSesi->waktu_mulai->timestamp + ($posttestSesi->durasi_menit * 60)) - now()->timestamp) : 0;
 @endphp
 
 <div x-data="soalManager()" x-init="init()">
@@ -70,9 +73,17 @@
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-2">
                     <label class="text-xs text-gray-500">Durasi:</label>
-                    <input type="number" x-model="durasi" min="5" max="180"
-                        class="w-20 px-3 py-1.5 text-sm border border-gray-200 rounded-lg text-center focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
-                    <span class="text-xs text-gray-400">menit</span>
+                    <template x-if="currentSesiStatus === 'aktif'">
+                        <span class="text-sm font-mono font-bold text-red-500 animate-pulse bg-red-50 px-3 py-1.5 rounded-lg border border-red-100"
+                              x-text="subTab === 'pretest' ? pretestRemaining : posttestRemaining"></span>
+                    </template>
+                    <template x-if="currentSesiStatus !== 'aktif'">
+                        <div class="flex items-center gap-1.5">
+                            <input type="number" x-model="durasi" min="5" max="180"
+                                class="w-20 px-3 py-1.5 text-sm border border-gray-200 rounded-lg text-center focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
+                            <span class="text-xs text-gray-400">menit</span>
+                        </div>
+                    </template>
                 </div>
                 <template x-if="currentSesiStatus !== 'aktif'">
                     <button @click="openTes()" :disabled="currentSoalList.length === 0"
@@ -268,12 +279,66 @@ function soalManager() {
         posttestSoal: @json($posttestSoal),
         pretestSesiStatus: '{{ $pretestSesi?->status ?? "belum_buka" }}',
         posttestSesiStatus: '{{ $posttestSesi?->status ?? "belum_buka" }}',
+        pretestRemainingSecs: {{ $pretestRemainingSecs }},
+        posttestRemainingSecs: {{ $posttestRemainingSecs }},
+        pretestRemaining: '',
+        posttestRemaining: '',
+        preTarget: 0,
+        postTarget: 0,
 
         get currentSoalList() { return this.subTab === 'pretest' ? this.pretestSoal : this.posttestSoal; },
         get currentSesiStatus() { return this.subTab === 'pretest' ? this.pretestSesiStatus : this.posttestSesiStatus; },
 
         init() {
             this.durasi = {{ $pretestSesi?->durasi_menit ?? 30 }};
+            
+            this.$watch('subTab', (val) => {
+                if (val === 'pretest') {
+                    this.durasi = {{ $pretestSesi?->durasi_menit ?? 30 }};
+                } else {
+                    this.durasi = {{ $posttestSesi?->durasi_menit ?? 30 }};
+                }
+            });
+
+            this.preTarget = this.pretestRemainingSecs > 0 ? Date.now() + (this.pretestRemainingSecs * 1000) : 0;
+            this.postTarget = this.posttestRemainingSecs > 0 ? Date.now() + (this.posttestRemainingSecs * 1000) : 0;
+
+            const updateCountdown = () => {
+                // Pretest
+                if (this.preTarget > 0 && this.pretestSesiStatus === 'aktif') {
+                    const diff = Math.max(0, Math.round((this.preTarget - Date.now()) / 1000));
+                    if (diff <= 0) {
+                        this.pretestRemaining = '';
+                        this.pretestSesiStatus = 'tutup';
+                        this.preTarget = 0;
+                    } else {
+                        const m = Math.floor(diff / 60);
+                        const s = diff % 60;
+                        this.pretestRemaining = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                    }
+                } else {
+                    this.pretestRemaining = '';
+                }
+
+                // Posttest
+                if (this.postTarget > 0 && this.posttestSesiStatus === 'aktif') {
+                    const diff = Math.max(0, Math.round((this.postTarget - Date.now()) / 1000));
+                    if (diff <= 0) {
+                        this.posttestRemaining = '';
+                        this.posttestSesiStatus = 'tutup';
+                        this.postTarget = 0;
+                    } else {
+                        const m = Math.floor(diff / 60);
+                        const s = diff % 60;
+                        this.posttestRemaining = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                    }
+                } else {
+                    this.posttestRemaining = '';
+                }
+            };
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
         },
 
         resetForm() {
@@ -348,8 +413,13 @@ function soalManager() {
                 body: JSON.stringify({ tipe: this.subTab, durasi_menit: this.durasi }),
             });
             if (res.ok) {
-                if (this.subTab === 'pretest') this.pretestSesiStatus = 'aktif';
-                else this.posttestSesiStatus = 'aktif';
+                if (this.subTab === 'pretest') {
+                    this.pretestSesiStatus = 'aktif';
+                    this.preTarget = Date.now() + (this.durasi * 60 * 1000);
+                } else {
+                    this.posttestSesiStatus = 'aktif';
+                    this.postTarget = Date.now() + (this.durasi * 60 * 1000);
+                }
             }
         },
 
@@ -361,8 +431,13 @@ function soalManager() {
                 body: JSON.stringify({ tipe: this.subTab }),
             });
             if (res.ok) {
-                if (this.subTab === 'pretest') this.pretestSesiStatus = 'tutup';
-                else this.posttestSesiStatus = 'tutup';
+                if (this.subTab === 'pretest') {
+                    this.pretestSesiStatus = 'tutup';
+                    this.preTarget = 0;
+                } else {
+                    this.posttestSesiStatus = 'tutup';
+                    this.postTarget = 0;
+                }
             }
         },
 
