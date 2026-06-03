@@ -11,6 +11,7 @@ use App\Models\AngketJawaban;
 use App\Models\PenilaianAkhir;
 use App\Models\Absensi;
 use App\Models\SesiTes;
+use App\Models\Soal;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 

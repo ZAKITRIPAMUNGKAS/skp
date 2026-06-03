@@ -249,7 +249,7 @@
                                             Sudah Dikerjakan
                                         </div>
                                     @else
-                                        @if($sesiStatus['pretest'])
+                                        @if($sesiStatus['pretest'] && $sesiStatus['pretest_event_sesi_id'])
                                             <a href="{{ route('peserta.tes.instruction', [$activeEvent, $sesiStatus['pretest_event_sesi_id'], 'pretest']) }}" class="inline-flex items-center gap-2 px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-600 transition-all shadow-md active:scale-95">
                                                 Kerjakan Sekarang
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -346,7 +346,7 @@
                                             Sudah Dikerjakan
                                         </div>
                                     @else
-                                        @if($sesiStatus['posttest'])
+                                        @if($sesiStatus['posttest'] && $sesiStatus['posttest_event_sesi_id'])
                                             <a href="{{ route('peserta.tes.instruction', [$activeEvent, $sesiStatus['posttest_event_sesi_id'], 'posttest']) }}" class="inline-flex items-center gap-2 px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-600 transition-all shadow-md active:scale-95">
                                                 Mulai Posttest
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
