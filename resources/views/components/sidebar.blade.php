@@ -5,7 +5,7 @@
 @endphp
 
 {{-- Desktop Sidebar --}}
-<aside class="fixed inset-y-0 left-0 z-40 bg-primary text-white transition-sidebar hidden lg:flex flex-col"
+<aside class="fixed inset-y-0 left-0 z-40 bg-primary text-white transition-sidebar hidden lg:flex flex-col w-64"
        :class="sidebarCollapsed ? 'w-20' : 'w-64'">
 
     {{-- Logo --}}
@@ -81,7 +81,7 @@
 </aside>
 
 {{-- Mobile Sidebar --}}
-<aside class="fixed inset-y-0 left-0 z-50 w-72 bg-primary text-white flex flex-col lg:hidden transform transition-transform duration-300"
+<aside class="fixed inset-y-0 left-0 z-50 w-72 bg-primary text-white flex flex-col lg:hidden transform transition-transform duration-300 -translate-x-full"
        :class="mobileMenu ? 'translate-x-0' : '-translate-x-full'">
 
     {{-- Mobile Logo --}}
