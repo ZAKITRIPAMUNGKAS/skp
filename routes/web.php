@@ -50,6 +50,17 @@ Route::get('/register/event/{token}/success', [\App\Http\Controllers\EventRegist
 // ── Alihkan root ke landing ───────────────────────────
 Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing');
 
+// ── Temporary OPcache Clear Route ────────────────────
+Route::get('/clear-opcache-action', function() {
+    if (function_exists('opcache_reset')) {
+        if (opcache_reset()) {
+            return "SUCCESS: OPcache PHP berhasil di-reset via Laravel Route! Memori cPanel sekarang menggunakan kode terbaru.";
+        }
+        return "WARNING: Fungsi opcache_reset tersedia namun gagal dijalankan.";
+    }
+    return "INFO: OPcache tidak aktif pada server ini.";
+});
+
 // ── Rute Admin ──────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
