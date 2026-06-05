@@ -117,6 +117,17 @@
 
                     {{-- QR Body --}}
                     <div class="p-8 flex flex-col items-center">
+                        {{-- Foto Profil Peserta --}}
+                        <div class="w-24 h-24 rounded-full border-4 border-slate-50 overflow-hidden mb-6 shadow-md flex-shrink-0">
+                            @if($peserta->foto)
+                                <img src="{{ $peserta->foto_url }}" class="w-full h-full object-cover" alt="Foto">
+                            @else
+                                <div class="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-2xl text-primary font-heading">
+                                    {{ strtoupper(substr($peserta->nama_lengkap, 0, 2)) }}
+                                </div>
+                            @endif
+                        </div>
+
                         <div class="relative">
                             <div class="absolute -inset-4 bg-primary/5 rounded-[2rem] animate-pulse"></div>
                             @if($eventPeserta && $eventPeserta->qr_code)
