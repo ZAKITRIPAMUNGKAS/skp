@@ -49,4 +49,9 @@ class PenilaianAkhir extends Model
     {
         return $this->belongsTo(Peserta::class);
     }
+
+    public function getSkorAkhirAttribute()
+    {
+        return $this->skor_saw;
+    }
 }

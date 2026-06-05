@@ -13,7 +13,7 @@
     {{-- AHP Panel --}}
     <div x-show="subTab==='ahp'">
         <div class="bg-white rounded-xl border border-gray-200 p-6 relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-32 h-32 opacity-10 pointer-events-none">
+            <div class="absolute right-2 -top-2 w-28 h-28 opacity-90 pointer-events-none">
                 <img src="{{ asset('images/arka/arka_penilai.png') }}" alt="Arka Penilai" class="w-full h-full object-contain">
             </div>
             <h3 class="text-sm font-semibold text-gray-800 mb-1">Matriks Perbandingan Berpasangan</h3>
@@ -75,13 +75,27 @@
                         </template>
                     </div>
 
-                    <div class="flex items-center gap-4 p-4 rounded-xl" :class="result.is_consistent ? 'bg-green-50 border border-green-100' : 'bg-red-50 border border-red-100'">
+                    <div class="p-4 rounded-xl" :class="result.is_consistent ? 'bg-green-50 border border-green-100' : 'bg-red-50 border border-red-100'">
                         <div>
                             <span class="text-xs font-semibold" :class="result.is_consistent ? 'text-green-700' : 'text-red-700'">
                                 CR = <span x-text="result.cr.toFixed(4)"></span>
                             </span>
-                            <p class="text-[10px] mt-0.5" :class="result.is_consistent ? 'text-green-600' : 'text-red-600'"
+                            <p class="text-[10px] mt-0.5 font-bold" :class="result.is_consistent ? 'text-green-600' : 'text-red-600'"
                                x-text="result.is_consistent ? '✓ Konsisten (CR ≤ 0.1)' : '✗ TIDAK KONSISTEN — Revisi matriks!'"></p>
+                            
+                            <!-- Penjelasan Real Inkonsistensi AHP -->
+                            <template x-if="!result.is_consistent">
+                                <div class="mt-2 text-[10px] text-red-600 leading-relaxed border-t border-red-200/60 pt-2">
+                                    <p class="font-semibold mb-1">Kenapa tidak konsisten?</p>
+                                    <p>Nilai CR &gt; 0.10 menunjukkan adanya konflik logika perbandingan. Silakan periksa kembali bobot kepentingan antar kriteria.</p>
+                                    <p class="mt-1 font-medium bg-red-100/50 p-2 rounded border border-red-200 text-red-700">
+                                        <strong>Logika Dasar:</strong> Jika Anda menilai <strong><span x-text="result.labels[0]"></span> lebih penting dari <span x-text="result.labels[1]"></span></strong>, 
+                                        dan <strong><span x-text="result.labels[1]"></span> lebih penting dari <span x-text="result.labels[2]"></span></strong>, 
+                                        maka secara logis seharusnya <strong><span x-text="result.labels[0]"></span> juga jauh lebih penting dari <span x-text="result.labels[2]"></span></strong>. 
+                                        Jika di dalam matriks Anda justru mengisi sebaliknya, sistem akan mendeteksinya sebagai tidak konsisten.
+                                    </p>
+                                </div>
+                            </template>
                         </div>
                     </div>
 

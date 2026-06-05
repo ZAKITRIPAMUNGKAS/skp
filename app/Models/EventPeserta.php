@@ -16,6 +16,9 @@ class EventPeserta extends Model
         'peserta_id',
         'qr_code',
         'status_aktif',
+        'konfirmasi_kesediaan',
+        'alasan_tidak_hadir',
+        'surat_tidak_hadir',
     ];
 
     protected function casts(): array
@@ -35,5 +38,11 @@ class EventPeserta extends Model
     public function peserta()
     {
         return $this->belongsTo(Peserta::class);
+    }
+
+    public function skor()
+    {
+        return $this->hasOne(PenilaianAkhir::class, 'peserta_id', 'peserta_id')
+                    ->where('event_id', $this->event_id);
     }
 }

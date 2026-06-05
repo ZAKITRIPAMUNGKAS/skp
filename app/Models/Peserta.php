@@ -15,10 +15,13 @@ class Peserta extends Model
     protected $fillable = [
         'user_id',
         'nama_lengkap',
+        'nama_panggilan',
         'email',
         'no_hp',
         'unit_kerja',
         'foto',
+        'surat_komitmen',
+        'surat_tidak_bersedia',
         'alamat_rumah',
         'jenis_kelamin',
         'nik',
@@ -28,9 +31,11 @@ class Peserta extends Model
         'tanggal_lahir',
         'umur',
         'status_pernikahan',
+        'jumlah_anak',
         'desa_kelurahan',
         'kecamatan',
         'kabupaten',
+        'provinsi',
         'pendidikan_terakhir',
         'pendidikan_sd',
         'pendidikan_smp',
@@ -38,10 +43,22 @@ class Peserta extends Model
         'pendidikan_s1',
         'bahasa_dikuasai',
         'kemampuan_baca_quran',
+        'kompetensi_keberagamaan',
+        'kompetensi_akademis',
+        'kompetensi_sosial',
+        'kompetensi_keorganisasian',
+        'catatan_makanan',
+        'catatan_kesehatan',
+        'catatan_panitia',
         'hafalan_quran_1',
         'hafalan_quran_2',
         'aktivitas_sholat_masjid',
         'aktivitas_kajian_agama',
+        'ukuran_kaos',
+        'rencana_keberangkatan',
+        'aktivitas_duduk',
+        'aktivitas_tangga',
+        'aktivitas_sholat',
         'jumlah_buku_agama',
         'sumber_info_muhammadiyah',
         'langganan_suara_muhammadiyah',
@@ -53,12 +70,39 @@ class Peserta extends Model
         'organisasi_lain',
         'harapan_pcm',
         'harapan_mengikuti_ba',
+        'arqam_ke',
     ];
 
     protected $casts = [
         'tanggal_lahir' => 'date',
     ];
-    
+
+    public function getFotoUrlAttribute()
+    {
+        if (empty($this->foto)) {
+            return null;
+        }
+
+        if (str_starts_with($this->foto, 'http://') || str_starts_with($this->foto, 'https://')) {
+            $url = $this->foto;
+            if (str_contains($url, 'drive.google.com')) {
+                $fileId = '';
+                if (preg_match('/id=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+                    $fileId = $matches[1];
+                } elseif (preg_match('/\/file\/d\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+                    $fileId = $matches[1];
+                }
+                
+                if (!empty($fileId)) {
+                    return "https://lh3.googleusercontent.com/d/" . $fileId;
+                }
+            }
+            return $url;
+        }
+
+        return asset('storage/' . $this->foto);
+    }
+
     /**
      * Check if profile data is complete.
      */

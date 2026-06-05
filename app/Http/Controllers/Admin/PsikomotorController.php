@@ -50,7 +50,7 @@ class PsikomotorController extends Controller
     public function data(Event $event)
     {
         $templates = PsikomotorTemplate::where('event_id', $event->id)->get();
-        $pesertaIds = EventPeserta::where('event_id', $event->id)->pluck('peserta_id');
+        $pesertaIds = EventPeserta::where('event_id', $event->id)->where('status_aktif', true)->pluck('peserta_id');
 
         $pesertaList = \App\Models\Peserta::whereIn('id', $pesertaIds)
             ->orderBy('nama_lengkap')

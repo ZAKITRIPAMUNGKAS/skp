@@ -179,7 +179,7 @@
 
     <div class="footer">
         <div class="signature-wrapper">
-            <p>Yogyakarta, {{ now()->format('d M Y') }}</p>
+            <p>{{ $event->lokasi }}, {{ now()->format('d M Y') }}</p>
             <p>Master of Training,</p>
             <div class="signature-space"></div>
             <p class="font-bold">( __________________________ )</p>

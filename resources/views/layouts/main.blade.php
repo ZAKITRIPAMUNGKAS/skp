@@ -175,7 +175,22 @@
           }
       }"
       x-on:toast.window="addToast($event.detail.message, $event.detail.type || 'success', $event.detail.duration || 3000)"
+      x-on:page-loading.window="loading = true"
 >
+    {{-- Sleek Top Progress Bar --}}
+    <div x-show="loading" 
+         x-transition:enter="transition-opacity duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent via-yellow-400 to-primary-400 z-[9999]"
+         style="display: none;">
+        <div class="h-full bg-accent animate-pulse w-full origin-left transform scale-x-[0.3]"
+             x-init="$watch('loading', val => { if(val) { setTimeout(() => { $el.classList.replace('scale-x-[0.3]', 'scale-x-[0.95]') }, 50); } })"></div>
+    </div>
+
     <div class="flex h-full">
         {{-- Sidebar --}}
         @include('components.sidebar')
@@ -204,7 +219,7 @@
 
             {{-- Page content --}}
             <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 @if(auth()->check() && auth()->user()->role === 'peserta') pb-24 lg:pb-8 @endif">
-                <div class="max-w-[1280px] mx-auto">
+                <div class="max-w-[1280px] mx-auto animate-slide-up">
                     @yield('content')
                 </div>
             </main>
@@ -357,5 +372,26 @@
         });
     </script>
     @endif
+
+    {{-- Global Loading Listener --}}
+    <script>
+        window.addEventListener('beforeunload', function(e) {
+            const activeEl = document.activeElement;
+            if (activeEl && activeEl.tagName === 'A') {
+                const href = activeEl.getAttribute('href');
+                const target = activeEl.getAttribute('target');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript:') && target !== '_blank') {
+                    window.dispatchEvent(new CustomEvent('page-loading'));
+                }
+            } else if (activeEl && (activeEl.tagName === 'BUTTON' || activeEl.getAttribute('type') === 'submit')) {
+                window.dispatchEvent(new CustomEvent('page-loading'));
+            }
+        });
+        
+        // Also capture form submits to show loading
+        document.addEventListener('submit', function() {
+            window.dispatchEvent(new CustomEvent('page-loading'));
+        });
+    </script>
 </body>
 </html>

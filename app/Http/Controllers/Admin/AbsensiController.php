@@ -24,7 +24,7 @@ class AbsensiController extends Controller
      */
     public function scanPage(Event $event, EventSesi $sesi)
     {
-        $totalPeserta = EventPeserta::where('event_id', $event->id)->count();
+        $totalPeserta = EventPeserta::where('event_id', $event->id)->where('status_aktif', true)->count();
         $hadirCount   = Absensi::where('event_id', $event->id)
             ->where('sesi_id', $sesi->id)
             ->count();

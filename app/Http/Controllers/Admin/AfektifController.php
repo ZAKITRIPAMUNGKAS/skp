@@ -142,7 +142,7 @@ class AfektifController extends Controller
             ->orderBy('urutan')
             ->get();
 
-        $totalPeserta = EventPeserta::where('event_id', $event->id)->count();
+        $totalPeserta = EventPeserta::where('event_id', $event->id)->where('status_aktif', true)->count();
 
         $summaryData = $subAspeks->map(function ($sa) use ($event, $totalPeserta) {
             $butirCount = $sa->butir->count();

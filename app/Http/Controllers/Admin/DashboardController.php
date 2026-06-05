@@ -24,12 +24,12 @@ class DashboardController extends Controller
         }
 
         // Event aktif
-        $activeEvent = Event::where('status', 'berlangsung')->withCount('eventPeserta')->first();
+        $activeEvent = Event::where('status', 'berlangsung')->withCount('eventPesertaAktif')->first();
         if (!$activeEvent) {
-            $activeEvent = Event::where('status', 'persiapan')->withCount('eventPeserta')->first();
+            $activeEvent = Event::where('status', 'persiapan')->withCount('eventPesertaAktif')->first();
         }
         if (!$activeEvent) {
-            $activeEvent = Event::withCount('eventPeserta')->latest()->first();
+            $activeEvent = Event::withCount('eventPesertaAktif')->latest()->first();
         }
 
         $stats = [
@@ -48,9 +48,13 @@ class DashboardController extends Controller
         $topRankings = collect();
 
         if ($activeEvent) {
-            $stats['total_peserta'] = $activeEvent->event_peserta_count;
+            $stats['total_peserta'] = $activeEvent->event_peserta_aktif_count;
             
-            $penilaian = PenilaianAkhir::where('event_id', $activeEvent->id)->get();
+            $penilaian = PenilaianAkhir::where('event_id', $activeEvent->id)
+                ->whereHas('peserta.eventPeserta', function ($q) use ($activeEvent) {
+                    $q->where('event_id', $activeEvent->id)->where('status_aktif', true);
+                })
+                ->get();
             
             if ($penilaian->count()) {
                 $stats['avg_pretest']   = $penilaian->avg('nilai_pretest') ?? 0;

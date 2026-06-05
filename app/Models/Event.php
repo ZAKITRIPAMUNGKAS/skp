@@ -57,9 +57,19 @@ class Event extends Model
         return $this->hasMany(EventPeserta::class);
     }
 
+    public function eventPesertaAktif()
+    {
+        return $this->hasMany(EventPeserta::class)->where('status_aktif', true);
+    }
+
     public function peserta()
     {
         return $this->belongsToMany(Peserta::class, 'event_peserta');
+    }
+
+    public function pesertaAktif()
+    {
+        return $this->belongsToMany(Peserta::class, 'event_peserta')->where('event_peserta.status_aktif', true);
     }
 
     public function soals()

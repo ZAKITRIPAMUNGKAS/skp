@@ -17,8 +17,11 @@ class SawService
         $bobot = AhpBobot::where('event_id', $eventId)->where('is_consistent', true)->first();
         if (!$bobot) return [];
 
-        // Mengambil data penilaian semua peserta pada event ini beserta data diri peserta
+        // Mengambil data penilaian semua peserta pada event ini beserta data diri peserta yang aktif (status_aktif = true)
         $semuaPenilaian = PenilaianAkhir::where('event_id', $eventId)
+            ->whereHas('peserta.eventPeserta', function ($q) use ($eventId) {
+                $q->where('event_id', $eventId)->where('status_aktif', true);
+            })
             ->with('peserta:id,nama_lengkap,unit_kerja')
             ->get();
             
@@ -27,8 +30,8 @@ class SawService
         // Langkah 1: Mendapatkan nilai maksimum dari setiap kriteria (C1-C5) untuk pembagi normalisasi (Benefit)
         $maxC1 = $semuaPenilaian->max('nilai_pretest') ?: 1;
         $maxC2 = $semuaPenilaian->max('nilai_posttest') ?: 1;
-        $maxC3 = $semuaPenilaian->max('nilai_afektif') ?: 1;
-        $maxC4 = $semuaPenilaian->max('nilai_psikomotor') ?: 1;
+        $maxC3 = $semuaPenilaian->max('nilai_psikomotor') ?: 1;
+        $maxC4 = $semuaPenilaian->max('nilai_afektif') ?: 1;
         $maxC5 = $semuaPenilaian->max('nilai_kehadiran') ?: 1;
 
         // Langkah 2: Menyusun array bobot kriteria
@@ -46,8 +49,8 @@ class SawService
             $r = [
                 $maxC1 > 0 ? $p->nilai_pretest / $maxC1 : 0,
                 $maxC2 > 0 ? $p->nilai_posttest / $maxC2 : 0,
-                $maxC3 > 0 ? $p->nilai_afektif / $maxC3 : 0,
-                $maxC4 > 0 ? $p->nilai_psikomotor / $maxC4 : 0,
+                $maxC3 > 0 ? $p->nilai_psikomotor / $maxC3 : 0,
+                $maxC4 > 0 ? $p->nilai_afektif / $maxC4 : 0,
                 $maxC5 > 0 ? $p->nilai_kehadiran / $maxC5 : 0,
             ];
 

@@ -55,7 +55,7 @@ class AngketController extends Controller
     public function summary(Event $event)
     {
         $items = AngketItem::where('event_id', $event->id)->orderBy('kategori')->orderBy('urutan')->get();
-        $totalPeserta = EventPeserta::where('event_id', $event->id)->count();
+        $totalPeserta = EventPeserta::where('event_id', $event->id)->where('status_aktif', true)->count();
 
         $summaryData = $items->map(function ($item) use ($event) {
             $counts = AngketJawaban::where('event_id', $event->id)->where('item_id', $item->id)

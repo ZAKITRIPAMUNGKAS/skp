@@ -12,6 +12,7 @@ class IdCardGeneratorService
     public function generate(Event $event)
     {
         $participants = EventPeserta::where('event_id', $event->id)
+            ->where('status_aktif', true)
             ->with('peserta')
             ->get();
 

@@ -19,26 +19,105 @@ class ParticipantController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Peserta::with('user')->latest();
+        $query = Peserta::with(['user', 'eventPeserta.event'])->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('nama_lengkap', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('unit_kerja', 'like', "%{$search}%");
+                  ->orWhere('unit_kerja', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%")
+                  ->orWhereHas('eventPeserta', function($epQuery) use ($search) {
+                      $epQuery->where('alasan_tidak_hadir', 'like', "%{$search}%");
+                  });
             });
         }
 
-        $participants = $query->paginate(20)->withQueryString();
+        if ($request->filled('event_id')) {
+            $query->whereHas('eventPeserta', function($q) use ($request) {
+                $q->where('event_id', $request->event_id);
+                if ($request->filled('kesediaan')) {
+                    $q->where('konfirmasi_kesediaan', $request->kesediaan);
+                }
+            });
+        } elseif ($request->filled('kesediaan')) {
+            $query->whereHas('eventPeserta', function($q) use ($request) {
+                $q->where('konfirmasi_kesediaan', $request->kesediaan);
+            });
+        }
 
-        return view('admin.participants.index', compact('participants'));
+        if ($request->filled('jenis_kelamin')) {
+            $query->where('jenis_kelamin', $request->jenis_kelamin);
+        }
+
+        $participants = $query->paginate(20)->withQueryString();
+        $events = Event::latest()->get();
+
+        return view('admin.participants.index', compact('participants', 'events'));
     }
 
     public function show(Peserta $peserta)
     {
-        $peserta->load(['user', 'eventPeserta.event', 'eventPeserta.skor']);
+        $peserta->load(['user', 'eventPeserta.event']);
         return view('admin.participants.show', compact('peserta'));
+    }
+
+    public function edit(Peserta $peserta)
+    {
+        $peserta->load('user');
+        return view('admin.participants.edit', compact('peserta'));
+    }
+
+    public function update(Request $request, Peserta $peserta)
+    {
+        $validated = $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'nama_panggilan' => 'nullable|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $peserta->user_id,
+            'no_hp' => 'nullable|string|max:20',
+            'unit_kerja' => 'nullable|string|max:255',
+            'nik' => 'nullable|string|max:50|unique:peserta,nik,' . $peserta->id,
+            'nbm' => 'nullable|string|max:50',
+            'jabatan_aum' => 'nullable|string|max:255',
+            'tempat_lahir' => 'nullable|string|max:255',
+            'tanggal_lahir' => 'nullable|date',
+            'umur' => 'nullable|integer',
+            'status_pernikahan' => 'nullable|string|max:255',
+            'jumlah_anak' => 'nullable|integer',
+            'alamat_rumah' => 'nullable|string',
+            'desa_kelurahan' => 'nullable|string|max:255',
+            'kecamatan' => 'nullable|string|max:255',
+            'kabupaten' => 'nullable|string|max:255',
+            'provinsi' => 'nullable|string|max:255',
+            'ukuran_kaos' => 'nullable|string|max:10',
+            'kemampuan_baca_quran' => 'nullable|string|max:255',
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $user = $peserta->user;
+            $user->update([
+                'name' => $validated['nama_lengkap'],
+                'email' => $validated['email'],
+            ]);
+
+            if (!empty($validated['password'])) {
+                $user->update([
+                    'password' => Hash::make($validated['password']),
+                ]);
+            }
+
+            $peserta->update($validated);
+
+            DB::commit();
+
+            return redirect()->route('admin.participants.show', $peserta)->with('success', 'Data peserta berhasil diperbarui!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal memperbarui data peserta: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function store(Request $request, Event $event)
@@ -68,7 +147,8 @@ class ParticipantController extends Controller
 
             if (!$user) {
                 $importService = new ImportParticipantService();
-                $username = $importService->generateUsername($validated['nama_lengkap']);
+                $emailForUsername = !empty($validated['email']) && !str_ends_with($validated['email'], '@arqam.test') ? $validated['email'] : null;
+                $username = $importService->generateUsername($validated['nama_lengkap'], $emailForUsername);
                 
                 $user = User::create([
                     'name'     => $validated['nama_lengkap'],
@@ -136,6 +216,7 @@ class ParticipantController extends Controller
     public function downloadAccounts(Event $event)
     {
         $participants = EventPeserta::where('event_id', $event->id)
+            ->where('status_aktif', true)
             ->with(['peserta.user'])
             ->get();
 
@@ -159,20 +240,45 @@ class ParticipantController extends Controller
 
     public function downloadTemplate()
     {
-        $headers = ['nama_lengkap', 'email', 'no_hp', 'unit_kerja'];
+        $headers = [
+            'Timestamp', 'Email Address', 'NIK', 'Nama', 'Homebase', 'No HP', 'Konfirmasi Kesediaan',
+            'Sebab (Mohon dituliskan secara detail, dikarenakan BA sebagai syarat kenaikan pangkat)',
+            'Unggah Surat Pernyataan Tidak Bersedia (diketahui Kaprodi)',
+            'Rencana Keberangkatan ke Lokasi Baitul Arqam', 'Nama Panggilan', 'Jenis Kelamin',
+            'Upload Foto bebas untuk IDCard', 'Unggah Surat Pernyataan Komitmen',
+            'Alamat Asal (Tuliskan alamat lengkap asal/lahir. Dukuh, Kalurahan, Kec, Kab, Propinsi)',
+            'Dukuh, Rt/Rw', 'Kalurahan/Desa', 'Kecamatan', 'Kabupaten/Kota', 'Propinsi', 'Umur',
+            'Status Pernikahan', 'Jumlah Anak', 'Pernah/sedang aktif di Ortom (Bisa pilih lebih dari satu)',
+            'Pernah/Sedang Aktif di Persyarikatan Muhammadiyah/Aisyiyah', 'Mengikuti Baitul Arqam Dosen UMS ke-',
+            'Aktivitas duduk', 'Aktivitas naik-turun tangga', 'Aktivitas sholat', 'Ukuran Kaos',
+            'Kemampuan Membaca Al-Qur\'an', 'Kompetensi Keberagamaan', 'Kompetensi Akademis',
+            'Kompetensi Sosial Kemanusiaan dan Kepeloporan', 'Kompetensi Keorganisasian dan Kepemimpinan',
+            'Tuliskan Keterlibatan Bapak/Ibu di Ranting Muhammadiyah/Aisyiyah/Ortom dan Lingkungan Sekitar',
+            'Adakah hal khusus yang perlu disampaikan terkait Makanan',
+            'Adakah hal khusus yang perlu disampaikan terkait Kesehatan',
+            'Adakah hal-hal lain yang perlu disampaikan kepada Panitia'
+        ];
+
         $callback = function () use ($headers) {
             $file = fopen('php://output', 'w');
-            // BOM untuk UTF-8
             fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
             fputcsv($file, $headers);
-            fputcsv($file, ['Dr. Ahmad Fauzi, M.Pd.', 'ahmad@example.com', '08123456789', 'Fakultas Teknik']);
-            fputcsv($file, ['Siti Aminah, S.Pd.', 'siti@example.com', '08234567890', 'Fakultas Ekonomi']);
+            fputcsv($file, [
+                '5/19/2026 20:36:13', 'ma956@ums.ac.id', '100.2432', 'Muk Andhim, S.Pd, M.Pd.', 'FAI - Program Studi Pendidikan Agama Islam',
+                '082136538276', 'Bersedia', '', '', 'Bersama Rombongan dari UMS', 'Andhim', 'Laki-Laki',
+                'https://drive.google.com/open?id=1ZjmpXm9yEDlPwFEFCYhhHlcjERjyuMdO',
+                'https://drive.google.com/open?id=1OgPZnSmBS7ZdJDbvfC5VDobgDDB-kjQs',
+                'Desa Ngargomulyo, Kec. Lasem, Kab. Rembang, Jawa Tengah', 'Saripan, RT. 02 RW. 12',
+                'Makamhaji', 'Kartasura', 'Sukoharjo', 'Jawa Tengah', '30', 'Menikah', '1',
+                'Pemuda Muhammadiyah', 'Muhammadiyah', '12', 'Bisa', 'Bisa', 'Bisa', 'XL',
+                'Baik', 'Baik', 'Baik', 'Baik', 'Baik', 'Aktif di Ranting', 'Tidak ada', 'Tidak ada', ''
+            ]);
             fclose($file);
         };
 
         return response()->stream($callback, 200, [
             'Content-Type'        => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="template_peserta.csv"',
+            'Content-Disposition' => 'attachment; filename="template_peserta_v2.csv"',
         ]);
     }
 
@@ -222,6 +328,7 @@ class ParticipantController extends Controller
     public function downloadIdCards(Event $event)
     {
         $participants = EventPeserta::where('event_id', $event->id)
+            ->where('status_aktif', true)
             ->with('peserta')
             ->get();
 
@@ -280,10 +387,11 @@ class ParticipantController extends Controller
     {
         $participants = EventPeserta::with(['peserta', 'peserta.user'])
             ->where('event_id', $event->id)
+            ->where('status_aktif', true)
             ->get();
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.events.participants-pdf', compact('event', 'participants'))
-            ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'portrait');
 
         return $pdf->stream('Data_Peserta_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
     }
@@ -294,5 +402,30 @@ class ParticipantController extends Controller
             new \App\Exports\ParticipantsExport($event), 
             'Data_Peserta_' . str_replace(' ', '_', $event->nama_event) . '.xlsx'
         );
+    }
+
+    public function destroyParticipant(Peserta $peserta)
+    {
+        DB::beginTransaction();
+        try {
+            $user = $peserta->user;
+
+            // Hapus pendaftaran event
+            EventPeserta::where('peserta_id', $peserta->id)->delete();
+
+            // Hapus profile peserta
+            $peserta->delete();
+
+            // Hapus user account
+            if ($user) {
+                $user->delete();
+            }
+
+            DB::commit();
+            return redirect()->route('admin.participants.index')->with('success', 'Peserta berhasil dihapus beserta akun loginnya.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal menghapus peserta: ' . $e->getMessage());
+        }
     }
 }

@@ -15,7 +15,7 @@ class PresentasiController extends Controller
     public function show(Event $event)
     {
         // ── Peserta dasar ────────────────────────────────
-        $pesertaIds = EventPeserta::where('event_id', $event->id)->pluck('peserta_id');
+        $pesertaIds = EventPeserta::where('event_id', $event->id)->where('status_aktif', true)->pluck('peserta_id');
         $pesertas   = Peserta::whereIn('id', $pesertaIds)->get();
         $total      = $pesertas->count();
 
@@ -25,10 +25,14 @@ class PresentasiController extends Controller
         $menikah    = $pesertas->where('status_pernikahan', 'Menikah')->count();
         $belumNikah = $total - $menikah;
 
-        // ── Sebaran Umur ─────────────────────────────────
+        // ── Sebaran Umur & Stat Umur ─────────────────────
         $umurRaw = $pesertas->pluck('umur')->filter()->sort()->values();
         $umurLabels = $umurRaw->unique()->values()->toArray();
         $umurData   = $umurRaw->countBy()->values()->toArray();
+        
+        $avgUmur = round($pesertas->avg('umur') ?? 0, 1);
+        $minUmur = $pesertas->min('umur') ?? 0;
+        $maxUmur = $pesertas->max('umur') ?? 0;
 
         // ── Bahasa ───────────────────────────────────────
         $bahasaCount = ['Inggris' => 0, 'Arab' => 0, 'Mandarin' => 0, 'Jepang' => 0];
@@ -51,9 +55,15 @@ class PresentasiController extends Controller
         $pendidikan = $pesertas->groupBy('pendidikan_terakhir')
             ->map->count()->sortDesc();
 
-        // ── Kemampuan Quran ──────────────────────────────
+        // ── Kemampuan Quran & Stat ───────────────────────
         $kemampuanQuran = $pesertas->whereNotNull('kemampuan_baca_quran')
             ->groupBy('kemampuan_baca_quran')->map->count();
+
+        $lancarCount = $pesertas->filter(function($p) {
+            $q = strtolower($p->kemampuan_baca_quran ?? '');
+            return str_contains($q, 'lancar') || str_contains($q, 'fasih');
+        })->count();
+        $lancarPersen = $total > 0 ? round(($lancarCount / $total) * 100, 1) : 0;
 
         // ── Hafalan ──────────────────────────────────────
         $hafalan = $pesertas->whereNotNull('hafalan_quran_1')
@@ -73,30 +83,37 @@ class PresentasiController extends Controller
             if (empty($p->keaktifan_muhammadiyah)) continue;
             $items = is_array($p->keaktifan_muhammadiyah)
                 ? $p->keaktifan_muhammadiyah
-                : json_decode($p->keaktifan_muhammadiyah, true) ?? [];
+                : (json_decode($p->keaktifan_muhammadiyah, true) ?? explode(',', $p->keaktifan_muhammadiyah));
             foreach ($items as $k) {
+                $kStr = trim($k);
                 foreach (array_keys($keaktifanCount) as $level) {
-                    if (str_contains($k, $level)) $keaktifanCount[$level]++;
+                    if (str_contains($kStr, $level)) $keaktifanCount[$level]++;
                 }
             }
         }
 
-        // ── Nilai Penilaian Akhir ────────────────────────
+        // ── Nilai Penilaian Akhir & Stat SAW ──────────────
         $penilaians = PenilaianAkhir::where('event_id', $event->id)
             ->whereIn('peserta_id', $pesertaIds)
             ->with('peserta')
             ->get();
 
-        $avgPretest  = $penilaians->avg('nilai_pretest') ?? 0;
-        $avgPosttest = $penilaians->avg('nilai_posttest') ?? 0;
-        $avgAfektif  = $penilaians->avg('nilai_afektif') ?? 0;
+        $avgPretest    = $penilaians->avg('nilai_pretest') ?? 0;
+        $avgPosttest   = $penilaians->avg('nilai_posttest') ?? 0;
+        $avgAfektif    = $penilaians->avg('nilai_afektif') ?? 0;
         $avgPsikomotor = $penilaians->avg('nilai_psikomotor') ?? 0;
         $avgKehadiran  = $penilaians->avg('nilai_kehadiran') ?? 0;
+
+        $peningkatanRataRata = round($avgPosttest - $avgPretest, 1);
+        $peningkatanTertinggi = $penilaians->map(function($p) {
+            return $p->nilai_posttest - $p->nilai_pretest;
+        })->max() ?? 0;
+        $avgSaw = round($penilaians->avg('skor_saw') ?? 0, 4);
 
         // ── Top 3 Peserta ────────────────────────────────
         $top3 = $penilaians->sortByDesc('skor_saw')->take(3)->values();
 
-        // ── Kehadiran Per Sesi ───────────────────────────
+        // ── Kehadiran Per Sesi & Stat Kehadiran ───────────
         $absensiPerSesi = Absensi::where('event_id', $event->id)
             ->with('sesi')
             ->get()
@@ -108,6 +125,10 @@ class PresentasiController extends Controller
                     'persen' => $total > 0 ? round(($group->unique('peserta_id')->count() / $total) * 100, 1) : 0,
                 ];
             })->values();
+
+        $bestSesi = $absensiPerSesi->sortByDesc('hadir')->first();
+        $bestSesiNama = $bestSesi ? $bestSesi['nama'] : '—';
+        $bestSesiHadir = $bestSesi ? $bestSesi['hadir'] : 0;
 
         // ── Predikat & Kelulusan ──────────────────────────
         $predikat = $penilaians->where('predikat', '!=', '')->groupBy('predikat')->map->count();
@@ -128,7 +149,10 @@ class PresentasiController extends Controller
             'kemampuanQuran', 'hafalan', 'aktivitasSholat', 'kajianAgama',
             'keaktifanCount', 'avgPretest', 'avgPosttest', 'avgAfektif',
             'avgPsikomotor', 'avgKehadiran', 'top3', 'absensiPerSesi',
-            'predikat', 'kelulusan', 'angket'
+            'predikat', 'kelulusan', 'angket',
+            'avgUmur', 'minUmur', 'maxUmur', 'lancarPersen',
+            'peningkatanRataRata', 'peningkatanTertinggi', 'avgSaw',
+            'bestSesiNama', 'bestSesiHadir'
         ));
     }
 }

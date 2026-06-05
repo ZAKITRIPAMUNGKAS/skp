@@ -56,11 +56,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('logs.index');
     Route::get('/participants', [ParticipantController::class, 'index'])->name('participants.index');
     Route::get('/participants/{peserta}', [ParticipantController::class, 'show'])->name('participants.show');
+    Route::get('/participants/{peserta}/edit', [ParticipantController::class, 'edit'])->name('participants.edit');
+    Route::put('/participants/{peserta}', [ParticipantController::class, 'update'])->name('participants.update');
+    Route::delete('/participants/{peserta}', [ParticipantController::class, 'destroyParticipant'])->name('participants.destroyParticipant');
     Route::get('/soal', [SoalController::class, 'index'])->name('soal.index');
 
     // CRUD Event
     Route::resource('events', EventController::class);
     Route::get('/events/{event}/report', [EventController::class, 'downloadReport'])->name('events.report');
+    Route::get('/events/{event}/winners-report', [EventController::class, 'downloadWinnersReport'])->name('events.winnersReport');
+    Route::get('/events/{event}/angket-report', [EventController::class, 'downloadAngketReport'])->name('events.angketReport');
     Route::get('/events/{event}/export-excel', [EventController::class, 'exportExcel'])->name('events.exportExcel');
     Route::get('/events/{event}/presentasi', [\App\Http\Controllers\Admin\PresentasiController::class, 'show'])->name('events.presentasi');
 

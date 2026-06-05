@@ -23,6 +23,11 @@
                 </a>
             @endif
 
+            <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-50 text-green-700 border border-green-200 text-[13px] font-semibold rounded-full hover:bg-green-100 transition-all shadow-sm" @click="$dispatch('open-modal-show-import')">
+                <svg class="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                Import Excel
+            </button>
+
             <button type="button" class="inline-flex items-center gap-2 px-4 py-2.5 bg-transparent border-2 border-dashed border-gray-300 text-gray-600 text-[13px] font-semibold rounded-full hover:border-gray-400 hover:bg-gray-50 transition-all" @click="$dispatch('open-modal-show-add-manual')">
                 <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah Manual
@@ -58,6 +63,7 @@
                 <tr class="border-b border-gray-100 bg-gray-50/50">
                     <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Peserta</th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Unit Kerja</th>
+                    <th class="text-center px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Kesediaan</th>
                     <th class="text-center px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">QR Code</th>
                     <th class="text-center px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Evaluasi</th>
                     <th class="text-right px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Aksi</th>
@@ -71,7 +77,7 @@
                             <div class="flex items-center gap-3">
                                 <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                                     @if($p->foto)
-                                        <img src="{{ asset('storage/' . $p->foto) }}" class="w-9 h-9 rounded-full object-cover" alt="">
+                                        <img src="{{ $p->foto_url }}" class="w-9 h-9 rounded-full object-cover" alt="">
                                     @else
                                         <span class="text-xs font-semibold text-primary">{{ strtoupper(substr($p->nama_lengkap, 0, 2)) }}</span>
                                     @endif
@@ -86,6 +92,28 @@
                             </div>
                         </td>
                         <td class="px-4 py-3 text-gray-500 text-sm">{{ $p->unit_kerja ?? '-' }}</td>
+                        <td class="px-4 py-3 text-center text-sm">
+                            @if($ep->konfirmasi_kesediaan === 'bersedia')
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+                                    Bersedia
+                                </span>
+                            @elseif($ep->konfirmasi_kesediaan === 'tidak_bersedia')
+                                <button type="button" 
+                                    @click="$dispatch('open-alasan-modal', { 
+                                        pesertaNama: '{{ addslashes($p->nama_lengkap) }}', 
+                                        eventNama: '{{ addslashes($event->nama_event) }}', 
+                                        alasan: '{{ addslashes($ep->alasan_tidak_hadir) }}' 
+                                    })"
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors shadow-sm cursor-pointer"
+                                    title="Klik untuk melihat alasan">
+                                    Tidak Hadir ⓘ
+                                </button>
+                            @else
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200">
+                                    Belum Konfirmasi
+                                </span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-center">
                             @if($ep->qr_code)
                                 <x-badge type="berlangsung">QR ✓</x-badge>
@@ -174,7 +202,7 @@
             {{-- Step 1: Download Template --}}
             <div class="bg-blue-50 rounded-xl p-4">
                 <h4 class="text-sm font-semibold text-blue-800 mb-2">Step 1 — Download Template</h4>
-                <p class="text-xs text-blue-600 mb-3">Download template Excel dengan kolom: nama_lengkap, email, no_hp, unit_kerja</p>
+                <p class="text-xs text-blue-600 mb-3">Download template Excel V2 dengan format kolom lengkap (Nama, NIK, Homebase, Kesediaan, dsb.)</p>
                 <a href="{{ route('admin.participants.template', $event) }}"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -183,7 +211,7 @@
             </div>
 
             {{-- Step 2: Upload File --}}
-            <form method="POST" action="{{ route('admin.participants.import', $event) }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('admin.participants.import', $event) }}" enctype="multipart/form-data" x-data="{ loading: false }" @submit="loading = true">
                 @csrf
                 <h4 class="text-sm font-semibold text-gray-800 mb-2">Step 2 — Upload File</h4>
                 <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center mb-4 hover:border-primary/40 transition-colors">
@@ -193,22 +221,31 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="text-sm font-medium text-gray-700 mb-2 block">Jika email duplikat:</label>
+                    <label class="text-sm font-medium text-gray-700 mb-2 block">Jika NIK/Email duplikat:</label>
                     <div class="flex items-center gap-4">
                         <label class="flex items-center gap-2 text-sm text-gray-600">
-                            <input type="radio" name="duplicate_action" value="skip" checked class="text-primary focus:ring-primary">
-                            Lewati duplikat
+                            <input type="radio" name="duplicate_action" value="update" checked class="text-primary focus:ring-primary">
+                            Update data profil (Rekomendasi)
                         </label>
                         <label class="flex items-center gap-2 text-sm text-gray-600">
-                            <input type="radio" name="duplicate_action" value="update" class="text-primary focus:ring-primary">
-                            Update data
+                            <input type="radio" name="duplicate_action" value="skip" class="text-primary focus:ring-primary">
+                            Lewati duplikat
                         </label>
                     </div>
                 </div>
 
-                <x-button type="submit" variant="primary" class="w-full">
-                    <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                    Import Peserta
+                <x-button type="submit" variant="primary" class="w-full relative flex justify-center items-center" ::disabled="loading">
+                    <span x-show="!loading" class="flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Import Peserta
+                    </span>
+                    <span x-show="loading" class="flex items-center" x-cloak>
+                        <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Mengimport data, mohon tunggu...
+                    </span>
                 </x-button>
             </form>
         </div>
@@ -269,5 +306,79 @@
             </div>
         </form>
     </x-modal>
+
+    {{-- Dynamic Modal for Absence Reason --}}
+    <div x-data="{ 
+            showModal: false, 
+            pesertaNama: '', 
+            eventNama: '', 
+            alasan: '' 
+         }"
+         x-on:open-alasan-modal.window="
+            pesertaNama = $event.detail.pesertaNama;
+            eventNama = $event.detail.eventNama;
+            alasan = $event.detail.alasan;
+            showModal = true;
+         "
+         x-show="showModal"
+         x-cloak
+         class="fixed inset-0 z-[80] overflow-y-auto"
+         style="display: none;">
+         
+         <div x-show="showModal"
+              x-transition:enter="transition ease-out duration-300"
+              x-transition:enter-start="opacity-0"
+              x-transition:enter-end="opacity-100"
+              x-transition:leave="transition ease-in duration-200"
+              x-transition:leave-start="opacity-100"
+              x-transition:leave-end="opacity-0"
+              @click="showModal = false"
+              class="fixed inset-0 bg-black/40 backdrop-blur-sm">
+         </div>
+
+         <div class="flex min-h-full items-center justify-center p-4">
+             <div x-show="showModal"
+                  x-transition:enter="transition ease-out duration-300"
+                  x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                  x-transition:leave="transition ease-in duration-200"
+                  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  @click.outside="showModal = false"
+                  class="relative w-full sm:max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
+                  
+                  <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-red-50/50">
+                      <h3 class="text-lg font-semibold text-red-800 font-heading">Alasan Tidak Hadir</h3>
+                      <button @click="showModal = false"
+                              class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors text-gray-400 hover:text-gray-600">
+                          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                      </button>
+                  </div>
+                  
+                  <div class="px-6 py-5 space-y-4">
+                      <div>
+                          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Nama Peserta</label>
+                          <p class="text-sm font-semibold text-gray-800" x-text="pesertaNama"></p>
+                      </div>
+                      <div>
+                          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Event</label>
+                          <p class="text-sm font-medium text-gray-700" x-text="eventNama"></p>
+                      </div>
+                      <div>
+                          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Alasan Detail</label>
+                          <div class="mt-1 p-4 bg-gray-50 border border-gray-100 rounded-xl">
+                              <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap" x-text="alasan || 'Tidak ada alasan detail ditulis.'"></p>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-end">
+                      <x-button type="button" variant="ghost" @click="showModal = false">Tutup</x-button>
+                  </div>
+             </div>
+         </div>
+    </div>
 
 </div>

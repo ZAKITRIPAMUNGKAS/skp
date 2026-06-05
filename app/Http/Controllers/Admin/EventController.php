@@ -17,7 +17,7 @@ class EventController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Event::withCount('eventPeserta')
+        $query = Event::withCount('eventPesertaAktif')
             ->latest();
 
         if ($request->filled('search')) {
@@ -64,10 +64,10 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        $event->loadCount('eventPeserta', 'sesi');
+        $event->loadCount('eventPesertaAktif', 'sesi');
 
         // Statistik
-        $totalPeserta = $event->event_peserta_count;
+        $totalPeserta = $event->event_peserta_aktif_count;
 
         $completedPretest = JawabanPeserta::where('event_id', $event->id)
             ->distinct('peserta_id')
@@ -77,8 +77,9 @@ class EventController extends Controller
             ->distinct('peserta_id')
             ->count('peserta_id');
 
-        // Peserta dengan progres evaluasi
+        // Peserta dengan progres evaluasi (hanya yang aktif/bersedia)
         $participants = EventPeserta::where('event_id', $event->id)
+            ->where('status_aktif', true)
             ->with(['peserta'])
             ->paginate(50);
 
@@ -129,6 +130,9 @@ class EventController extends Controller
     public function downloadReport(Event $event)
     {
         $penilaian = PenilaianAkhir::where('event_id', $event->id)
+            ->whereHas('peserta.eventPeserta', function ($q) use ($event) {
+                $q->where('event_id', $event->id)->where('status_aktif', true);
+            })
             ->with('peserta')
             ->orderBy('ranking', 'asc') // Peringkat 1 = terbaik
             ->get();
@@ -137,6 +141,41 @@ class EventController extends Controller
             ->setPaper('a4', 'landscape');
 
         return $pdf->stream('Laporan_Hasil_Baitul_Arqam_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
+    }
+
+    public function downloadWinnersReport(Event $event)
+    {
+        $winners = PenilaianAkhir::where('event_id', $event->id)
+            ->whereHas('peserta.eventPeserta', function ($q) use ($event) {
+                $q->where('event_id', $event->id)->where('status_aktif', true)->where('konfirmasi_kesediaan', 'bersedia');
+            })
+            ->with('peserta')
+            ->orderBy('ranking', 'asc')
+            ->take(3)
+            ->get();
+
+        $pdf = Pdf::loadView('admin.events.winners-pdf', compact('event', 'winners'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('Piagam_3_Besar_Terbaik_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
+    }
+
+    public function downloadAngketReport(Event $event)
+    {
+        $participants = EventPeserta::where('event_id', $event->id)
+            ->where('status_aktif', true)
+            ->where('konfirmasi_kesediaan', 'bersedia')
+            ->with(['peserta'])
+            ->get();
+
+        $angketItems = \App\Models\AngketItem::where('event_id', $event->id)->orderBy('urutan')->get();
+        $jawabanAngket = \App\Models\AngketJawaban::where('event_id', $event->id)->get();
+        $komentars = \App\Models\AngketKomentar::where('event_id', $event->id)->get();
+
+        $pdf = Pdf::loadView('admin.events.angket-report-pdf', compact('event', 'participants', 'angketItems', 'jawabanAngket', 'komentars'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->stream('Laporan_Angket_Per_Peserta_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
     }
 
     public function exportExcel(Event $event)

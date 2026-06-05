@@ -73,8 +73,11 @@ class EventRegistrationController extends Controller
         ]);
 
         // 1. Tangani pembuatan User (jika email disediakan) atau cari yang sudah ada
-        $username = $this->generateUsername($request->nama_lengkap);
-        $email = $request->email ?? ($username . '@arqam.test');
+        $email = $request->email;
+        $username = $this->generateUsername($request->nama_lengkap, $email);
+        if (empty($email)) {
+            $email = $username . '@arqam.test';
+        }
         $password = config('app.default_participant_password', 'peserta123');
 
         $user = User::where('email', $email)->orWhere('username', $username)->first();
@@ -184,17 +187,19 @@ class EventRegistrationController extends Controller
         return view('registration.success', compact('event', 'username', 'password'));
     }
 
-    private function generateUsername($name)
+    private function generateUsername($name, $email = null)
     {
-        $clean = preg_replace('/[^a-zA-Z0-9]/', '', strtolower($name));
-        $initials = '';
-        foreach (explode(' ', $name) as $word) {
-            $initials .= strtolower(substr($word, 0, 1));
+        if (!empty($email) && strpos($email, '@') !== false && !str_ends_with($email, '@arqam.test')) {
+            $base = strstr($email, '@', true);
+            $base = preg_replace('/[^a-zA-Z0-9._-]/', '', $base);
+        } else {
+            $base = preg_replace('/[^a-zA-Z0-9]/', '', strtolower($name));
+            if (empty($base)) {
+                $base = 'peserta';
+            }
         }
         
-        $username = $initials;
-        if (strlen($username) < 2) $username = substr($clean, 0, 5);
-        
+        $username = $base;
         $count = 0;
         $original = $username;
         while (User::where('username', $username)->exists()) {

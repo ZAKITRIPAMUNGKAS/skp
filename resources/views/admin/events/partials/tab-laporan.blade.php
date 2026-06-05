@@ -15,7 +15,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-bold text-blue-900 group-hover:text-blue-700 transition-colors flex items-center gap-2">
-                        🎯 Presentasi Analisis <span class="bg-yellow-400 text-blue-900 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide">BARU</span>
+                        🎯 Presentasi Analisis </span>
                     </p>
                     <p class="text-xs text-gray-500 mt-1">Tampilan slideshow interaktif: demografi, Al-Qur'an, aktivitas, kehadiran, nilai & peserta terbaik. Tekan → atau Spasi untuk navigasi.</p>
                 </div>
@@ -36,28 +36,29 @@
         </a>
 
         {{-- Ranking Print --}}
-        <div @click="window.print()" class="bg-white rounded-xl border border-gray-100 hover:shadow-md transition-all p-5 group cursor-pointer block">
+        <a href="{{ route('admin.events.winnersReport', $event) }}" target="_blank"
+           class="bg-white rounded-xl border border-gray-100 hover:shadow-md transition-all p-5 group block">
             <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">Cetak Halaman Ranking</p>
-                    <p class="text-xs text-gray-500 mt-1">Cetak tabel ranking langsung dari browser (Ctrl+P).</p>
+                    <p class="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">Cetak Piagam 3 Besar</p>
+                    <p class="text-xs text-gray-500 mt-1">Cetak piagam penghargaan formal untuk peserta terbaik peringkat 1, 2, dan 3.</p>
                 </div>
             </div>
-        </div>
+        </a>
 
         {{-- Angket Report --}}
-        <a href="{{ route('admin.events.show', $event) }}?export=angket" target="_blank"
+        <a href="{{ route('admin.events.angketReport', $event) }}" target="_blank"
            class="bg-white rounded-xl border border-gray-100 hover:shadow-md transition-all p-5 group block">
             <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">Laporan Angket</p>
-                    <p class="text-xs text-gray-500 mt-1">Rekap angket penyelenggaraan: distribusi jawaban, skor rata-rata, komentar.</p>
+                    <p class="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">Laporan Angket Peserta</p>
+                    <p class="text-xs text-gray-500 mt-1">PDF Laporan Kuesioner per-peserta: tanggapan item evaluasi, saran & masukan tertulis.</p>
                 </div>
             </div>
         </a>

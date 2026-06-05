@@ -25,7 +25,7 @@
 
     @if($activeEvent)
         {{-- Running Event Card --}}
-        <div class="bg-gradient-to-r from-primary to-primary-light rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div class="bg-gradient-to-r from-primary to-secondary rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
             <div class="absolute right-0 top-0 -mt-10 -mr-10 opacity-10">
                 <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 3.83L19.17 20H4.83L12 5.83z"/></svg>
             </div>
@@ -52,7 +52,7 @@
 
         {{-- 4 Metrics Widgets --}}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <x-card class="!p-5 border-l-4 border-l-blue-500">
+            <x-card hover="true" class="!p-5 border-l-4 border-l-blue-500">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Peserta</p>
@@ -64,7 +64,7 @@
                 </div>
             </x-card>
             
-            <x-card class="!p-5 border-l-4 border-l-yellow-500">
+            <x-card hover="true" class="!p-5 border-l-4 border-l-yellow-500">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rata-rata Pretest</p>
@@ -76,7 +76,7 @@
                 </div>
             </x-card>
 
-            <x-card class="!p-5 border-l-4 border-l-green-500">
+            <x-card hover="true" class="!p-5 border-l-4 border-l-green-500">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rata-rata Posttest</p>
@@ -88,7 +88,7 @@
                 </div>
             </x-card>
 
-            <x-card class="!p-5 border-l-4 border-l-primary">
+            <x-card hover="true" class="!p-5 border-l-4 border-l-primary">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rata-rata Kehadiran</p>

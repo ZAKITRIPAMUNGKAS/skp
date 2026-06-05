@@ -86,7 +86,12 @@ class AhpSawController extends Controller
 
         // Periksa kelengkapan
         $incomplete = [];
-        $penilaian = PenilaianAkhir::where('event_id', $event->id)->with('peserta')->get();
+        $penilaian = PenilaianAkhir::where('event_id', $event->id)
+            ->whereHas('peserta.eventPeserta', function ($q) use ($event) {
+                $q->where('event_id', $event->id)->where('status_aktif', true);
+            })
+            ->with('peserta')
+            ->get();
         foreach ($penilaian as $p) {
             $missing = [];
             if ($p->nilai_pretest == 0) $missing[] = 'C1 (Pretest)';

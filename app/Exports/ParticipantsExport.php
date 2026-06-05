@@ -24,6 +24,7 @@ class ParticipantsExport implements FromCollection, WithHeadings, WithMapping, S
     {
         return EventPeserta::with(['peserta', 'peserta.user'])
             ->where('event_id', $this->event->id)
+            ->where('status_aktif', true)
             ->get();
     }
 

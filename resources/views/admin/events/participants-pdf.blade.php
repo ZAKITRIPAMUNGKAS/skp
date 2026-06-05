@@ -1,13 +1,25 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>Data Peserta – {{ $event->nama_event }}</title>
+    <title>Buku Data Peserta – {{ $event->nama_event }}</title>
     <style>
+        /* ========================================================
+           PAGE SETUP & VARIABLES (Murni CSS untuk DomPDF)
+           ======================================================== */
         @page {
-            margin: 10mm 12mm 12mm 12mm;
-            size: a4 landscape;
+            size: A4 portrait;
+            margin: 30mm 15mm 15mm 15mm; /* Ditambah margin atas ke 30mm agar kop tidak mepet */
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 8.2pt;
+            color: #1a1a1a;
+            line-height: 1.35;
+            background: #ffffff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         * {
@@ -16,396 +28,545 @@
             padding: 0;
         }
 
-        body {
-            font-family: 'DejaVu Sans', sans-serif;
-            font-size: 8px;
-            color: #334155;
-            background: #fff;
-            line-height: 1.3;
+        /* ========================================================
+           PAGE WRAPPER
+           ======================================================== */
+        .page {
+            page-break-after: always;
+            position: relative;
+            height: 250mm; /* Menentukan tinggi relatif halaman agar footer-fixed bisa diposisikan absolute di paling bawah */
         }
 
-        /* ══════════════════════════════════════════
-           HEADER (KOP SURAT)
-        ══════════════════════════════════════════ */
-        .header-container {
-            width: 100%;
-            margin-bottom: 15px;
-            border-bottom: 2.5px double #1A6D9B;
+        /* ========================================================
+           KOP SURAT RESMI (Tabel Murni) - Lebar 98% mencegah overflow border
+           ======================================================== */
+        .kop-table {
+            width: 98%;
+            border-collapse: collapse;
+            border-bottom: 4px solid #008fe2; /* Hijau gelap */
+            margin: 0 auto 15px auto;
+        }
+
+        .kop-table td {
+            vertical-align: middle;
             padding-bottom: 12px;
         }
 
-        .header-table {
-            width: 100%;
-            border-collapse: collapse;
+        .logo-img {
+            height: 48px;
+            width: auto; /* Mencegah logo digepengin di DomPDF */
+            max-width: 150px;
         }
 
-        .header-logo-text {
-            width: 75%;
-            vertical-align: bottom;
+        .judul-instansi-td {
+            padding-left: 15px;
         }
 
-        .header-mascot {
-            width: 25%;
-            text-align: right;
-            vertical-align: bottom;
-        }
-
-        .org-label {
-            font-size: 8.5px;
-            font-weight: bold;
-            color: #64748b;
+        .judul-instansi-td h4 {
+            font-size: 9px;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-bottom: 3px;
+            letter-spacing: 1px;
+            color: #555;
+            margin-bottom: 2px;
+            font-weight: normal;
         }
 
-        .main-title {
+        .judul-instansi-td h1 {
             font-size: 22px;
             font-weight: 800;
-            color: #1A6D9B;
             text-transform: uppercase;
-            letter-spacing: -0.5px;
+            letter-spacing: 0.5px;
+            margin-bottom: 1px;
+        }
+
+        .tag-event-container {
+            margin-top: 1px;
+        }
+
+        .tag-event {
+            font-size: 10px;
+            font-weight: bold;
+            color: #008fe2;
+            background-color: #e8f5e9;
+            padding: 1px 6px;
+            border: 1px solid #008fe2;
+            display: inline-block;
+        }
+
+        .kontrol-dokumen-td {
+            width: 110px;
+            text-align: right;
+        }
+
+        .kontrol-dokumen {
+            border: 2px solid #1a1a1a;
+            padding: 5px 12px;
+            background-color: #f2f4f5; /* abu-kertas */
+            text-align: center;
+            display: inline-block;
+        }
+
+        .kontrol-dokumen .nomor {
+            font-size: 24px;
+            font-weight: bold;
             line-height: 1;
         }
 
-        .sub-title {
-            font-size: 11.5px;
-            font-weight: 600;
-            color: #D4A017;
-            margin-top: 4px;
-        }
-
-        .header-info {
-            margin-top: 10px;
-        }
-
-        .info-pill {
-            display: inline-block;
-            padding: 2.5px 10px;
-            border-radius: 4px;
-            font-size: 7px;
-            font-weight: bold;
-            margin-right: 5px;
+        .kontrol-dokumen .teks {
+            font-size: 8px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            color: #1a1a1a;
         }
 
-        .pill-blue { background: #E0F2FE; color: #0369A1; border: 0.5px solid #BAE6FD; }
-        .pill-gold { background: #FEFCE8; color: #854D0E; border: 0.5px solid #FEF08A; }
-
-        .mascot-img {
-            height: 60px;
-            margin-bottom: -5px;
+        /* ========================================================
+           KOTAK IDENTITAS UTAMA (Tabel Murni) - Lebar 98%
+           ======================================================== */
+        .box-peserta-table {
+            width: 98%;
+            border-collapse: collapse;
+            border: 2px solid #1a1a1a;
+            margin: 0 auto 18px auto;
+            background-color: #fff;
         }
 
-        /* ══════════════════════════════════════════
-           DATA TABLE
-        ══════════════════════════════════════════ */
-        .data-table {
+        .info-utama-td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+        .info-utama-td h2 {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            color: #1a1a1a;
+        }
+
+        .info-utama-td p {
+            font-size: 11.5px;
+            color: #333;
+            margin: 1px 0;
+        }
+
+        .info-utama-td p strong {
+            display: inline-block;
+            width: 80px;
+        }
+
+        .status-box-td {
+            color: white;
+            padding: 0 15px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+            border-left: 2px solid #1a1a1a;
+            width: 140px;
+            vertical-align: middle;
+        }
+
+        /* ========================================================
+           LAYOUT DUA KOLOM (Tabel Murni) - Lebar 98% dengan margin auto
+           ======================================================== */
+        .layout-dua-kolom-table {
+            width: 98%;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        /* Menggunakan proporsi lebar 48% agar terhindar dari overflow akibat padding/border */
+        .kolom-kiri {
+            width: 48%;
+            padding-right: 8px;
+            vertical-align: top;
+        }
+
+        .kolom-kanan {
+            width: 48%;
+            padding-left: 8px;
+            vertical-align: top;
+        }
+
+        /* ========================================================
+           DESAIN TABEL FORMULIR KORPORAT
+           ======================================================== */
+        .tabel-form {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
+            margin-bottom: 15px;
+            border: 1px solid #b0bec5; /* garis-tabel */
+            table-layout: fixed; /* Memaksa ukuran sel tetap patuh */
         }
 
-        .data-table thead {
-            display: table-header-group;
-        }
-
-        .data-table thead th {
+        /* Header Blok Warna */
+        .tabel-form th.header-blok {
+            background-color: #b0bec5; /* garis-tabel */
+            color: #000;
             text-align: left;
-            font-size: 7px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #64748b;
-            padding: 10px 8px;
-            border-bottom: 1.5px solid #1A6D9B;
-            background: #F8FAFC;
-        }
-
-        /* Grid lines for ultra-tidy look */
-        .data-table th, .data-table td {
-            border-right: 0.1mm solid #F1F5F9;
-        }
-        .data-table th:last-child, .data-table td:last-child {
-            border-right: none;
-        }
-
-        .w-no { width: 30px; text-align: center !important; }
-        .w-bio { width: 235px; }
-        .w-instansi { width: 205px; }
-        .w-extra { width: auto; }
-
-        .data-table tr {
-            page-break-inside: avoid;
-        }
-
-        .data-table tbody td {
-            padding: 12px 8px;
-            vertical-align: top;
-            border-bottom: 0.5px solid #F1F5F9;
-        }
-
-        .bg-stripe { background: #FCFDFF; }
-
-        .no-val {
+            padding: 5px 8px;
             font-size: 9.5px;
-            font-weight: bold;
-            color: #94A3B8;
-            text-align: center;
-        }
-
-        /* ══════════════════════════════════════════
-           CONTENT BLOCKS
-        ══════════════════════════════════════════ */
-        .section-tag {
-            display: inline-block;
-            font-size: 6px;
-            font-weight: 800;
-            color: #1A6D9B;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            background: #F0F9FF;
-            padding: 1px 4px;
-            border-radius: 2px;
-            margin-bottom: 6px;
-            border: 0.2px solid #BAE6FD;
+            letter-spacing: 0.5px;
+            border: 1px solid #b0bec5;
+            border-bottom: 2px solid #1a1a1a;
         }
 
-        .kv-group { width: 100%; }
-        .kv-row { width: 100%; margin-bottom: 2.5px; }
-        
-        /* Stable Inline-Block columns for DomPDF */
-        .kv-key { 
-            display: inline-block; 
-            width: 65px; 
-            font-size: 7px; 
-            color: #94A3B8; 
-            font-weight: 600;
-            vertical-align: top;
-        }
-        .kv-val { 
-            display: inline-block; 
-            width: 155px; 
-            font-size: 8.5px; 
-            color: #1e293b; 
-            vertical-align: top;
-        }
-        .kv-val.bold { font-weight: bold; color: #1A6D9B; }
-
-        .mono-box {
-            font-family: 'Courier New', monospace;
-            font-size: 8px;
-            background: #F8FAFC;
-            padding: 0 3px;
-            border: 0.5px solid #E2E8F0;
-            border-radius: 2px;
-            color: #475569;
+        .tabel-form td {
+            border: 1px solid #b0bec5;
+            padding: 6px 8px;
+            font-size: 11px;
+            vertical-align: middle;
+            line-height: 1.35;
+            word-wrap: break-word;      /* Mencegah teks panjang melebarkan tabel */
+            overflow-wrap: break-word;
         }
 
-        .edu-list { font-size: 7.5px; color: #1e293b; margin-top: 4px; }
-        .edu-item { margin-bottom: 3px; border-left: 2px solid #1A6D9B; padding-left: 6px; }
-        .edu-lvl { font-size: 5.5px; font-weight: 800; color: #1A6D9B; text-transform: uppercase; display: block; margin-bottom: 1px; }
-        .edu-val { font-size: 7.5px; color: #334155; }
-
-        /* Religious Grid (Stable Layout) */
-        .rel-grid { width: 100%; }
-        .rel-item {
-            display: inline-block;
-            width: 48%;
-            vertical-align: top;
-            margin-bottom: 6px;
-            padding-right: 2%;
+        /* Kolom Label dengan Shading */
+        .tabel-form td.label {
+            background-color: #f2f4f5; /* abu-kertas */
+            width: 38%;
+            font-size: 9px;
+            font-weight: bold;
+            color: #555;
+            text-transform: uppercase;
         }
-        .rel-label { font-size: 5.8px; font-weight: 800; color: #94A3B8; text-transform: uppercase; display: block; margin-bottom: 1px; }
-        .rel-text { font-size: 7.8px; color: #334155; display: block; }
 
-        /* Harapan Box */
-        .harapan-box {
-            margin-top: 8px;
-            padding: 8px;
-            background: #F8FAFC;
-            border: 0.5px solid #E2E8F0;
-            border-radius: 4px;
+        /* Kolom Isian Data */
+        .tabel-form td.isian {
+            width: 62%;
+            background-color: #fff;
+            color: #000;
         }
-        .harapan-label { font-size: 5.8px; font-weight: 800; color: #0369A1; text-transform: uppercase; margin-bottom: 3px; }
-        .harapan-content { font-size: 7.8px; color: #475569; font-style: italic; line-height: 1.4; }
 
-        .meta-stamp { font-size: 6px; color: #cbd5e1; margin-top: 8px; font-style: italic; }
+        .font-tebal { font-weight: bold; }
+        .teks-merah { color: #a02c0b; font-weight: bold; }
+        .teks-hijau { color: #1e7a52; font-weight: bold; }
 
-        .footer {
-            margin-top: 20px;
-            padding-top: 8px;
-            border-top: 1px solid #F1F5F9;
+        /* ========================================================
+           ALASAN TIDAK HADIR
+           ======================================================== */
+        .alasan-box {
+            margin-top: 5px;
+            padding: 6px 10px;
+            background-color: #fff;
+            border: 1px dashed #a02c0b;
+            font-size: 10px;
+            color: #a02c0b;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
-        .footer-table { width: 100%; }
-        .footer-cell { font-size: 7px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; }
 
+        /* ========================================================
+           MASKOT ARQA
+           ======================================================== */
+        .mascot-container {
+            text-align: center;
+            margin-top: 80px;
+            margin-bottom: 80px;
+            width: 100%;
+        }
+
+        .mascot-img {
+            height: 300px;
+            width: auto; /* Memastikan rasio gambar tetap proporsional */
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        /* ========================================================
+           FOOTER 
+           ======================================================== */
+
+        .footer-line {
+            height: 3px;
+            background: #008fe2;
+            margin-left: -15mm;
+            margin-right: -15mm;
+        }
+
+        .footer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .footer-text {
+            font-size: 8pt;
+            color: #555550;
+            line-height: 1.3;
+            padding-left: 15mm;
+            padding-right: 15mm;
+            padding-top: 4px;
+        }
+
+        .footer-text strong {
+            color: #008fe2;
+        }
+
+        .footer-nomor {
+            text-align: right;
+            font-size: 8pt;
+            font-weight: bold;
+            color: #008fe2;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-left: 15mm;
+            padding-right: 15mm;
+            padding-top: 4px;
+        }
     </style>
 </head>
-
 <body>
 
-    {{-- HEADER --}}
-    <div class="header-container">
-        <table class="header-table">
-            <tr>
-                <td class="header-logo-text">
-                    <div class="org-label">Majelis Pendidikan Kader &mdash; PP Muhammadiyah</div>
-                    <div class="main-title">Laporan Data Pendaftaran</div>
-                    <div class="sub-title">{{ $event->nama_event }}</div>
-                    <div class="header-info">
-                        <span class="info-pill pill-blue">{{ $participants->count() }} TOTAL PESERTA</span>
-                        <span class="info-pill pill-gold">DICETAK: {{ now()->format('d F Y, H:i') }}</span>
-                    </div>
-                </td>
-                <td class="header-mascot">
-                    <img src="{{ public_path('images/arka/arka_analisis.png') }}" class="mascot-img">
-                </td>
-            </tr>
-        </table>
-    </div>
+@forelse($participants as $i => $ep)
+@php
+    $p        = $ep->peserta;
+    $isOk     = $ep->konfirmasi_kesediaan === 'bersedia';
+    $isNo     = $ep->konfirmasi_kesediaan === 'tidak_bersedia';
+    $noUrut   = $i + 1;
+    $totalAll = $participants->count();
 
-    {{-- DATA TABLE --}}
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th class="w-no">No</th>
-                <th class="w-bio">Profil & Kontak Peserta</th>
-                <th class="w-instansi">Instansi & Alamat Domisili</th>
-                <th class="w-extra">Keagamaan & Harapan</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($participants as $i => $ep)
-                @php $p = $ep->peserta; @endphp
-                <tr class="{{ $i % 2 == 1 ? 'bg-stripe' : '' }}">
-                    
-                    <td class="no-val">{{ $i + 1 }}</td>
+    if ($isOk) {
+        $colorTheme = '#114B32'; /* hijau-gelap */
+        $label      = "BERSEDIA\nHADIR";
+    } elseif ($isNo) {
+        $colorTheme = '#a02c0b'; /* merah-bata */
+        $label      = "TIDAK\nBERSEDIA";
+    } else {
+        $colorTheme = '#555555'; /* abu-abu */
+        $label      = "BELUM\nKONFIRMASI";
+    }
 
-                    {{-- BIO --}}
-                    <td>
-                        <span class="section-tag">Identitas Peserta</span>
-                        <div class="kv-group">
-                            <div class="kv-row">
-                                <div class="kv-key">Nama</div>
-                                <div class="kv-val bold">{{ $p->nama_lengkap }}</div>
-                            </div>
-                            <div class="kv-row">
-                                <div class="kv-key">NIK/NBM</div>
-                                <div class="kv-val">{{ $p->nik ?: '—' }} / {{ $p->nbm ?: '—' }}</div>
-                            </div>
-                            <div class="kv-row">
-                                <div class="kv-key">Gender/TTL</div>
-                                <div class="kv-val">{{ $p->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}, {{ $p->tempat_lahir ?: '—' }} {{ $p->tanggal_lahir ? $p->tanggal_lahir->format('d/m/Y') : '' }}</div>
-                            </div>
-                            <div class="kv-row">
-                                <div class="kv-key">Kontak</div>
-                                <div class="kv-val">{{ $p->no_hp ?: '—' }}</div>
-                            </div>
-                            <div class="kv-row">
-                                <div class="kv-key">Email</div>
-                                <div class="kv-val">{{ $p->email }}</div>
-                            </div>
-                            <div class="kv-row">
-                                <div class="kv-key">Username</div>
-                                <div class="kv-val"><span class="mono-box">{{ $p->user->username ?? '—' }}</span></div>
-                            </div>
-                        </div>
-                    </td>
+    // Identifikasi Peringatan Medis
+    $normal = ['tidak', 'tidak ada', '-', 'insyaallah aman', 'aman', 'insya allah aman', 'normal'];
+    $alertMakan = $p->catatan_makanan && !in_array(strtolower(trim($p->catatan_makanan)), $normal);
+    $alertSehat = $p->catatan_kesehatan && !in_array(strtolower(trim($p->catatan_kesehatan)), $normal);
+    $alertDuduk = str_contains(strtolower($p->aktivitas_duduk ?? ''), 'kesulitan');
+    $alertSholat= str_contains(strtolower($p->aktivitas_sholat ?? ''), 'kesulitan');
+    $alertTangga= str_contains(strtolower($p->aktivitas_tangga ?? ''), 'kesulitan');
+@endphp
 
-                    {{-- WORK --}}
-                    <td>
-                        <span class="section-tag">Unit Kerja / Instansi</span>
-                        <div class="kv-group">
-                            <div class="kv-row">
-                                <div class="kv-key">Instansi</div>
-                                <div class="kv-val bold">{{ $p->unit_kerja ?: '—' }}</div>
-                            </div>
-                            <div class="kv-row">
-                                <div class="kv-key">Jabatan</div>
-                                <div class="kv-val">{{ $p->jabatan_aum ?: '—' }}</div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top:8px;">
-                            <span class="section-tag">Riwayat Pendidikan (Terakhir: {{ $p->pendidikan_terakhir ?: '—' }})</span>
-                            <div class="edu-list">
-                                <div class="edu-item">
-                                    <span class="edu-lvl">SD</span>
-                                    <span class="edu-val">{{ $p->pendidikan_sd ?: '—' }}</span>
-                                </div>
-                                <div class="edu-item">
-                                    <span class="edu-lvl">SMP / MTs</span>
-                                    <span class="edu-val">{{ $p->pendidikan_smp ?: '—' }}</span>
-                                </div>
-                                <div class="edu-item">
-                                    <span class="edu-lvl">SMA / SMK / MA</span>
-                                    <span class="edu-val">{{ $p->pendidikan_sma ?: '—' }}</span>
-                                </div>
-                                <div class="edu-item">
-                                    <span class="edu-lvl">S1 (Sarjana)</span>
-                                    <span class="edu-val">{{ $p->pendidikan_s1 ?: '—' }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-top:8px;">
-                            <span class="section-tag">Alamat Domisili</span>
-                            <div class="kv-val" style="width: 100%; margin-left: 0; font-size: 8px;">
-                                {{ $p->alamat_rumah ?: '—' }}<br>
-                                <span style="font-size: 7px; color: #94A3B8;">{{ $p->desa_kelurahan }}, {{ $p->kecamatan }}, {{ $p->kabupaten }}</span>
-                            </div>
-                        </div>
-                    </td>
-
-                    {{-- RELIGIOUS --}}
-                    <td>
-                        <span class="section-tag">Aktivitas Keagamaan</span>
-                        <div class="rel-grid">
-                            <div class="rel-item">
-                                <span class="rel-label">Baca Quran</span>
-                                <span class="rel-text">{{ $p->kemampuan_baca_quran ?: '—' }}</span>
-                            </div>
-                            <div class="rel-item">
-                                <span class="rel-label">Hafalan</span>
-                                <span class="rel-text">{{ $p->hafalan_quran_1 ?: '—' }}</span>
-                            </div>
-                            <div class="rel-item">
-                                <span class="rel-label">Sholat Masjid</span>
-                                <span class="rel-text">{{ $p->aktivitas_sholat_masjid ?: '—' }}</span>
-                            </div>
-                            <div class="rel-item">
-                                <span class="rel-label">Kajian</span>
-                                <span class="rel-text">{{ $p->aktivitas_kajian_agama ?: '—' }}</span>
-                            </div>
-                        </div>
-
-                        <div class="harapan-box">
-                            <div class="harapan-label">Harapan Mengikuti</div>
-                            <div class="harapan-content">
-                                @if($p->harapan_mengikuti_ba)
-                                    "{{ Str::limit($p->harapan_mengikuti_ba, 160) }}"
-                                @else
-                                    <span style="color: #cbd5e1;">Tidak ada data.</span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="meta-stamp">Terdaftar: {{ $ep->created_at->format('d/m/Y H:i') }}</div>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
+<div class="page">
+    
+    <!-- HEADER DOKUMEN -->
+    <table class="kop-table">
+        <tr>
+            <td style="width: 50px;">
+                <img src="{{ public_path('logo.webp') }}" class="logo-img" alt="Logo ArqamApp">
+            </td>
+            <td class="judul-instansi-td">
+                <h4 style="margin-top: 20px; margin-bottom: 2px;">
+    Majelis Pendidikan Kader PP Muhammadiyah
+</h4>
+                <h1>Formulir Biodata Peserta</h1>
+                <div class="tag-event-container">
+                    <span class="tag-event">{{ $event->nama_event }}</span>
+                </div>
+            </td>
+            <td class="kontrol-dokumen-td">
+                <div class="kontrol-dokumen">
+                    <div class="nomor">{{ str_pad($noUrut, 2, '0', STR_PAD_LEFT) }}</div>
+                    <div class="teks">Halaman {{ $noUrut }} / {{ $totalAll }}</div>
+                </div>
+            </td>
+        </tr>
     </table>
 
-    <div class="footer">
+    <!-- KOTAK IDENTITAS UTAMA -->
+    <table class="box-peserta-table">
+        <tr>
+            <td class="info-utama-td">
+                <h2>{{ $p->nama_lengkap }}</h2>
+                <p><strong>NIK</strong> : {{ $p->nik ?: '—' }}</p>
+                <p><strong>WHATSAPP</strong> : {{ $p->no_hp ?: '—' }}</p>
+            </td>
+            <td class="status-box-td" style="background-color: {{ $colorTheme }};">
+                {!! nl2br(e($label)) !!}
+            </td>
+        </tr>
+    </table>
+
+    <!-- LAYOUT DUA KOLOM -->
+    <table class="layout-dua-kolom-table">
+        <tr>
+            <!-- KOLOM KIRI -->
+            <td class="kolom-kiri">
+                
+                <table class="tabel-form">
+                    <tr>
+                        <th colspan="2" class="header-blok">Identitas Pribadi</th>
+                    </tr>
+                    <tr>
+                        <td class="label">Nama Panggilan</td>
+                        <td class="isian font-tebal">{{ $p->nama_panggilan ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Jenis Kelamin</td>
+                        <td class="isian font-tebal">
+                            {{ $p->jenis_kelamin == 'L' ? 'Laki-laki' : ($p->jenis_kelamin == 'P' ? 'Perempuan' : '—') }}{{ $p->umur ? ', ' . $p->umur . ' tahun' : '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Email</td>
+                        <td class="isian">{{ $p->email ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Ukuran Kaos</td>
+                        <td class="isian font-tebal">{{ $p->ukuran_kaos ?: '—' }}</td>
+                    </tr>
+                </table>
+
+                <table class="tabel-form">
+                    <tr>
+                        <th colspan="2" class="header-blok">Domisili</th>
+                    </tr>
+                    <tr>
+                        <td class="label">Provinsi</td>
+                        <td class="isian font-tebal">{{ $p->provinsi ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Kabupaten / Kota</td>
+                        <td class="isian font-tebal">{{ $p->kabupaten ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Kecamatan</td>
+                        <td class="isian font-tebal">{{ $p->kecamatan ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Desa / Kelurahan</td>
+                        <td class="isian font-tebal">{{ $p->desa_kelurahan ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Alamat Lengkap</td>
+                        <td class="isian">{{ $p->alamat_rumah ?: '—' }}</td>
+                    </tr>
+                </table>
+
+                <table class="tabel-form">
+                    <tr>
+                        <th colspan="2" class="header-blok" style="background-color: #ffd8cc; color: #a02c0b; border-color: #ffbba6;">Catatan Kesehatan & Makanan</th>
+                    </tr>
+                    <tr>
+                        <td class="label">Pantangan Makan</td>
+                        <td class="isian {{ $alertMakan ? 'teks-merah' : '' }}">{{ $p->catatan_makanan ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Kondisi Kesehatan</td>
+                        <td class="isian {{ $alertSehat ? 'teks-merah' : '' }}">{{ $p->catatan_kesehatan ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Pesan ke Panitia</td>
+                        <td class="isian">{{ $p->catatan_panitia ?: '—' }}</td>
+                    </tr>
+                </table>
+
+            </td>
+
+            <!-- KOLOM KANAN -->
+            <td class="kolom-kanan">
+                
+                <table class="tabel-form">
+                    <tr>
+                        <th colspan="2" class="header-blok">Data Persyarikatan</th>
+                    </tr>
+                    <tr>
+                        <td class="label">Unit / Instansi</td>
+                        <td class="isian font-tebal">{{ $p->unit_kerja ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Keaktifan Ortom</td>
+                        <td class="isian font-tebal">{{ $p->keaktifan_ortom ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Jabatan AUM</td>
+                        <td class="isian font-tebal">{{ $p->jabatan_aum ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Baitul Arqam ke-</td>
+                        <td class="isian font-tebal">{{ $p->arqam_ke ? $p->arqam_ke : '—' }}</td>
+                    </tr>
+                </table>
+
+                <table class="tabel-form">
+                    <tr>
+                        <th colspan="2" class="header-blok">Fisik & Mobilitas</th>
+                    </tr>
+                    <tr>
+                        <td class="label">Aktivitas Duduk</td>
+                        <td class="isian {{ $alertDuduk ? 'teks-merah' : '' }}">{{ $p->aktivitas_duduk ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Aktivitas Sholat</td>
+                        <td class="isian {{ $alertSholat ? 'teks-merah' : '' }}">{{ $p->aktivitas_sholat ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Aktivitas Tangga</td>
+                        <td class="isian {{ $alertTangga ? 'teks-merah' : '' }}">{{ $p->aktivitas_tangga ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Keberangkatan</td>
+                        <td class="isian">{{ $p->rencana_keberangkatan ?: '—' }}</td>
+                    </tr>
+                </table>
+
+                <table class="tabel-form">
+                    <tr>
+                        <th colspan="2" class="header-blok" style="background-color: #c8e6c9; color: #1b5e20; border-color: #a5d6a7;">Status Akhir</th>
+                    </tr>
+                    <tr>
+                        <td class="label">Konfirmasi</td>
+                        <td class="isian teks-hijau">
+                            @if($isOk)
+                                Bersedia Hadir
+                            @elseif($isNo)
+                                Tidak Bersedia
+                            @else
+                                Belum Konfirmasi
+                            @endif
+                        </td>
+                    </tr>
+                </table>
+
+                @if($isNo && $ep->alasan_tidak_hadir)
+                <div class="alasan-box">
+                    <strong>Alasan Tidak Hadir:</strong><br>
+                    "{{ $ep->alasan_tidak_hadir }}"
+                </div>
+                @endif
+
+                <!-- AREA MASKOT ARQA -->
+                <div class="mascot-container">
+                    <img src="{{ public_path('images/arka/arka_analisis.png') }}" class="mascot-img" alt="Arqa Mascot">
+                </div>
+
+            </td>
+        </tr>
+    </table>
+
+    <!-- FOOTER PREMIUM -->
+    <div class="footer-fixed">
+        <div class="footer-line"></div>
         <table class="footer-table">
             <tr>
-                <td class="footer-cell">ARQAM Digital &mdash; Sistem Manajemen Perkaderan</td>
-                <td class="footer-cell" style="text-align: right;">Laporan Otomatis &mdash; {{ now()->format('d F Y') }}</td>
+                <td class="footer-text">
+                    Formulir Biodata Resmi &bull; Dicetak otomatis melalui sistem <strong>ArqamApp</strong>.
+                </td>
+                <td class="footer-nomor">
+                    {{ $event->nama_event }}
+                </td>
             </tr>
         </table>
     </div>
 
-</body>
+</div>
+@empty
+<div style="padding: 80px 20px; text-align: center;">
+    <p style="font-family: Georgia, serif; font-size: 18pt; color: #1a1a1a; margin-bottom: 8px;">Belum Ada Data</p>
+    <p style="font-size: 10pt; color: #555;">Tidak ditemukan peserta pada kegiatan ini.</p>
+</div>
+@endforelse
 
+</body>
 </html>
