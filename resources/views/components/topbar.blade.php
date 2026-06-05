@@ -4,12 +4,14 @@
         {{-- Left: Hamburger + Breadcrumb --}}
         <div class="flex items-center gap-4">
             {{-- Mobile hamburger --}}
+            @if(auth()->check() && auth()->user()->role !== 'peserta')
             <button @click="mobileMenu = true"
                     class="lg:hidden w-10 h-10 rounded-xl hover:bg-gray-100 flex items-center justify-center transition-colors">
                 <svg class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
+            @endif
 
             {{-- Breadcrumb --}}
             <nav class="hidden sm:flex items-center text-sm">
