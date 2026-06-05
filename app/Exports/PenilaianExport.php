@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -49,7 +50,7 @@ class PenilaianExport implements WithMultipleSheets
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. SHEET RINGKASAN SAW (RANKING & BOBOT KRITERIA)
 // ─────────────────────────────────────────────────────────────────────────────
-class RankSawSheet implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithTitle, WithEvents
+class RankSawSheet implements FromCollection, WithHeadings, WithMapping, WithColumnWidths, WithStyles, WithTitle, WithEvents
 {
     protected $eventId;
     protected $data;
@@ -70,6 +71,25 @@ class RankSawSheet implements FromCollection, WithHeadings, WithMapping, ShouldA
     public function title(): string
     {
         return 'Ringkasan SAW';
+    }
+
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 8,   // Rank
+            'B' => 30,  // Nama Lengkap
+            'C' => 20,  // NIP/NBM
+            'D' => 30,  // Unit Kerja
+            'E' => 15,  // C1
+            'F' => 15,  // C2
+            'G' => 15,  // C3
+            'H' => 15,  // C4
+            'I' => 15,  // C5
+            'J' => 20,  // Skor SAW Excel
+            'K' => 20,  // Skor SAW DB
+            'L' => 15,  // Predikat
+            'M' => 18,  // Status Kelulusan
+        ];
     }
 
     public function headings(): array
