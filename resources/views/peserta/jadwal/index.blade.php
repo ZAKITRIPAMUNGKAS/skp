@@ -267,10 +267,6 @@
                 <span class="w-3 h-3 rounded-full bg-gray-200 inline-block"></span>
                 Belum Hadir
             </span>
-            <span class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded-full bg-gradient-to-b from-primary to-accent inline-block"></span>
-                Alur Kegiatan
-            </span>
         </div>
 
         @else
