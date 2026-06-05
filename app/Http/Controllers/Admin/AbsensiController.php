@@ -38,7 +38,7 @@ class AbsensiController extends Controller
             ->map(fn($a) => [
                 'nama'       => $a->peserta->nama_lengkap,
                 'unit_kerja' => $a->peserta->unit_kerja,
-                'foto'       => $a->peserta->foto ? asset('storage/' . $a->peserta->foto) : null,
+                'foto'       => $a->peserta->foto_url,
                 'waktu_scan' => $a->waktu_scan->format('H:i:s'),
             ]);
 

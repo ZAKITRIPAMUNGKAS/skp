@@ -73,7 +73,7 @@
                         class="flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
                     <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-gray-100">
                         @if(auth()->user()->peserta && auth()->user()->peserta->foto)
-                            <img src="{{ asset('storage/' . auth()->user()->peserta->foto) }}" class="w-full h-full object-cover">
+                            <img src="{{ auth()->user()->peserta->foto_url }}" class="w-full h-full object-cover">
                         @else
                             <span class="text-xs font-semibold text-primary">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                         @endif

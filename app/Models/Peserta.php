@@ -103,6 +103,19 @@ class Peserta extends Model
         return asset('storage/' . $this->foto);
     }
 
+    public function getFotoPdfPathAttribute()
+    {
+        if (empty($this->foto)) {
+            return null;
+        }
+
+        if (str_starts_with($this->foto, 'http://') || str_starts_with($this->foto, 'https://')) {
+            return $this->foto_url;
+        }
+
+        return public_path('storage/' . $this->foto);
+    }
+
     /**
      * Check if profile data is complete.
      */

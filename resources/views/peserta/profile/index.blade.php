@@ -15,7 +15,7 @@
     <div class="bg-gradient-to-r from-primary to-primary-700 rounded-3xl p-6 text-white flex items-center gap-5">
         <div class="w-20 h-20 rounded-2xl bg-white/20 border-2 border-white/30 overflow-hidden flex-shrink-0">
             @if($peserta->foto)
-                <img src="{{ asset('storage/' . $peserta->foto) }}" class="w-full h-full object-cover" alt="Foto">
+                <img src="{{ $peserta->foto_url }}" class="w-full h-full object-cover" alt="Foto">
             @else
                 <div class="w-full h-full flex items-center justify-center font-extrabold text-3xl text-white font-heading">
                     {{ strtoupper(substr($peserta->nama_lengkap, 0, 1)) }}
@@ -57,7 +57,7 @@
 
                 <div class="flex flex-col sm:flex-row gap-6 items-start">
                     <div class="shrink-0 flex flex-col items-center"
-                         x-data="{ preview: '{{ $peserta->foto ? asset('storage/'.$peserta->foto) : '' }}' }">
+                         x-data="{ preview: '{{ $peserta->foto_url }}' }">
                         <div class="w-24 h-24 rounded-full bg-gray-100 overflow-hidden mb-3 border-2 border-primary/20">
                             <template x-if="preview">
                                 <img :src="preview" class="w-full h-full object-cover">

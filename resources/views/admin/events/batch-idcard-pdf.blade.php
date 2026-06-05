@@ -175,7 +175,7 @@
                                     <div class="photo-wrap">
                                         @if($p->foto)
                                             <div class="photo-box">
-                                                <img src="{{ public_path('storage/' . $p->foto) }}" alt="Foto">
+                                                <img src="{{ $p->foto_pdf_path }}" alt="Foto">
                                             </div>
                                         @else
                                             <div class="photo-placeholder">?</div>

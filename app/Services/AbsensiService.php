@@ -81,7 +81,7 @@ class AbsensiService
                 'status'     => 'duplicate',
                 'nama'       => $peserta->nama_lengkap,
                 'unit_kerja' => $peserta->unit_kerja,
-                'foto'       => $peserta->foto ? asset('storage/' . $peserta->foto) : null,
+                'foto'       => $peserta->foto_url,
                 'waktu_scan' => $existing->waktu_scan->format('H:i:s'),
             ];
         }
@@ -108,7 +108,7 @@ class AbsensiService
             'status'      => 'success',
             'nama'        => $peserta->nama_lengkap,
             'unit_kerja'  => $peserta->unit_kerja,
-            'foto'        => $peserta->foto ? asset('storage/' . $peserta->foto) : null,
+            'foto'        => $peserta->foto_url,
             'waktu_scan'  => $now->format('H:i:s'),
             'hadir_count' => $hadirCount,
         ];
