@@ -33,6 +33,21 @@
 
     {{-- PROFILE INCOMPLETE REMINDER --}}
     @if(!$peserta->isComplete())
+    @php
+        $missingFields = [];
+        if (empty($peserta->nama_lengkap)) $missingFields[] = 'Nama Lengkap';
+        if (empty($peserta->nama_panggilan)) $missingFields[] = 'Nama Panggilan';
+        if (empty($peserta->no_hp)) $missingFields[] = 'No. HP';
+        if (empty($peserta->unit_kerja)) $missingFields[] = 'Unit Kerja';
+        if (empty($peserta->jenis_kelamin)) $missingFields[] = 'Jenis Kelamin';
+        if (empty($peserta->nik)) $missingFields[] = 'NIK';
+        if (empty($peserta->tempat_lahir)) $missingFields[] = 'Tempat Lahir';
+        if (empty($peserta->tanggal_lahir)) $missingFields[] = 'Tanggal Lahir';
+        if (empty($peserta->status_pernikahan)) $missingFields[] = 'Status Pernikahan';
+        if (empty($peserta->jabatan_aum)) $missingFields[] = 'Jabatan AUM';
+        if (empty($peserta->ukuran_kaos)) $missingFields[] = 'Ukuran Kaos';
+        if (empty($peserta->alamat_rumah)) $missingFields[] = 'Alamat Rumah';
+    @endphp
     <div class="relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl p-6 md:p-8 text-white shadow-lg shadow-orange-200/50 mb-8 animate-fade-in group">
         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
         <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -43,7 +58,7 @@
                 <div class="text-center md:text-left">
                     <h4 class="text-xl font-heading font-bold mb-1">Profil Belum Lengkap!</h4>
                     <p class="text-orange-50/90 text-sm leading-relaxed">
-                        Data diri Anda belum lengkap (Nomor HP/Unit Kerja / Instansi). Mohon lengkapi data Anda untuk mempermudah proses evaluasi dan penerbitan sertifikat.
+                        Data diri Anda belum lengkap (Yang masih kosong: <strong class="text-white underline">{{ implode(', ', $missingFields) }}</strong>). Mohon lengkapi data Anda untuk mempermudah proses evaluasi dan penerbitan sertifikat.
                     </p>
                 </div>
             </div>
@@ -179,6 +194,82 @@
                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Sesi Lulus</p>
                     <p class="text-xl font-extrabold text-gray-800">{{ $progress['attended'] ?? 0 }} / {{ $progress['total_sesi'] ?? 0 }}</p>
                 </div>
+            </div>
+
+            {{-- Biodata Saya Card --}}
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-6 space-y-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-heading font-bold text-gray-800 text-sm">Biodata Saya</h4>
+                        <p class="text-[10px] text-gray-400 font-medium">Data pendaftaran aktif</p>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <div class="space-y-3.5">
+                    <div>
+                        <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Nama Panggilan</span>
+                        <span class="text-xs font-semibold text-gray-800">{{ $peserta->nama_panggilan ?? '-' }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">NIK</span>
+                            <span class="text-xs font-semibold text-gray-800">{{ $peserta->nik ?? '-' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">NBM</span>
+                            <span class="text-xs font-semibold text-gray-800">{{ $peserta->nbm ?? '-' }}</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Jenis Kelamin</span>
+                            <span class="text-xs font-semibold text-gray-800">
+                                @if($peserta->jenis_kelamin === 'L') Laki-laki @elseif($peserta->jenis_kelamin === 'P') Perempuan @else - @endif
+                            </span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Ukuran Kaos</span>
+                            <span class="text-xs font-semibold text-gray-800">{{ $peserta->ukuran_kaos ?? '-' }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Tempat & Tanggal Lahir</span>
+                        <span class="text-xs font-semibold text-gray-800">
+                            {{ $peserta->tempat_lahir ?? '-' }}@if($peserta->tanggal_lahir), {{ \Carbon\Carbon::parse($peserta->tanggal_lahir)->translatedFormat('d F Y') }}@endif
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Jabatan AUM</span>
+                            <span class="text-xs font-semibold text-gray-800 truncate block">{{ $peserta->jabatan_aum ?? '-' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status Pernikahan</span>
+                            <span class="text-xs font-semibold text-gray-800">{{ $peserta->status_pernikahan ?? '-' }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Alamat Lengkap</span>
+                        <p class="text-xs font-semibold text-gray-800 leading-relaxed">{{ $peserta->alamat_rumah ?? '-' }}</p>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <a href="{{ route('peserta.profile.index') }}" 
+                   class="inline-flex items-center justify-center gap-2 w-full py-3 bg-gray-50 text-gray-700 hover:text-primary hover:bg-primary/5 border border-gray-200 hover:border-primary/20 rounded-2xl font-bold text-xs transition-all active:scale-95 shadow-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Perbarui Profil
+                </a>
             </div>
         </div>
 

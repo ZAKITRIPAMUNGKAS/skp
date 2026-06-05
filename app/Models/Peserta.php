@@ -122,8 +122,17 @@ class Peserta extends Model
     public function isComplete()
     {
         return !empty($this->nama_lengkap) && 
+               !empty($this->nama_panggilan) && 
                !empty($this->no_hp) && 
-               !empty($this->unit_kerja);
+               !empty($this->unit_kerja) && 
+               !empty($this->jenis_kelamin) && 
+               !empty($this->nik) && 
+               !empty($this->tempat_lahir) && 
+               !empty($this->tanggal_lahir) && 
+               !empty($this->status_pernikahan) && 
+               !empty($this->jabatan_aum) && 
+               !empty($this->ukuran_kaos) && 
+               !empty($this->alamat_rumah);
     }
 
     // ── Relasi ─────────────────────────────────
