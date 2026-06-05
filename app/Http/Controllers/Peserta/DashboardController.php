@@ -32,6 +32,17 @@ class DashboardController extends Controller
             ->latest()
             ->first();
 
+        if ($eventPeserta && empty($eventPeserta->qr_code)) {
+            $token = hash_hmac('sha256', $eventPeserta->event_id . '-' . $peserta->id, config('app.key'));
+            $qrCode = base64_encode(json_encode([
+                'e' => $eventPeserta->event_id,
+                'p' => $peserta->id,
+                't' => $token
+            ]));
+            $eventPeserta->update(['qr_code' => $qrCode]);
+            $eventPeserta->qr_code = $qrCode;
+        }
+
         $activeEvent = $eventPeserta ? $eventPeserta->event : null;
         $progress = [];
         $scores = null;
@@ -195,6 +206,15 @@ class DashboardController extends Controller
 
         // Konten Kode QR: Gunakan blob QR berbasis token yang aman
         $qrData = $eventPeserta->qr_code; 
+        if (empty($qrData)) {
+            $token = hash_hmac('sha256', $event->id . '-' . $peserta->id, config('app.key'));
+            $qrData = base64_encode(json_encode([
+                'e' => $event->id,
+                'p' => $peserta->id,
+                't' => $token
+            ]));
+            $eventPeserta->update(['qr_code' => $qrData]);
+        }
 
         $pdf = Pdf::loadView('peserta.idcard-pdf', compact('event', 'peserta', 'qrData'))
             ->setPaper([0, 0, 243.7, 388.3]); // Ukuran ID Card dalam poin (sekitar 86mm x 137mm atau sejenisnya)

@@ -336,6 +336,20 @@ class ParticipantController extends Controller
             return back()->with('error', 'Belum ada peserta di event ini.');
         }
 
+        // Auto-generate missing QR codes
+        foreach ($participants as $ep) {
+            if (empty($ep->qr_code)) {
+                $token = hash_hmac('sha256', $event->id . '-' . $ep->peserta_id, config('app.key'));
+                $qrCode = base64_encode(json_encode([
+                    'e' => $event->id,
+                    'p' => $ep->peserta_id,
+                    't' => $token
+                ]));
+                $ep->update(['qr_code' => $qrCode]);
+                $ep->qr_code = $qrCode; // Update in-memory object
+            }
+        }
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.events.batch-idcard-pdf', [
             'event' => $event,
             'participants' => $participants
@@ -346,7 +360,23 @@ class ParticipantController extends Controller
 
     public function downloadIdCard(Event $event, Peserta $participant)
     {
-        $qrData = $participant->email; 
+        $ep = EventPeserta::where('event_id', $event->id)
+            ->where('peserta_id', $participant->id)
+            ->first();
+
+        $qrData = $ep ? $ep->qr_code : null;
+
+        if (empty($qrData)) {
+            $token = hash_hmac('sha256', $event->id . '-' . $participant->id, config('app.key'));
+            $qrData = base64_encode(json_encode([
+                'e' => $event->id,
+                'p' => $participant->id,
+                't' => $token
+            ]));
+            if ($ep) {
+                $ep->update(['qr_code' => $qrData]);
+            }
+        }
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('peserta.idcard-pdf', [
             'event' => $event,

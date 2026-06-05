@@ -148,7 +148,16 @@
                     @foreach($row as $ep)
                         @php
                             $p   = $ep->peserta;
-                            $qrc = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(90)->margin(0)->generate($ep->qr_code ?? $p->email);
+                            $qrData = $ep->qr_code;
+                            if (empty($qrData)) {
+                                $token = hash_hmac('sha256', $event->id . '-' . $p->id, config('app.key'));
+                                $qrData = base64_encode(json_encode([
+                                    'e' => $event->id,
+                                    'p' => $p->id,
+                                    't' => $token
+                                ]));
+                            }
+                            $qrc = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(90)->margin(0)->generate($qrData);
                         @endphp
                         <td>
                             <div class="card">
