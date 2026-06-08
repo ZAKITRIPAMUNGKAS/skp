@@ -116,6 +116,58 @@ class Peserta extends Model
         return public_path('storage/' . $this->foto);
     }
 
+    public function getFotoBase64Attribute()
+    {
+        if (empty($this->foto)) {
+            return null;
+        }
+
+        $path = $this->foto;
+        $isRemote = str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
+        
+        if ($isRemote) {
+            try {
+                $url = $this->foto_url;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 3); // 3 seconds timeout
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                $data = curl_exec($ch);
+                $mime = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+                curl_close($ch);
+
+                if ($data && !empty($data)) {
+                    if (empty($mime) || !str_contains($mime, 'image/')) {
+                        $mime = 'image/jpeg';
+                    }
+                    return 'data:' . $mime . ';base64,' . base64_encode($data);
+                }
+            } catch (\Exception $e) {
+                // Ignore and fallback
+            }
+            return null;
+        }
+
+        // Local file
+        $localPath = public_path('storage/' . $path);
+        if (file_exists($localPath)) {
+            $data = @file_get_contents($localPath);
+            if ($data !== false) {
+                $ext = strtolower(pathinfo($localPath, PATHINFO_EXTENSION));
+                $mime = 'image/jpeg';
+                if ($ext === 'png') $mime = 'image/png';
+                elseif ($ext === 'gif') $mime = 'image/gif';
+                elseif ($ext === 'webp') $mime = 'image/webp';
+                return 'data:' . $mime . ';base64,' . base64_encode($data);
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Check if profile data is complete.
      */

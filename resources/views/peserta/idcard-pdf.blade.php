@@ -280,9 +280,9 @@
 
         {{-- Foto Kotak --}}
         <div class="photo-area">
-            @if($peserta->foto)
+            @if($peserta->foto && $peserta->foto_base64)
                 <div class="photo-square">
-                    <img src="{{ $peserta->foto_pdf_path }}" alt="Foto">
+                    <img src="{{ $peserta->foto_base64 }}" alt="Foto">
                 </div>
             @else
                 <div class="photo-placeholder">?</div>
