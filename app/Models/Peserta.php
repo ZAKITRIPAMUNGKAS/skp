@@ -77,6 +77,74 @@ class Peserta extends Model
         'tanggal_lahir' => 'date',
     ];
 
+    public function getProvinsiAttribute($value)
+    {
+        if (empty($value) || strtolower(trim($value)) === 'lainnya') {
+            if (!empty($this->alamat_rumah)) {
+                $address = strtolower($this->alamat_rumah);
+                $provinces = [
+                    'jawa tengah' => 'Jawa Tengah',
+                    'jawa timur' => 'Jawa Timur',
+                    'jawa barat' => 'Jawa Barat',
+                    'dki jakarta' => 'DKI Jakarta',
+                    'jakarta' => 'DKI Jakarta',
+                    'yogyakarta' => 'DIY Yogyakarta',
+                    'diy' => 'DIY Yogyakarta',
+                    'banten' => 'Banten',
+                    'bali' => 'Bali',
+                    'aceh' => 'Aceh',
+                    'sumatera utara' => 'Sumatera Utara',
+                    'sumatera barat' => 'Sumatera Barat',
+                    'riau' => 'Riau',
+                    'kepulauan riau' => 'Kepulauan Riau',
+                    'jambi' => 'Jambi',
+                    'sumatera selatan' => 'Sumatera Selatan',
+                    'bangka belitung' => 'Bangka Belitung',
+                    'bengkulu' => 'Bengkulu',
+                    'lampung' => 'Lampung',
+                    'kalimantan barat' => 'Kalimantan Barat',
+                    'kalimantan tengah' => 'Kalimantan Tengah',
+                    'kalimantan selatan' => 'Kalimantan Selatan',
+                    'kalimantan timur' => 'Kalimantan Timur',
+                    'kalimantan utara' => 'Kalimantan Utara',
+                    'sulawesi utara' => 'Sulawesi Utara',
+                    'sulawesi tengah' => 'Sulawesi Tengah',
+                    'sulawesi selatan' => 'Sulawesi Selatan',
+                    'sulawesi tenggara' => 'Sulawesi Tenggara',
+                    'gorontalo' => 'Gorontalo',
+                    'sulawesi barat' => 'Sulawesi Barat',
+                    'nusa tenggara barat' => 'Nusa Tenggara Barat',
+                    'ntb' => 'Nusa Tenggara Barat',
+                    'nusa tenggara timur' => 'Nusa Tenggara Timur',
+                    'ntt' => 'Nusa Tenggara Timur',
+                    'maluku' => 'Maluku',
+                    'maluku utara' => 'Maluku Utara',
+                    'papua' => 'Papua'
+                ];
+                foreach ($provinces as $key => $name) {
+                    if (str_contains($address, $key)) {
+                        return $name;
+                    }
+                }
+            }
+        }
+        return $value;
+    }
+
+    public function getKabupatenAttribute($value)
+    {
+        if (empty($value) || strtolower(trim($value)) === 'lainnya') {
+            if (!empty($this->alamat_rumah)) {
+                if (preg_match('/((?:kabupaten|kab\.|kota)\s*[a-zA-Z]+)/i', $this->alamat_rumah, $matches)) {
+                    $captured = trim($matches[1]);
+                    $captured = preg_replace('/^kab\./i', 'Kabupaten', $captured);
+                    return ucwords(strtolower($captured));
+                }
+            }
+        }
+        return $value;
+    }
+
     public function getFotoUrlAttribute()
     {
         if (empty($this->foto)) {
