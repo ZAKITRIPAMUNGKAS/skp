@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'ARQAM App') — Sistem Evaluasi Baitul Arqam</title>
-    <link rel="icon" type="image/png" href="{{ asset('logoums.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('Logoums.png') }}">
 
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
