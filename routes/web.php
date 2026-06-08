@@ -277,7 +277,7 @@ Route::middleware(['auth', 'peserta'])->prefix('peserta')->name('peserta.')->gro
 
 // ── Rute Sementara Hapus Semua Peserta ──
 Route::get('/rahasia-hapus-peserta', function() {
-    if (!auth()->check() || auth()->user()->role !== 'admin') {
+    if (!auth()->check() || !auth()->user()->isAdmin()) {
         return 'Akses ditolak. Anda harus login sebagai admin.';
     }
 
