@@ -422,24 +422,26 @@
                         <th colspan="2" class="header-blok">Domisili</th>
                     </tr>
                     <tr>
-                        <td class="label">Provinsi</td>
-                        <td class="isian font-tebal">{{ $p->provinsi ?: '—' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Kabupaten / Kota</td>
-                        <td class="isian font-tebal">{{ $p->kabupaten ?: '—' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Kecamatan</td>
-                        <td class="isian font-tebal">{{ $p->kecamatan ?: '—' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Desa / Kelurahan</td>
-                        <td class="isian font-tebal">{{ $p->desa_kelurahan ?: '—' }}</td>
-                    </tr>
-                    <tr>
                         <td class="label">Alamat Lengkap</td>
                         <td class="isian">{{ $p->alamat_rumah ?: '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Domisili</td>
+                        <td class="isian font-tebal">
+                            @php
+                                $domisiliParts = array_filter(array_map(function($val) {
+                                    $clean = trim(strval($val));
+                                    return (strtolower($clean) === 'lainnya' || empty($clean)) ? null : $clean;
+                                }, [
+                                    $p->desa_kelurahan,
+                                    $p->kecamatan,
+                                    $p->kabupaten,
+                                    $p->provinsi
+                                ]));
+                                $domisiliText = implode(', ', $domisiliParts);
+                            @endphp
+                            {{ $domisiliText ?: '—' }}
+                        </td>
                     </tr>
                 </table>
 
