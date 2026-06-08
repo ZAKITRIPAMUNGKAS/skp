@@ -41,9 +41,8 @@
             z-index: 1;
             width: 100%;
             text-align: center;
+            padding-top: 14mm;
         }
-
-        /* ── Logo area removed ── */
 
         /* ── PESERTA label ── */
         .lbl-peserta {
