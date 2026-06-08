@@ -28,8 +28,14 @@ class ImportParticipantService
                 $namaLengkap = strip_tags(trim($row['nama_lengkap'] ?? ''));
                 $email       = filter_var(trim($row['email'] ?? ''), FILTER_SANITIZE_EMAIL);
                 $noHp        = strip_tags(trim($row['no_hp'] ?? ''));
+                if (str_ends_with($noHp, '.0')) {
+                    $noHp = substr($noHp, 0, -2);
+                }
                 $unitKerja   = strip_tags(trim($row['unit_kerja'] ?? ''));
                 $nik         = strip_tags(trim($row['nik'] ?? ''));
+                if (str_ends_with($nik, '.0')) {
+                    $nik = substr($nik, 0, -2);
+                }
 
                 if (empty($namaLengkap)) {
                     $skipped++;
@@ -103,6 +109,29 @@ class ImportParticipantService
 
                 $alamat = $row['alamat_asal'] ?? $row['alamat_rumah'] ?? null;
 
+                // Parse tempat dan tanggal lahir
+                $tempatLahir = null;
+                $tanggalLahir = null;
+                if (!empty($row['tempat_tanggal_lahir'])) {
+                    $ttl = trim($row['tempat_tanggal_lahir']);
+                    if (str_contains($ttl, '/')) {
+                        $parts = explode('/', $ttl, 2);
+                        $tempatLahir = trim($parts[0]);
+                        $tglStr = trim($parts[1]);
+                    } elseif (str_contains($ttl, ',')) {
+                        $parts = explode(',', $ttl, 2);
+                        $tempatLahir = trim($parts[0]);
+                        $tglStr = trim($parts[1]);
+                    } else {
+                        $tglStr = $ttl;
+                    }
+                    if (!empty($tglStr)) {
+                        $tanggalLahir = $this->parseIndonesianDate($tglStr);
+                    }
+                }
+                $tempatLahir = $tempatLahir ?: ($row['tempat_lahir'] ?? null);
+                $tanggalLahir = $tanggalLahir ?: ($row['tanggal_lahir'] ?? null);
+
                 $dataProfil = [
                     'nama_lengkap'            => $namaLengkap,
                     'nama_panggilan'          => $row['nama_panggilan'] ?? null,
@@ -111,6 +140,9 @@ class ImportParticipantService
                     'unit_kerja'              => $unitKerja ?: null,
                     'nik'                     => $nik ?: null,
                     'jenis_kelamin'           => $jk,
+                    'tempat_lahir'            => $tempatLahir,
+                    'tanggal_lahir'           => $tanggalLahir,
+                    'jabatan_aum'             => $row['jabatan_aum'] ?? null,
                     'umur'                    => $umur,
                     'status_pernikahan'       => $row['status_pernikahan'] ?? null,
                     'jumlah_anak'             => $jumlahAnak,
@@ -150,8 +182,13 @@ class ImportParticipantService
 
                 // ── Kasus A: Peserta sudah ada di database ────────────────────
                 if ($existingPeserta) {
-                    // Selalu update data profil (hanya field yang tidak null)
-                    $existingPeserta->update(array_filter($dataProfil, fn($v) => $v !== null));
+                    // Jangan timpa email jika email baru adalah email fallback (@arqam.test)
+                    // dan email lama adalah email asli (tidak berakhiran @arqam.test)
+                    if (str_ends_with($email, '@arqam.test') && !empty($existingPeserta->email) && !str_ends_with($existingPeserta->email, '@arqam.test')) {
+                        unset($dataProfil['email']);
+                    }
+                    // Selalu update data profil (kecuali email jika email lama asli sedangkan email baru fallback)
+                    $existingPeserta->update($dataProfil);
 
                     $alreadyInEvent = EventPeserta::where('event_id', $event->id)
                         ->where('peserta_id', $existingPeserta->id)
@@ -187,13 +224,27 @@ class ImportParticipantService
                 // ── Kasus B: Peserta baru ─────────────────────────────────────
                 $defaultPassword = config('app.default_participant_password', 'peserta123');
                 $emailForUsername = !empty($email) && !str_ends_with($email, '@arqam.test') ? $email : null;
-                $username = $this->generateUsername($namaLengkap, $emailForUsername);
+                
+                // Username default menggunakan NIK jika ada, jika tidak generate dari nama
+                $username = !empty($nik) ? preg_replace('/[^a-zA-Z0-9._-]/', '', $nik) : $this->generateUsername($namaLengkap, $emailForUsername);
+                $originalUsername = $username;
+                $counter = 1;
+                while (User::where('username', $username)->exists()) {
+                    $username = $originalUsername . $counter;
+                    $counter++;
+                }
+
+                // Password default menggunakan tanggal lahir (ddmmyyyy) jika ada, jika tidak pakai defaultPassword
+                $passwordRaw = $defaultPassword;
+                if (!empty($tanggalLahir)) {
+                    $passwordRaw = date('dmY', strtotime($tanggalLahir));
+                }
 
                 $user = User::create([
                     'name'     => $namaLengkap,
                     'email'    => $email,
                     'username' => $username,
-                    'password' => Hash::make($defaultPassword),
+                    'password' => Hash::make($passwordRaw),
                     'role'     => 'peserta',
                 ]);
 
@@ -371,13 +422,19 @@ class ImportParticipantService
                 }
 
                 // Mapping dinamis menggunakan kata kunci
-                if (str_contains($header, 'nama lengkap') || $header === 'nama_lengkap') {
+                if (str_contains($header, 'nama lengkap') || str_contains($header, 'nama dengan gelar') || $header === 'nama_lengkap') {
                     $mappedRow['nama_lengkap'] = $val;
-                } elseif ($header === 'nama') {
-                    // Kolom "Nama" standalone — jangan timpa yang sudah ada dari kolom gabungan
-                    if (empty($mappedRow['nama_lengkap'])) $mappedRow['nama_lengkap'] = $val;
                 } elseif (str_contains($header, 'nama panggilan') || $header === 'nama_panggilan' || $header === 'panggilan') {
                     $mappedRow['nama_panggilan'] = $val;
+                } elseif ($header === 'nama' || str_contains($header, 'nama')) {
+                    // Kolom "Nama" standalone — jangan timpa yang sudah ada dari kolom gabungan
+                    if (empty($mappedRow['nama_lengkap'])) $mappedRow['nama_lengkap'] = $val;
+                } elseif (str_contains($header, 'tempat tanggal lahir') || str_contains($header, 'tempat/tanggal lahir') || str_contains($header, 'ttl')) {
+                    $mappedRow['tempat_tanggal_lahir'] = $val;
+                } elseif (str_contains($header, 'status kepegawaian') || str_contains($header, 'status_kepegawaian') || str_contains($header, 'status dosen') || str_contains($header, 'status_dosen')) {
+                    $mappedRow['jabatan_aum'] = $val;
+                } elseif (str_contains($header, 'jml ba') || str_contains($header, 'ba terakhir') || str_contains($header, 'jumlah ba')) {
+                    $mappedRow['arqam_ke'] = $val;
                 } elseif ($header === 'nik') {
                     // NIK standalone — jangan timpa yang sudah diset dari kolom gabungan
                     if (empty($mappedRow['nik'])) $mappedRow['nik'] = $val;
@@ -385,7 +442,7 @@ class ImportParticipantService
                     $mappedRow['email'] = $val;
                 } elseif (str_contains($header, 'no hp') || str_contains($header, 'nomer wa') || $header === 'no_hp' || $header === 'no hp') {
                     $mappedRow['no_hp'] = $val;
-                } elseif ($header === 'homebase' || str_contains($header, 'homebase') || str_contains($header, 'unit kerja') || str_contains($header, 'unit_kerja') || str_contains($header, 'aum')) {
+                } elseif ($header === 'homebase' || str_contains($header, 'homebase') || str_contains($header, 'unit') || str_contains($header, 'aum')) {
                     if (empty($mappedRow['unit_kerja'])) $mappedRow['unit_kerja'] = $val;
                 } elseif (str_contains($header, 'jenis kelamin') || $header === 'jenis_kelamin') {
                     $mappedRow['jenis_kelamin'] = $val;
@@ -485,5 +542,40 @@ class ImportParticipantService
         }
 
         return $mappedRows;
+    }
+
+    public function parseIndonesianDate($dateStr)
+    {
+        if (empty($dateStr)) {
+            return null;
+        }
+
+        $dateStr = strtolower(trim($dateStr));
+        
+        $months = [
+            'januari' => 'january', 'februari' => 'february', 'maret' => 'march',
+            'april' => 'april', 'mei' => 'may', 'juni' => 'june',
+            'juli' => 'july', 'agustus' => 'august', 'september' => 'september',
+            'oktober' => 'october', 'november' => 'november', 'desember' => 'december',
+            // Singkatan
+            'jan' => 'january', 'feb' => 'february', 'mar' => 'march',
+            'apr' => 'april', 'jun' => 'june', 'jul' => 'july',
+            'agt' => 'august', 'ags' => 'august', 'agu' => 'august',
+            'sep' => 'september', 'okt' => 'october', 'nov' => 'november',
+            'des' => 'december'
+        ];
+
+        foreach ($months as $id => $en) {
+            if (str_contains($dateStr, $id)) {
+                $dateStr = str_replace($id, $en, $dateStr);
+                break;
+            }
+        }
+
+        try {
+            return \Illuminate\Support\Carbon::parse($dateStr)->format('Y-m-d');
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

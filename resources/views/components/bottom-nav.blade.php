@@ -139,8 +139,8 @@
                     </svg>
                 </div>
                 <div class="text-left">
-                    <h5 class="text-sm font-bold text-gray-800 group-hover:text-accent transition-colors">Angket Penyelenggaraan</h5>
-                    <p class="text-xs text-gray-400 mt-0.5">Umpan balik evaluasi acara Baitul Arqam</p>
+                    <h5 class="text-sm font-bold text-gray-800 group-hover:text-accent transition-colors">Kuisioner</h5>
+                    <p class="text-xs text-gray-400 mt-0.5">Umpan balik evaluasi penyelenggaraan Baitul Arqam</p>
                 </div>
                 <svg class="w-4 h-4 text-gray-300 ml-auto group-hover:text-accent transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

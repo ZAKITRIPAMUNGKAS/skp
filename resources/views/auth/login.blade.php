@@ -1,364 +1,165 @@
 @extends('layouts.app')
 
-@section('title', 'Authentication — ARQAM App')
+@section('title', 'Login — ARQAM UMS')
 
 @section('content')
 <style>
-    body { background-color: #f8fafc; overflow: hidden; }
+    body { background-color: #ffffff; overflow: auto; }
     
-    /* 
-       ==============================================================
-       ARSITEKTUR ANIMASI PURE CSS (GPU ACCELERATED)
-       ============================================================== 
-    */
-    :root {
-        --transition-speed: 0.8s;
-        --premium-ease: cubic-bezier(0.65, 0, 0.076, 1);
-    }
-
-    .auth-wrapper {
-        position: relative;
-        overflow: hidden;
-        background-color: #fff;
-        width: 100%;
-        max-width: 1024px;
-        height: 650px;
-        border-radius: 2.5rem;
-        box-shadow: 0 25px 50px -12px rgba(26, 109, 155, 0.15);
-        animation: appEntrance 1s var(--premium-ease) forwards;
-        opacity: 0;
-        transform: translateY(30px) scale(0.98);
-    }
-
-    @keyframes appEntrance {
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* ----- KONTAINER FORM ----- */
-    .form-container {
-        position: absolute;
-        top: 0;
-        height: 100%;
-        transition: all var(--transition-speed) var(--premium-ease);
-        will-change: transform, opacity;
-    }
-
-    .sign-in-container {
-        left: 0;
-        width: 50%;
-        z-index: 2;
-        opacity: 1;
-    }
-
-    .sign-up-container {
-        left: 0;
-        width: 50%;
-        opacity: 0;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    /* ----- OVERLAY (Panel Biru) ----- */
-    .overlay-container {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        width: 50%;
-        height: 100%;
-        overflow: hidden;
-        transition: transform var(--transition-speed) var(--premium-ease);
-        z-index: 100;
-        will-change: transform;
-    }
-
-    .overlay {
-        background: linear-gradient(135deg, #06293F 0%, #1A6D9B 50%, #155C84 100%);
-        background-repeat: no-repeat;
-        background-size: cover;
-        color: #fff;
-        position: relative;
-        left: -100%;
-        height: 100%;
-        width: 200%;
-        transform: translateX(0);
-        transition: transform var(--transition-speed) var(--premium-ease);
-        will-change: transform;
-    }
-
-    .overlay-panel {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        text-align: center;
-        top: 0;
-        height: 100%;
-        width: 50%;
-        transform: translateX(0);
-        transition: transform var(--transition-speed) var(--premium-ease);
-        will-change: transform;
-    }
-
-    .overlay-left { transform: translateX(-20%); }
-    .overlay-right { right: 0; transform: translateX(0); }
-
-    /* LOGIKA PERGERAKAN */
-    .auth-wrapper.right-panel-active .sign-in-container {
-        transform: translateX(100%);
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .auth-wrapper.right-panel-active .sign-up-container {
-        transform: translateX(100%);
-        opacity: 1;
-        z-index: 5;
-        pointer-events: auto;
-    }
-
-    .auth-wrapper.right-panel-active .overlay-container {
-        transform: translateX(-100%);
-    }
-
-    .auth-wrapper.right-panel-active .overlay {
-        transform: translateX(50%);
-    }
-
-    .auth-wrapper.right-panel-active .overlay-left {
-        transform: translateX(0);
-    }
-
-    .auth-wrapper.right-panel-active .overlay-right {
-        transform: translateX(20%);
-    }
-
-    /* MOBILE VIEW */
-    @media (max-width: 1023px) {
-        html, body { height: auto !important; overflow: auto !important; }
-        body { background-color: #f8fafc; }
-        .auth-back-btn-container {
-            position: static !important;
-            padding: 1.25rem 1.25rem 0.5rem 1.25rem;
-            background: transparent;
-            width: 100%;
-            display: block;
-            box-sizing: border-box;
-        }
-        .auth-wrapper {
-            box-shadow: 0 10px 30px -5px rgba(26, 109, 155, 0.08);
-            border-radius: 2rem;
-            margin: 0 1rem 2rem 1rem;
-            width: calc(100% - 2rem);
-            height: auto;
-            min-height: auto;
-            display: flex;
-            flex-direction: column;
-            transform: none !important;
-            animation: none !important;
-            opacity: 1 !important;
-            background-color: #ffffff;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-        .form-container { width: 100%; height: auto; position: relative; transition: opacity 0.4s ease; left: 0; transform: none !important;}
-        .overlay-container { display: none; }
-        
-        .sign-in-container, .sign-up-container { padding: 1.75rem 1.5rem; width: 100%; position: relative; display: block; }
-        .sign-in-container { opacity: 1; z-index: 10; }
-        .sign-up-container { opacity: 0; z-index: 1; display: none; }
-
-        .auth-wrapper.right-panel-active .sign-in-container { display: none; opacity: 0; }
-        .auth-wrapper.right-panel-active .sign-up-container { display: block; opacity: 1; z-index: 10; }
-
-        .mobile-tabs { display: block; width: 100%; background: transparent; position: static; border-bottom: none; }
-    }
-    @media (min-width: 1024px) {
-        .mobile-tabs { display: none; }
+    .auth-left {
+        animation: fadeIn 0.6s ease-out forwards;
     }
     
-    [x-cloak] { display: none !important; }
+    .auth-right {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Premium input focus transition */
+    .premium-input {
+        transition: all 0.2s ease-in-out;
+    }
+    .premium-input:focus {
+        border-color: #1A6D9B;
+        box-shadow: 0 0 0 4px rgba(26, 109, 155, 0.1);
+    }
 </style>
 
-<div class="min-h-screen flex flex-col lg:flex-row items-center justify-center p-0 lg:p-6 relative bg-slate-50" 
-     x-data="{ mode: '{{ $mode ?? request()->query('mode', 'login') }}' }">
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-white">
     
-    <!-- Back Button -->
-    <div class="auth-back-btn-container absolute top-4 left-4 lg:-top-12 lg:left-0 z-50">
-        <a href="{{ route('landing') }}" class="group flex items-center gap-2 px-4 py-2 bg-white lg:bg-transparent border border-gray-200 lg:border-none rounded-full text-xs font-bold text-gray-500 hover:text-primary transition-all active:scale-95 shadow-sm lg:shadow-none w-fit">
-            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-            </svg>
-            Kembali ke Beranda
-        </a>
-    </div>
-
-    <!-- MAIN WRAPPER -->
-    <div class="auth-wrapper" :class="{ 'right-panel-active': mode === 'register' }">
+    <!-- LEFT SIDE: MINIMALIST & PROFESSIONAL FORM -->
+    <div class="auth-left lg:col-span-5 flex flex-col justify-between p-8 sm:p-12 xl:p-16 bg-white min-h-screen">
         
-        <!-- Mobile Tabs -->
-        <div class="mobile-tabs px-6 pt-6 pb-2 bg-transparent">
-            <div class="bg-slate-100/80 backdrop-blur-md p-1.5 rounded-2xl flex relative w-full border border-slate-200/50">
-                <button type="button" @click="mode = 'login'; window.history.pushState({}, '', '?mode=login')" 
-                        class="w-1/2 py-3 text-sm font-bold rounded-xl transition-all relative z-10 flex items-center justify-center gap-2"
-                        :class="mode === 'login' ? 'text-primary' : 'text-slate-500'">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14.5M13 5c0 3.333 3 6 7 7-4 1-7 3.667-7 7"/></svg>
+        <!-- Header: Logo & Back link -->
+        <div class="flex items-center justify-between w-full">
+            <img src="{{ asset('logo.webp') }}" alt="UMS Logo" class="h-10 object-contain">
+            <a href="{{ route('landing') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-primary transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Beranda
+            </a>
+        </div>
+
+        <!-- Form Content -->
+        <div class="w-full max-w-sm mx-auto my-auto py-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight font-heading">Selamat Datang</h1>
+                <p class="text-sm text-gray-500 mt-2">Silakan masuk menggunakan akun Anda untuk mengelola data perkaderan.</p>
+            </div>
+
+            @if ($errors->any())
+                <div class="bg-red-50 border border-red-100 text-red-700 p-4 rounded-xl mb-6 text-xs font-medium space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <p class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> 
+                            {{ $error }}
+                        </p>
+                    @endforeach
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                @csrf
+                
+                <div class="space-y-1.5">
+                    <label for="email" class="text-xs font-bold text-gray-700 tracking-wide">Email atau Username</label>
+                    <input type="text" id="email" name="email" value="{{ old('email') }}" required autofocus
+                        class="premium-input w-full px-4 py-3 text-sm border border-gray-200 rounded-xl outline-none bg-gray-50/35" 
+                        placeholder="nama@ums.ac.id atau username">
+                </div>
+                
+                <div class="space-y-1.5" x-data="{ show: false }">
+                    <div class="flex justify-between items-center">
+                        <label for="password" class="text-xs font-bold text-gray-700 tracking-wide">Password</label>
+                        <a href="{{ route('password.forgot') }}" class="text-xs text-primary font-semibold hover:underline">Lupa password?</a>
+                    </div>
+                    <div class="relative">
+                        <input :type="show ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" required 
+                            class="premium-input w-full px-4 py-3 text-sm border border-gray-200 rounded-xl outline-none bg-gray-50/35 pr-10" 
+                            placeholder="••••••••">
+                        <button type="button" @click="show = !show" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
+                            <svg x-show="!show" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            <svg x-show="show" x-cloak class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.415-2.793M9.172 9.172L15 15M3 3l18 18M9.88 9.88a3 3 0 114.24 4.24"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <label class="flex items-center cursor-pointer group">
+                        <input type="checkbox" name="remember" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20 mr-2.5 transition-all">
+                        <span class="text-xs text-gray-500 group-hover:text-gray-700 transition-colors select-none">Ingat sesi saya</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full bg-primary hover:bg-[#155C84] text-white font-bold py-3 px-4 rounded-xl transition-all shadow-sm active:scale-[0.99] text-sm tracking-wide">
                     Masuk
                 </button>
-                <button type="button" @click="mode = 'register'; window.history.pushState({}, '', '?mode=register')" 
-                        class="w-1/2 py-3 text-sm font-bold rounded-xl transition-all relative z-10 flex items-center justify-center gap-2"
-                        :class="mode === 'register' ? 'text-primary' : 'text-slate-500'">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-                    Daftar Akun
-                </button>
-                <div class="absolute top-1.5 bottom-1.5 bg-white shadow-sm border border-slate-200/30 rounded-xl transition-all duration-300 ease-out"
-                     :style="mode === 'login' ? 'left: 6px; width: calc(50% - 9px);' : 'left: calc(50% + 3px); width: calc(50% - 9px);'"></div>
-            </div>
+            </form>
         </div>
 
-        <!-- SIGN UP FORM -->
-        <div class="form-container sign-up-container flex items-center justify-center p-8 lg:px-20">
-            <div class="w-full max-w-sm">
-                <div class="mb-10 flex items-center gap-5">
-                    <div class="w-16 h-16 flex-shrink-0 bg-primary/5 rounded-2xl p-2.5">
-                        <img src="{{ asset('images/arka/arka_fokus.png') }}" alt="Arka Fokus" class="w-full h-full object-contain">
+        <!-- Footer -->
+        <div class="w-full text-left text-xs text-gray-400">
+            &copy; {{ date('Y') }} Universitas Muhammadiyah Surakarta.
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE: PREMIUM DEEP NAVY/BLUE BRANDING (MATCHES MAIN THEME) -->
+    <div class="auth-right hidden lg:col-span-7 bg-gradient-to-br from-[#1A6D9B] to-[#06293F] lg:flex flex-col justify-between p-16 xl:p-24 text-white relative">
+        
+        <!-- Subtle Pattern -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        </div>
+
+        <!-- Top Right Subtitle -->
+        <div class="flex justify-end w-full relative z-10">
+            <span class="text-xs font-semibold tracking-wider text-white/80 bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md">
+                Baitul Arqam &middot; LP3A UMS
+            </span>
+        </div>
+
+        <!-- Central Branding Info -->
+        <div class="max-w-md mx-auto my-auto relative z-10 text-center lg:text-left">
+            <div class="w-24 h-24 mb-8 bg-white/10 rounded-3xl p-3 flex items-center justify-center backdrop-blur-md">
+                <img src="{{ asset('logo.webp') }}" alt="UMS Logo" class="w-full h-full object-contain filter brightness-0 invert">
+            </div>
+            
+            <h2 class="text-3xl xl:text-4xl font-extrabold tracking-tight mb-4 text-[#FAFAFA] font-heading">
+                Sistem Evaluasi Perkaderan Berbasis Digital
+            </h2>
+            <p class="text-sm xl:text-base text-white/80 leading-relaxed mb-8">
+                Mewujudkan penilaian objektif, akurat, dan transparan melalui integrasi algoritma pendukung keputusan (AHP & SAW).
+            </p>
+
+            <!-- Testimonial card/Visual highlight inside glassmorphism -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden text-left shadow-lg">
+                <div class="absolute top-0 right-0 p-3 opacity-10">
+                    <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M14 17h3l2-4V7h-6v6h3M4 17h3l2-4V7H3v6h3"/></svg>
+                </div>
+                <p class="text-xs text-white/75 italic leading-relaxed mb-4">
+                    "Evaluasi Baitul Arqam kini terstandardisasi dengan penilaian multi-dimensi (kognitif, afektif, psikomotorik) yang dapat dipantau langsung secara real-time."
+                </p>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-[#D4A017] flex items-center justify-center font-bold text-xs text-[#06293F]">
+                        L
                     </div>
                     <div>
-                        <h2 class="font-heading font-bold text-3xl text-gray-800">Daftar Akun</h2>
-                        <p class="text-sm text-gray-500">Transformasi digital perkaderan.</p>
+                        <h4 class="text-xs font-bold text-white">Lembaga Pengembangan Pendidikan (LP3A)</h4>
+                        <p class="text-[10px] text-white/50">Universitas Muhammadiyah Surakarta</p>
                     </div>
                 </div>
-
-                <form method="POST" action="{{ route('register') }}" class="space-y-4">
-                    @csrf
-                    <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Nama Lengkap</label>
-                        <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-5 py-4 text-sm border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all bg-gray-50/50" placeholder="Nama lengkap Anda">
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Alamat Email</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required class="w-full px-5 py-4 text-sm border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all bg-gray-50/50" placeholder="email@contoh.com">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1.5" x-data="{ show: false }">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Password</label>
-                            <div class="relative group/pass">
-                                <input :type="show ? 'text' : 'password'" name="password" autocomplete="new-password" required class="w-full px-5 py-4 text-sm border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all bg-gray-50/50 pr-12" placeholder="••••••••">
-                                <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
-                                    <svg x-show="!show" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    <svg x-show="show" x-cloak class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.415-2.793M9.172 9.172L15 15M3 3l18 18M9.88 9.88a3 3 0 114.24 4.24"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="space-y-1.5" x-data="{ show: false }">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Konfirmasi</label>
-                            <div class="relative group/pass">
-                                <input :type="show ? 'text' : 'password'" name="password_confirmation" autocomplete="new-password" required class="w-full px-5 py-4 text-sm border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all bg-gray-50/50 pr-12" placeholder="••••••••">
-                                <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
-                                    <svg x-show="!show" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    <svg x-show="show" x-cloak class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.415-2.793M9.172 9.172L15 15M3 3l18 18M9.88 9.88a3 3 0 114.24 4.24"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full bg-primary hover:bg-primary-600 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg shadow-primary/20 active:scale-[0.98] mt-4 text-lg">
-                        Daftar Sekarang
-                    </button>
-                </form>
             </div>
         </div>
 
-        <!-- SIGN IN FORM -->
-        <div class="form-container sign-in-container flex items-center justify-center p-8 lg:px-20">
-            <div class="w-full max-w-sm">
-                <div class="mb-10 flex items-center gap-5">
-                    <div class="w-16 h-16 flex-shrink-0 bg-primary/5 rounded-2xl p-2.5 animate-floating">
-                        <img src="{{ asset('images/arka/arka_pemandu.png') }}" alt="Arka Pemandu" class="w-full h-full object-contain">
-                    </div>
-                    <div>
-                        <h2 class="font-heading font-bold text-3xl text-gray-800">Selamat Datang</h2>
-                        <p class="text-sm text-gray-500">Masuk untuk melanjutkan.</p>
-                    </div>
-                </div>
-
-                @if ($errors->any())
-                    <div class="bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl mb-6 text-xs font-medium space-y-1">
-                        @foreach ($errors->all() as $error)
-                            <p class="flex items-center gap-2"><span class="w-1 h-1 bg-red-400 rounded-full"></span> {{ $error }}</p>
-                        @endforeach
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('login') }}" class="space-y-6">
-                    @csrf
-                    <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Email atau Username</label>
-                        <input type="text" name="email" value="{{ old('email') }}" required class="w-full px-5 py-4 text-sm border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all bg-gray-50/50" placeholder="email@contoh.com atau username">
-                    </div>
-                    <div class="space-y-1.5" x-data="{ show: false }">
-                        <div class="flex justify-between items-center mb-1 ml-1">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Password</label>
-                            <a href="{{ route('password.forgot') }}" class="text-[9px] text-primary font-bold uppercase tracking-wider hover:underline">Lupa Password?</a>
-                        </div>
-                        <div class="relative group/pass">
-                            <input :type="show ? 'text' : 'password'" name="password" autocomplete="current-password" required class="w-full px-5 py-4 text-sm border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all bg-gray-50/50 pr-12" placeholder="••••••••">
-                            <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
-                                <svg x-show="!show" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                <svg x-show="show" x-cloak class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.415-2.793M9.172 9.172L15 15M3 3l18 18M9.88 9.88a3 3 0 114.24 4.24"/></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex items-center ml-1">
-                        <label class="flex items-center cursor-pointer group">
-                            <input type="checkbox" name="remember" class="w-4.5 h-4.5 rounded border-gray-300 text-primary focus:ring-primary/40 mr-2.5 transition-all">
-                            <span class="text-sm text-gray-500 group-hover:text-gray-700 transition-colors">Ingat Sesi Saya</span>
-                        </label>
-                    </div>
-                    <button type="submit" class="w-full bg-primary hover:bg-primary-600 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg shadow-primary/20 active:scale-[0.98] text-lg">
-                        Masuk Sekarang
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- OVERLAY CONTAINER -->
-        <div class="overlay-container hidden lg:block">
-            <div class="overlay">
-                
-                <!-- Background Decoration -->
-                <div class="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div class="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-                    <div class="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] bg-accent/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s"></div>
-                </div>
-
-                <!-- LEFT (Offers Login) -->
-                <div class="overlay-panel overlay-left px-16">
-                    <div class="w-64 h-64 mb-6 animate-float-slow">
-                        <img src="{{ asset('images/arka/arka_login.png') }}" alt="Arka Login" class="w-full h-full object-contain filter drop-shadow-2xl">
-                    </div>
-                    <h2 class="font-heading font-bold text-4xl text-white leading-tight mb-5 tracking-tight">Sudah Punya<br>Akun?</h2>
-                    <p class="text-white/80 text-lg leading-relaxed mb-12 max-w-[280px]">Masuk untuk melanjutkan pantauan progres Anda.</p>
-                    <button @click="mode = 'login'; window.history.pushState({}, '', '?mode=login')" 
-                            class="px-12 py-4 border-2 border-white/40 rounded-full font-bold text-sm uppercase tracking-widest text-white hover:bg-white hover:text-primary transition-all active:scale-95 shadow-xl">
-                        Masuk Sekarang
-                    </button>
-                </div>
-
-                <!-- RIGHT (Offers Register) -->
-                <div class="overlay-panel overlay-right px-16">
-                    <div class="w-64 h-64 mb-6 animate-float-slow">
-                        <img src="{{ asset('images/arka/arka_register.png') }}" alt="Arka Register" class="w-full h-full object-contain filter drop-shadow-2xl">
-                    </div>
-                    <h2 class="font-heading font-bold text-4xl text-white leading-tight mb-5 tracking-tight">Halo,<br>Kader Baru!</h2>
-                    <p class="text-white/80 text-lg leading-relaxed mb-12 max-w-[280px]">Daftar sekarang untuk mulai evaluasi digital terpadu.</p>
-                    <button @click="mode = 'register'; window.history.pushState({}, '', '?mode=register')" 
-                            class="px-12 py-4 border-2 border-white/40 rounded-full font-bold text-sm uppercase tracking-widest text-white hover:bg-white hover:text-primary transition-all active:scale-95 shadow-xl">
-                        Daftar Akun
-                    </button>
-                </div>
-                
-            </div>
+        <!-- System Version -->
+        <div class="w-full text-right text-xs text-white/40 relative z-10">
+            v2.1.0 &middot; Secure Auth Portal
         </div>
 
     </div>
+
 </div>
 @endsection

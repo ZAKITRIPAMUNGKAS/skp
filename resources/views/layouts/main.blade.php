@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'ARQAM App') — Sistem Evaluasi Baitul Arqam</title>
-    <link rel="icon" type="image/png" href="{{ asset('logo-mpksdi-1.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logoums.png') }}">
 
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -177,18 +177,23 @@
       x-on:toast.window="addToast($event.detail.message, $event.detail.type || 'success', $event.detail.duration || 3000)"
       x-on:page-loading.window="loading = true"
 >
-    {{-- Sleek Top Progress Bar --}}
+    {{-- Premium Full-Page Loading Spinner --}}
     <div x-show="loading" 
-         x-transition:enter="transition-opacity duration-200"
+         x-transition:enter="transition-opacity duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
          x-transition:leave="transition-opacity duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent via-yellow-400 to-primary-400 z-[9999]"
+         class="fixed inset-0 bg-white/70 backdrop-blur-md z-[99999] flex flex-col items-center justify-center"
          style="display: none;">
-        <div class="h-full bg-accent animate-pulse w-full origin-left transform scale-x-[0.3]"
-             x-init="$watch('loading', val => { if(val) { setTimeout(() => { $el.classList.replace('scale-x-[0.3]', 'scale-x-[0.95]') }, 50); } })"></div>
+        <div class="flex flex-col items-center gap-4">
+            <div class="relative w-12 h-12">
+                <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p class="text-xs font-semibold text-primary uppercase tracking-widest animate-pulse">Memuat Halaman...</p>
+        </div>
     </div>
 
     <div class="flex h-full">

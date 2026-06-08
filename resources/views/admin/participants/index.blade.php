@@ -3,18 +3,15 @@
 @section('title', 'Kelola Peserta — ARQAM')
 
 @section('content')
-<div class="p-6">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-            <h1 class="text-2xl font-bold font-heading text-gray-800">Kelola Peserta</h1>
-            <p class="text-sm text-gray-500 mt-1">Daftar seluruh peserta yang terdaftar di sistem.</p>
-        </div>
-        
-        <form method="GET" action="{{ route('admin.participants.index') }}" class="flex flex-wrap items-center gap-2">
+    <x-page-header title="Kelola Peserta" subtitle="Daftar seluruh peserta yang terdaftar di sistem." />
+
+    {{-- Filters Panel --}}
+    <div class="mb-6 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+        <form method="GET" action="{{ route('admin.participants.index') }}" class="flex flex-wrap items-center gap-3">
             <div class="relative">
                 <input type="text" name="search" value="{{ request('search') }}" 
                     placeholder="Cari nama, NIK, alasan..."
-                    class="w-56 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                    class="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
                 <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -35,7 +32,7 @@
             </select>
 
             <select name="jenis_kelamin" class="px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all bg-white text-gray-700">
-                <option value="">Semua Gander</option>
+                <option value="">Semua Jenis Kelamin</option>
                 <option value="L" {{ request('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-Laki</option>
                 <option value="P" {{ request('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
             </select>
@@ -232,5 +229,4 @@
              </div>
          </div>
     </div>
-</div>
 @endsection

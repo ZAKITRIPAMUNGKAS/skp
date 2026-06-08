@@ -337,6 +337,8 @@ class DashboardController extends Controller
                         'deskripsi'     => $sesi->deskripsi ?? null,
                         'waktu_mulai'   => $sesi->waktu_mulai ?? null,
                         'waktu_selesai' => $sesi->waktu_selesai ?? null,
+                        'pemateri'      => $sesi->pemateri ?? null,
+                        'file_materi'   => $sesi->file_materi ?? null,
                         'attended'      => !is_null($absensi),
                         'waktu_scan'    => $absensi ? $absensi->waktu_scan : null,
                     ];

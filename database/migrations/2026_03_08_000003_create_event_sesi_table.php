@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('nama_sesi');
             $table->integer('urutan');
             $table->timestamps();
+            $table->string('pemateri')->nullable();
 
             $table->index('event_id');
         });

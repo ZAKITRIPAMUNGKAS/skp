@@ -15,7 +15,25 @@ class AngketKomentar extends Model
         'event_id',
         'peserta_id',
         'komentar',
+        'nominasi_disiplin_id',
+        'nominasi_aktif_id',
+        'nominasi_favorit_id',
     ];
+
+    public function nominasiDisiplin()
+    {
+        return $this->belongsTo(Peserta::class, 'nominasi_disiplin_id');
+    }
+
+    public function nominasiAktif()
+    {
+        return $this->belongsTo(Peserta::class, 'nominasi_aktif_id');
+    }
+
+    public function nominasiFavorit()
+    {
+        return $this->belongsTo(Peserta::class, 'nominasi_favorit_id');
+    }
 
     // ── Relasi ─────────────────────────────────
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventPeserta extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Loggable;
 
     protected $table = 'event_peserta';
 

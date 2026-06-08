@@ -52,6 +52,11 @@ class Event extends Model
         return $this->hasMany(EventSesi::class);
     }
 
+    public function eventSesi()
+    {
+        return $this->hasMany(EventSesi::class);
+    }
+
     public function eventPeserta()
     {
         return $this->hasMany(EventPeserta::class);
@@ -137,4 +142,8 @@ class Event extends Model
         return $this->hasMany(PenilaianAkhir::class);
     }
 
+    public function facilitators()
+    {
+        return $this->belongsToMany(User::class, 'event_fasilitator', 'event_id', 'user_id')->withTimestamps();
+    }
 }

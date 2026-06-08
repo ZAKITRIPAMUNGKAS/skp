@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             EventSesiSeeder::class,
             PesertaSeeder::class,
-            SoalSeeder::class,
+            SoalPretestBADosenSeeder::class,
             AfektifSeeder::class,
             PsikomotorSeeder::class,
             AngketSeeder::class,

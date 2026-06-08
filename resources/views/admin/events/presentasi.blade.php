@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presentasi Analisis – {{ $event->nama_event }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    <title>Laporan Pelaksanaan Baitul Arqam  – {{ $event->nama_event }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet">
@@ -68,7 +68,7 @@
         .d1 { animation-delay: 0.1s; } .d2 { animation-delay: 0.2s; } .d3 { animation-delay: 0.3s; } .d4 { animation-delay: 0.4s; } .d5 { animation-delay: 0.5s; }
         
         /* Content Styling */
-        .content-box { background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 33, 71, 0.08); padding: 1.5rem; border-top: 5px solid #FFD100; }
+        .content-box { background: white; border-radius: 6px; box-shadow: 0 10px 30px rgba(0, 33, 71, 0.08); padding: 1.5rem; border-top: 5px solid #FFD100; }
         .title-accent { display: inline-block; padding-bottom: 5px; border-bottom: 5px solid #FFD100; margin-bottom: 1.5rem; }
         
         /* Premium Stat Card */
@@ -314,7 +314,7 @@
     <div class="flex flex-col items-center">
         <!-- Pulse Logo MPKSDI / Muhammadiyah -->
         <div class="pulse-logo mb-6">
-            <img src="{{ asset('logo-mpksdi-1.png') }}" class="h-28" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
+            <img src="{{ asset('logo.webp') }}" class="h-28" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
         </div>
         <div class="preloader-spinner"></div>
         <h2 class="text-white text-xl font-bold tracking-wider uppercase">Laporan Analisis ArqamApp</h2>
@@ -366,7 +366,7 @@
     </div>
     
     <div class="p-6 border-t border-white/10 bg-navy-950/50 text-center">
-        <img src="{{ asset('logo-mpksdi-1.png') }}" class="h-10 mx-auto opacity-70 mb-2" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
+        <img src="{{ asset('logo.webp') }}" class="h-10 mx-auto opacity-70 mb-2" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
         <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">&copy; ArqamApp MPKSDI</p>
     </div>
 </div>
@@ -381,20 +381,20 @@
     <div class="z-10 w-full h-full flex items-center">
         <div class="w-1/2 pl-12 pr-8 anim-right">
             <div class="flex items-center gap-4 mb-10">
-                <img src="{{ asset('logo-mpksdi-1.png') }}" class="h-20" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
+                <img src="{{ asset('logo.webp') }}" class="h-20" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
                 <div>
-                    <p class="text-sm font-black text-navy-900 tracking-widest uppercase">MPKSDI</p>
-                    <p class="text-sm font-bold text-gray-600 tracking-wide uppercase">Laporan Perkaderan</p>
+                    <p class="text-sm font-black text-navy-900 tracking-widest uppercase">LP3A</p>
+                    <p class="text-sm font-bold text-gray-600 tracking-wide uppercase">Universitas Muhammadiyah Surakarta</p>
                 </div>
             </div>
             
-            <h2 class="text-2xl font-bold text-navy-900 mb-2">PRESENTASI ANALISIS</h2>
-            <h1 class="text-5xl md:text-6xl font-black text-navy-900 leading-tight mb-8 uppercase">{{ $event->nama_event }}</h1>
+            <h2 class="text-2xl font-bold text-navy-900 mb-2">LAPORAN PELAKSANAAN</h2>
+            <h1 class="text-5xl md:text-5xl font-black text-navy-900 leading-tight mb-8 uppercase">{{ $event->nama_event }}</h1>
             
             <div class="w-32 h-3 bg-yellow-400 mb-8"></div>
             
             <p class="text-lg text-gray-700 font-semibold mb-2 flex items-center gap-3">
-                <svg class="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <svg class="w-3 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 {{ $event->lokasi }}
             </p>
             <p class="text-lg text-gray-700 font-semibold flex items-center gap-3">

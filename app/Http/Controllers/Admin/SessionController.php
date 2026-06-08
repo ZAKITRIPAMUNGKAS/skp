@@ -7,19 +7,30 @@ use App\Models\Event;
 use App\Models\EventSesi;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
+
 class SessionController extends Controller
 {
     public function store(Request $request, Event $event)
     {
         $validated = $request->validate([
-            'nama_sesi' => 'required|string|max:255',
+            'nama_sesi'   => 'required|string|max:255',
+            'pemateri'    => 'nullable|string|max:255',
+            'file_materi' => 'nullable|file|mimes:pdf,ppt,pptx,doc,docx,zip,xls,xlsx|max:51200', // max 50MB
         ]);
+
+        $fileMateriPath = null;
+        if ($request->hasFile('file_materi')) {
+            $fileMateriPath = $request->file('file_materi')->store('materi', 'public');
+        }
 
         $maxUrutan = $event->sesi()->max('urutan') ?? 0;
 
         $event->sesi()->create([
-            'nama_sesi' => $validated['nama_sesi'],
-            'urutan'    => $maxUrutan + 1,
+            'nama_sesi'   => $validated['nama_sesi'],
+            'pemateri'    => $validated['pemateri'],
+            'file_materi' => $fileMateriPath,
+            'urutan'      => $maxUrutan + 1,
         ]);
 
         return back()->with('success', 'Sesi berhasil ditambahkan!');
@@ -28,8 +39,17 @@ class SessionController extends Controller
     public function update(Request $request, Event $event, EventSesi $session)
     {
         $validated = $request->validate([
-            'nama_sesi' => 'required|string|max:255',
+            'nama_sesi'   => 'required|string|max:255',
+            'pemateri'    => 'nullable|string|max:255',
+            'file_materi' => 'nullable|file|mimes:pdf,ppt,pptx,doc,docx,zip,xls,xlsx|max:51200', // max 50MB
         ]);
+
+        if ($request->hasFile('file_materi')) {
+            if ($session->file_materi) {
+                Storage::disk('public')->delete($session->file_materi);
+            }
+            $validated['file_materi'] = $request->file('file_materi')->store('materi', 'public');
+        }
 
         $session->update($validated);
 
@@ -38,6 +58,10 @@ class SessionController extends Controller
 
     public function destroy(Event $event, EventSesi $session)
     {
+        if ($session->file_materi) {
+            Storage::disk('public')->delete($session->file_materi);
+        }
+
         $session->delete();
 
         // Urutkan ulang sesi yang tersisa

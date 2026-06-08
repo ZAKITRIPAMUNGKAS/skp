@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ ucfirst($tipe) }} — {{ $event->nama_event }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('logo-mpksdi-1.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logoums.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&family=Amiri&family=Scheherazade+New&display=swap" rel="stylesheet">
@@ -265,6 +265,8 @@
             isSubmitting: false,
             remainingSeconds: {{ $remainingSeconds }},
             timerInterval: null,
+            tabViolations: 0,
+            maxViolations: 3,
 
             get currentQuestion() { return this.questions[this.currentIndex] || null; },
             get answeredCount() { return Object.keys(this.answers).length; },
@@ -277,6 +279,34 @@
                 if (saved) {
                     try { this.answers = JSON.parse(saved); } catch(e) {}
                 }
+
+                // Anti Copy-Paste & Right Click
+                document.addEventListener('contextmenu', e => e.preventDefault());
+                document.addEventListener('copy', e => e.preventDefault());
+                document.addEventListener('cut', e => e.preventDefault());
+                document.addEventListener('paste', e => e.preventDefault());
+                
+                // Anti keyboard shortcut for print, copy, inspect
+                document.addEventListener('keydown', e => {
+                    if (
+                        e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'u' || e.key === 'p' || e.key === 's') || 
+                        e.key === 'F12'
+                    ) {
+                        e.preventDefault();
+                    }
+                });
+
+                // Focus/Blur Warning
+                window.addEventListener('blur', () => {
+                    if (this.isSubmitting) return;
+                    this.tabViolations++;
+                    if (this.tabViolations >= this.maxViolations) {
+                        alert('Anda telah melanggar batas maksimal meninggalkan halaman ujian! Jawaban Anda akan otomatis dikumpulkan.');
+                        this.submitAnswers();
+                    } else {
+                        alert(`PERINGATAN: Anda meninggalkan halaman ujian! (${this.tabViolations}/${this.maxViolations} pelanggaran). Jika melanggar lagi, ujian Anda akan otomatis dikumpulkan.`);
+                    }
+                });
 
                 // Target timestamp is current time + remainingSeconds (system clock drift proof)
                 const targetTime = Date.now() + (this.remainingSeconds * 1000);

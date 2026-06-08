@@ -166,6 +166,50 @@
                                     class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed">
                             </div>
                         </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Bahasa yang Dikuasai <span class="text-red-500">*</span></label>
+                                @php
+                                    $currentBahasas = [];
+                                    if ($peserta->bahasa_dikuasai) {
+                                        $currentBahasas = is_array($peserta->bahasa_dikuasai) 
+                                            ? $peserta->bahasa_dikuasai 
+                                            : json_decode($peserta->bahasa_dikuasai, true) ?? explode(',', $peserta->bahasa_dikuasai);
+                                    }
+                                    // Bersihkan spasi atau karakter aneh
+                                    $currentBahasas = array_map('trim', $currentBahasas);
+                                @endphp
+                                <div class="grid grid-cols-2 gap-2 p-3 bg-gray-50 border border-gray-200 rounded-xl">
+                                    @foreach(['Inggris', 'Arab', 'Mandarin', 'Jepang'] as $lang)
+                                        <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+                                            <input type="checkbox" name="bahasa_dikuasai[]" value="{{ $lang }}"
+                                                @if(in_array($lang, $currentBahasas)) checked @endif
+                                                class="rounded text-primary focus:ring-primary border-gray-300">
+                                            {{ $lang }}
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('bahasa_dikuasai') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Hafalan Al-Quran <span class="text-red-500">*</span></label>
+                                <select name="hafalan_quran_1" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50">
+                                    <option value="">-- Pilih Tingkat Hafalan --</option>
+                                    @foreach([
+                                        'Juz 30 (Juz Amma)',
+                                        '1-2 Juz',
+                                        '3-5 Juz',
+                                        '6-10 Juz',
+                                        '11-20 Juz',
+                                        '21-30 Juz (Hafidz)'
+                                    ] as $hafalan)
+                                        <option value="{{ $hafalan }}" {{ old('hafalan_quran_1', $peserta->hafalan_quran_1) == $hafalan ? 'selected' : '' }}>{{ $hafalan }}</option>
+                                    @endforeach
+                                </select>
+                                @error('hafalan_quran_1') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Rumah Lengkap</label>
                             <textarea name="alamat_rumah" rows="3"

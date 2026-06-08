@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARQAM App — Sistem Evaluasi Terpadu Baitul Arqam</title>
-    <link rel="icon" type="image/png" href="{{ asset('logo-mpksdi-1.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logoums.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Lenis Smooth Scroll CDN --}}
+    <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -50,6 +52,7 @@
         }
     </script>
     <style>
+        html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
         
@@ -101,6 +104,7 @@
                     <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-10 object-contain transition-all" :class="{'brightness-0 invert': !scrolled, 'brightness-100': scrolled}">
                 </div>
                 <div class="hidden lg:flex space-x-8">
+                    <a href="#tentang" class="text-base font-semibold transition-colors" :class="scrolled ? 'text-gray-600 hover:text-primary' : 'text-primary-100 hover:text-white'">Tentang</a>
                     <a href="#fitur" class="text-base font-semibold transition-colors" :class="scrolled ? 'text-gray-600 hover:text-primary' : 'text-primary-100 hover:text-white'">Fitur</a>
                     <a href="#alur" class="text-base font-semibold transition-colors" :class="scrolled ? 'text-gray-600 hover:text-primary' : 'text-primary-100 hover:text-white'">Alur</a>
                     <a href="#galeri" class="text-base font-semibold transition-colors" :class="scrolled ? 'text-gray-600 hover:text-primary' : 'text-primary-100 hover:text-white'">Galeri</a>
@@ -163,9 +167,9 @@
                 <div class="relative animate-floating-slow hidden lg:block perspective-1000">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary-900 to-transparent rounded-3xl transform rotate-3 scale-105 opacity-40 blur-xl"></div>
                     <div class="bg-gray-900 rounded-[2.5rem] border-[12px] border-gray-800 shadow-2xl overflow-hidden relative z-10 aspect-[4/3] group transform hover:rotate-0 transition-transform duration-700">
-                        <img src="{{ asset('images/dashboard_mockup.png') }}" alt="ARQAM Training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="{{ asset('hero.jpg') }}" alt="ARQAM Training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                            <p class="text-white text-sm font-medium">Dashboard Terpadu ARQAM App</p>
+                            <p class="text-white text-sm font-medium">Baitul Arqam Dosen UMS</p>
                         </div>
                     </div>
                     
@@ -234,6 +238,61 @@
                             <span class="counter" data-target="{{ $totalMitra }}">0</span><span class="text-accent text-3xl">+</span>
                         </p>
                         <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Instansi Mitra</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- Tentang Section --}}
+    <section id="tentang" class="py-24 bg-white relative overflow-hidden">
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/2 -right-32 w-80 h-80 bg-primary/5 rounded-full filter blur-3xl"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Column 1: Image (Left) -->
+                <div class="relative" data-aos="fade-right">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-primary/15 to-accent/15 rounded-[2rem] transform rotate-3 scale-105 filter blur-lg"></div>
+                    <div class="relative z-10 bg-white rounded-[2rem] border border-slate-100 shadow-soft overflow-hidden aspect-[4/3] group">
+                        <img src="{{ asset('kegiatan.jpg') }}" alt="Baitul Arqam LP3A UMS" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-6">
+                            <p class="text-white text-sm font-semibold font-heading">Kegiatan Baitul Arqam LP3A UMS</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Text & Features (Right) -->
+                <div class="relative" data-aos="fade-left">
+                    <div class="absolute -top-4 -left-4 w-12 h-12 bg-accent/20 rounded-2xl -z-10 animate-pulse"></div>
+                    <span class="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">Tentang Aplikasi</span>
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6 leading-tight">Sistem Evaluasi Perkaderan Baitul Arqam Terpadu</h2>
+                    <p class="text-gray-600 leading-relaxed mb-6">
+                        <strong>ARQAM App</strong> merupakan sistem resmi milik <strong>LP3A (Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni)</strong> UMS yang dirancang dan dikembangkan secara khusus untuk mendukung penyelenggaraan serta evaluasi kegiatan <strong>Baitul Arqam</strong>. Sebagai unit kerja di bawah naungan Wakil Rektor III Bidang Al Islam Kemuhammadiyahan, Pengkaderan dan Alumni (sejak tahun 2025), LP3A bertugas membina, menyiapkan, dan memberdayakan kader persyarikatan secara presisi, objektif, dan transparan.
+                    </p>
+                    
+                    <div class="mt-8 space-y-4">
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold text-sm">01</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading">Standardisasi Penilaian</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">Menggunakan indikator penilaian terukur untuk objektivitas hasil evaluasi.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0 font-bold text-sm">02</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading">Kemudahan Akses</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">Antarmuka yang dioptimalkan untuk perangkat mobile memudahkan peserta dan instruktur.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-green-100 text-green-700 flex items-center justify-center shrink-0 font-bold text-sm">03</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading">Laporan Real-time</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">Hasil perhitungan SAW dan grafik demografi langsung tersaji secara instan.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -442,72 +501,99 @@
                 <p class="text-gray-500 text-lg">Momen-momen inspiratif dalam proses perkaderan dan pembinaan ideologi.</p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="space-y-4">
-                    <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in">
-                        <img src="{{ asset('images/gallery/gallery_discussion.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                            <p class="font-bold">Sesi Diskusi</p>
-                            <p class="text-xs">Baitul Arqam PDM</p>
+            @if(isset($galleries) && $galleries->count() > 0)
+                @php
+                    $cols = [[], [], [], []];
+                    foreach($galleries as $idx => $g) {
+                        $cols[$idx % 4][] = $g;
+                    }
+                @endphp
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    @foreach($cols as $colIdx => $colItems)
+                        <div class="space-y-4 {{ $colIdx == 1 ? 'pt-8' : ($colIdx == 3 ? 'pt-12' : '') }}">
+                            @foreach($colItems as $itemIdx => $gallery)
+                                @php
+                                    $aspect = (($colIdx + $itemIdx) % 2 == 0) ? 'aspect-[3/4]' : 'aspect-square';
+                                @endphp
+                                <div class="group relative overflow-hidden rounded-2xl {{ $aspect }}" data-aos="zoom-in" data-aos-delay="{{ $colIdx * 100 }}">
+                                    <img src="{{ $gallery->image_url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $gallery->title }}">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                        <p class="font-bold">{{ $gallery->title }}</p>
+                                        <p class="text-xs">{{ $gallery->event_name ?? 'Baitul Arqam' }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="space-y-4">
+                        <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in">
+                            <img src="{{ asset('images/gallery/gallery_discussion.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                <p class="font-bold">Sesi Diskusi</p>
+                                <p class="text-xs">Baitul Arqam PDM</p>
+                            </div>
+                        </div>
+                        <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="100">
+                            <img src="{{ asset('images/gallery/gallery_lecture.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                <p class="font-bold">Materi Ideologi</p>
+                                <p class="text-xs">Aula Utama</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="100">
-                        <img src="{{ asset('images/gallery/gallery_lecture.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                            <p class="font-bold">Materi Ideologi</p>
-                            <p class="text-xs">Aula Utama</p>
+                    <div class="space-y-4 pt-8">
+                        <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="200">
+                            <img src="{{ asset('images/gallery/gallery_opening.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                <p class="font-bold">Opening Ceremony</p>
+                                <p class="text-xs">Muhammadiyah Center</p>
+                            </div>
+                        </div>
+                        <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="300">
+                            <img src="{{ asset('images/gallery/gallery_focus_group.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                <p class="font-bold">Focus Group</p>
+                                <p class="text-xs">Rapat Komisi</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="400">
+                            <img src="{{ asset('images/gallery/gallery_outbound.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                <p class="font-bold">Outbound Session</p>
+                                <p class="text-xs">Training Ground</p>
+                            </div>
+                        </div>
+                        <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="500">
+                            <img src="{{ asset('images/gallery/gallery_closing.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                <p class="font-bold">Sesi Selebrasi</p>
+                                <p class="text-xs">Penutupan</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4 pt-12">
+                        <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="600">
+                            <img src="{{ asset('images/gallery/gallery_discussion.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                <p class="font-bold">Penutupan</p>
+                                <p class="text-xs">Sesi Selebrasi</p>
+                            </div>
+                        </div>
+                        <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="700">
+                            <img src="{{ asset('images/gallery/gallery_lecture.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
+                                <p class="font-bold">Ramah Tamah</p>
+                                <p class="text-xs">Kebersamaan</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="space-y-4 pt-8">
-                    <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="200">
-                        <img src="{{ asset('images/gallery/gallery_opening.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                            <p class="font-bold">Opening Ceremony</p>
-                            <p class="text-xs">Muhammadiyah Center</p>
-                        </div>
-                    </div>
-                    <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="300">
-                        <img src="{{ asset('images/gallery/gallery_focus_group.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                            <p class="font-bold">Focus Group</p>
-                            <p class="text-xs">Rapat Komisi</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-4">
-                    <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="400">
-                        <img src="{{ asset('images/gallery/gallery_outbound.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                            <p class="font-bold">Outbound Session</p>
-                            <p class="text-xs">Training Ground</p>
-                        </div>
-                    </div>
-                    <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="500">
-                        <img src="{{ asset('images/gallery/gallery_closing.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                            <p class="font-bold">Sesi Selebrasi</p>
-                            <p class="text-xs">Penutupan</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-4 pt-12">
-                    <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="600">
-                        <img src="{{ asset('images/gallery/gallery_discussion.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                            <p class="font-bold">Penutupan</p>
-                            <p class="text-xs">Sesi Selebrasi</p>
-                        </div>
-                    </div>
-                    <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="700">
-                        <img src="{{ asset('images/gallery/gallery_lecture.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                            <p class="font-bold">Ramah Tamah</p>
-                            <p class="text-xs">Kebersamaan</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endif
         </div>
     </section>
 
@@ -526,73 +612,95 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Testimonial 1 -->
-                <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="0">
-                    <img src="{{ asset('images/testimonials/testimonial_1.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
-                    
-                    {{-- Default State: Name & Role --}}
-                    <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
-                        <h3 class="text-2xl font-heading font-bold text-white mb-1">Ahmad Mujahid</h3>
-                        <p class="text-accent font-medium">Master of Training</p>
-                    </div>
+                @if(isset($testimonials) && $testimonials->count() > 0)
+                    @foreach($testimonials as $idx => $testimonial)
+                        <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="{{ $idx * 100 }}">
+                            <img src="{{ $testimonial->photo_url }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="{{ $testimonial->name }}">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
+                            
+                            {{-- Default State: Name & Role --}}
+                            <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
+                                <h3 class="text-2xl font-heading font-bold text-white mb-1">{{ $testimonial->name }}</h3>
+                                <p class="text-accent font-medium">{{ $testimonial->role }}</p>
+                            </div>
 
-                    {{-- Hover State: The "Words" --}}
-                    <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
-                        <div class="mb-4">
-                            <svg class="w-10 h-10 text-accent/40 mx-auto" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C15.4647 8 15.017 8.44772 15.017 9V12C15.017 12.5523 14.5693 13 14.017 13H11.017V21H14.017ZM5.01719 21L5.01719 18C5.01719 16.8954 5.91262 16 7.01719 16H10.0172C10.5695 16 11.0172 15.5523 11.0172 15V9C11.0172 8.44772 10.5695 8 10.0172 8H7.01719C6.4649 8 6.01719 8.44772 6.01719 9V12C6.01719 12.5523 5.56947 13 5.01719 13H2.01719V21H5.01719Z"/></svg>
+                            {{-- Hover State: The "Words" --}}
+                            <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
+                                <div class="mb-4">
+                                    <img src="{{ asset('Logoums.png') }}" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
+                                </div>
+                                <h3 class="text-xl font-heading font-bold text-white mb-2">{{ $testimonial->name }}</h3>
+                                <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">{{ $testimonial->role }}</p>
+                                <p class="text-white/90 leading-relaxed italic">
+                                    "{{ $testimonial->quote }}"
+                                </p>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-heading font-bold text-white mb-2">Ahmad Mujahid</h3>
-                        <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Master of Training</p>
-                        <p class="text-white/90 leading-relaxed italic">
-                            "Sistem ini sangat memudahkan kami para instruktur dalam melakukan scoring real-time. Objektivitas penilaian terjamin dengan algoritma SAW."
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Testimonial 2 -->
-                <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="100">
-                    <img src="{{ asset('images/testimonials/testimonial_2.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
-                    
-                    <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
-                        <h3 class="text-2xl font-heading font-bold text-white mb-1">Siti Nurhaliza</h3>
-                        <p class="text-accent font-medium">Peserta Baitul Arqam</p>
-                    </div>
-
-                    <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
-                        <div class="mb-4">
-                            <svg class="w-10 h-10 text-accent/40 mx-auto" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C15.4647 8 15.017 8.44772 15.017 9V12C15.017 12.5523 14.5693 13 14.017 13H11.017V21H14.017ZM5.01719 21L5.01719 18C5.01719 16.8954 5.91262 16 7.01719 16H10.0172C10.5695 16 11.0172 15.5523 11.0172 15V9C11.0172 8.44772 10.5695 8 10.0172 8H7.01719C6.4649 8 6.01719 8.44772 6.01719 9V12C6.01719 12.5523 5.56947 13 5.01719 13H2.01719V21H5.01719Z"/></svg>
+                    @endforeach
+                @else
+                    <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="0">
+                        <img src="{{ asset('images/testimonials/testimonial_1.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
+                            <h3 class="text-2xl font-heading font-bold text-white mb-1">Ahmad Mujahid</h3>
+                            <p class="text-accent font-medium">Master of Training</p>
                         </div>
-                        <h3 class="text-xl font-heading font-bold text-white mb-2">Siti Nurhaliza</h3>
-                        <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Peserta Baitul Arqam</p>
-                        <p class="text-white/90 leading-relaxed italic">
-                            "Proses pretest dan posttest jadi lebih asyik karena langsung tahu skornya. Sertifikat juga bisa langsung didownload, praktis sekali!"
-                        </p>
-                    </div>
-                </div>
 
-                <!-- Testimonial 3 -->
-                <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="200">
-                    <img src="{{ asset('images/testimonials/testimonial_3.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
-                    
-                    <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
-                        <h3 class="text-2xl font-heading font-bold text-white mb-1">Rahmat Wijaya</h3>
-                        <p class="text-accent font-medium">Pimpinan Wilayah</p>
-                    </div>
-
-                    <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
-                        <div class="mb-4">
-                            <svg class="w-10 h-10 text-accent/40 mx-auto" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C15.4647 8 15.017 8.44772 15.017 9V12C15.017 12.5523 14.5693 13 14.017 13H11.017V21H14.017ZM5.01719 21L5.01719 18C5.01719 16.8954 5.91262 16 7.01719 16H10.0172C10.5695 16 11.0172 15.5523 11.0172 15V9C11.0172 8.44772 10.5695 8 10.0172 8H7.01719C6.4649 8 6.01719 8.44772 6.01719 9V12C6.01719 12.5523 5.56947 13 5.01719 13H2.01719V21H5.01719Z"/></svg>
+                        <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
+                            <div class="mb-4">
+                                <img src="{{ asset('Logoums.png') }}" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
+                            </div>
+                            <h3 class="text-xl font-heading font-bold text-white mb-2">Ahmad Mujahid</h3>
+                            <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Master of Training</p>
+                            <p class="text-white/90 leading-relaxed italic">
+                                "Sistem ini sangat memudahkan kami para instruktur dalam melakukan scoring real-time. Objektivitas penilaian terjamin dengan algoritma SAW."
+                            </p>
                         </div>
-                        <h3 class="text-xl font-heading font-bold text-white mb-2">Rahmat Wijaya</h3>
-                        <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Pimpinan Wilayah</p>
-                        <p class="text-white/90 leading-relaxed italic">
-                            "Sebagai pengelola di tingkat wilayah, saya bisa memantau perkembangan kader dengan lebih mudah dan akurat melalui data statistik yang tersedia."
-                        </p>
                     </div>
-                </div>
+
+                    <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="100">
+                        <img src="{{ asset('images/testimonials/testimonial_2.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
+                            <h3 class="text-2xl font-heading font-bold text-white mb-1">Siti Nurhaliza</h3>
+                            <p class="text-accent font-medium">Peserta Baitul Arqam</p>
+                        </div>
+
+                        <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
+                            <div class="mb-4">
+                                <img src="{{ asset('Logoums.png') }}" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
+                            </div>
+                            <h3 class="text-xl font-heading font-bold text-white mb-2">Siti Nurhaliza</h3>
+                            <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Peserta Baitul Arqam</p>
+                            <p class="text-white/90 leading-relaxed italic">
+                                "Proses pretest dan posttest jadi lebih asyik karena langsung tahu skornya. Sertifikat juga bisa langsung didownload, praktis sekali!"
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="200">
+                        <img src="{{ asset('images/testimonials/testimonial_3.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
+                            <h3 class="text-2xl font-heading font-bold text-white mb-1">Rahmat Wijaya</h3>
+                            <p class="text-accent font-medium">Pimpinan Wilayah</p>
+                        </div>
+
+                        <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
+                            <div class="mb-4">
+                                <img src="{{ asset('Logoums.png') }}" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
+                            </div>
+                            <h3 class="text-xl font-heading font-bold text-white mb-2">Rahmat Wijaya</h3>
+                            <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Pimpinan Wilayah</p>
+                            <p class="text-white/90 leading-relaxed italic">
+                                "Sebagai pengelola di tingkat wilayah, saya bisa memantau perkembangan kader dengan lebih mudah dan akurat melalui data statistik yang tersedia."
+                            </p>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
@@ -802,85 +910,23 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('logo-mpksdi-1.png') }}" alt="Logo" class="h-10 grayscale hover:grayscale-0 transition-all">
-                    <span class="font-heading font-bold text-gray-800 text-xl tracking-tight">ARQAM</span>
+                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-10 grayscale hover:grayscale-0 transition-all">
                 </div>
                 <div class="text-sm text-gray-500 font-medium">
-                    &copy; 2026 <button @click="showDev = true" class="text-primary/70 hover:text-primary font-bold transition-all hover:underline decoration-accent underline-offset-4">gemala.dev</button> x MPKSDI Karanganyar. All rights reserved.
+                    &copy; 2026 <button @click="showDev = true" class="text-primary/70 hover:text-primary font-bold transition-all hover:underline decoration-accent underline-offset-4">LP3A UMS</button>  All rights reserved.
                 </div>
                 <div class="flex space-x-4">
-                    <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-primary/10 hover:text-primary transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                    <a href="https://lp3a.ums.ac.id/" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-primary/10 hover:text-primary transition-colors" title="Website LP3A UMS">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                        </svg>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-primary/10 hover:text-primary transition-colors">
+                    <a href="https://www.instagram.com/lp3aumsofficial/" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-primary/10 hover:text-primary transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                     </a>
                 </div>
             </div>
         </div>
-    {{-- Developer Modal (Option B) --}}
-    <div x-show="showDev" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/60 backdrop-blur-md"
-         x-cloak>
-        
-        <div @click.away="showDev = false" 
-             @keydown.escape.window="showDev = false"
-             x-show="showDev"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
-             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-             class="bg-white rounded-[2.5rem] shadow-2xl max-w-lg w-full overflow-hidden relative border border-gray-100">
-            
-            {{-- Decorative Header --}}
-            <div class="h-32 bg-gradient-to-br from-primary-900 to-primary-700 relative">
-                <button @click="showDev = false" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-
-            <div class="px-8 pb-10 -mt-16 relative text-center">
-                {{-- Profile Image --}}
-                <div class="w-32 h-32 mx-auto rounded-[2rem] bg-white p-2 shadow-xl mb-6 transform hover:rotate-3 transition-transform">
-                    <div class="w-full h-full rounded-[1.5rem] bg-gray-100 flex items-center justify-center overflow-hidden">
-                        <img src="{{ asset('images/arka/arka_fokus.png') }}" alt="Developer" class="w-full h-full object-contain">
-                    </div>
-                </div>
-
-                <h3 class="text-2xl font-heading font-extrabold text-gray-900 mb-1">Tim Pengembang</h3>
-                <p class="text-accent font-bold uppercase tracking-widest text-[10px] mb-6">gemala.dev × Research Team</p>
-                
-                <div class="bg-gray-50 rounded-2xl p-6 mb-8 text-sm text-gray-600 leading-relaxed border border-gray-100">
-                    "Sistem ARQAM dikembangkan sebagai solusi integratif untuk mendukung standarisasi penilaian perkaderan Muhammadiyah yang objektif, transparan, dan berbasis data."
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-                        <p class="text-[10px] font-bold text-primary uppercase mb-1">Teknologi</p>
-                        <p class="text-sm font-bold text-gray-800">Laravel 11 & Alpine.js</p>
-                    </div>
-                    <div class="p-4 bg-accent/5 rounded-2xl border border-accent/10">
-                        <p class="text-[10px] font-bold text-accent uppercase mb-1">Lisensi</p>
-                        <p class="text-sm font-bold text-gray-800">MPKSDI Exclusive</p>
-                    </div>
-                </div>
-
-                <div class="flex justify-center gap-4">
-                    <a href="https://github.com" target="_blank" class="w-12 h-12 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:-translate-y-1 transition-all shadow-lg">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
-                    </a>
-                    <a href="mailto:contact@gemala.dev" class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center hover:-translate-y-1 transition-all shadow-lg shadow-primary/20">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
@@ -891,6 +937,40 @@
                 once: true,
                 easing: 'ease-out-cubic',
                 offset: 50,
+            });
+
+            // Initialize Lenis Smooth Scroll
+            const lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // premium exponential easing
+                orientation: 'vertical',
+                gestureOrientation: 'vertical',
+                smoothWheel: true,
+                wheelMultiplier: 1,
+                touchMultiplier: 2,
+                infinite: false,
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+
+            requestAnimationFrame(raf);
+
+            // Bind click on hash links to lenis scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        lenis.scrollTo(targetEl, {
+                            offset: -80, // match height of navigation header
+                            duration: 1.5,
+                        });
+                    }
+                });
             });
 
             // Smooth Number Counter Animation

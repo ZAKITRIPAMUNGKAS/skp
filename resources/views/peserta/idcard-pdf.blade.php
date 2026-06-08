@@ -13,149 +13,173 @@
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             background: #fff;
-            color: #1e293b;
             line-height: 1.3;
         }
 
         .page-break { page-break-after: always; }
 
-        /* ═══════════════════════════
-           FRONT SIDE
-        ═══════════════════════════ */
+        /* ═══ FRONT CARD ═══ */
         .card-front {
             width: 86mm;
             height: 137mm;
-            background: #fff;
             overflow: hidden;
             position: relative;
+            background: #fff;
         }
 
-        /* Header biru — background saja, posisi absolute */
-        .hdr-bg {
+        /* Background image covers full card */
+        .card-bg {
             position: absolute;
             top: 0; left: 0;
-            width: 100%; height: 39mm;
-            background-color: #1A6D9B;
-        }
-        .hdr-gold {
-            position: absolute;
-            top: 39mm; left: 0;
-            width: 100%; height: 2.5mm;
-            background-color: #D4A017;
-        }
-        /* Footer bar */
-        .ftr-bar {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 4mm;
-            background-color: #1A6D9B;
-        }
-        .ftr-gold {
-            position: absolute;
-            bottom: 4mm; left: 0;
-            width: 100%; height: 1mm;
-            background-color: #D4A017;
+            width: 100%; height: 100%;
+            z-index: 0;
         }
 
-        /* Semua konten menggunakan flow biasa (relative) */
-        .front-body {
+        /* All content sits above bg */
+        .card-content {
             position: relative;
+            z-index: 1;
             width: 100%;
             text-align: center;
         }
 
-        /* Logo */
-        .logo-wrap {
+        /* ── Logo area ── */
+        .logo-area {
             padding-top: 4mm;
-            padding-bottom: 3mm;
+            padding-bottom: 2mm;
         }
-        .logo-img {
-            height: 12mm;
+        .logo-badge {
+            display: inline-block;
+            background: #ffffff;
+            border-radius: 6mm;
+            padding: 1.2mm 4mm;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        }
+        .logo-badge img {
+            height: 8mm;
             object-fit: contain;
+            vertical-align: middle;
         }
 
-        /* Foto */
-        .photo-wrap {
-            width: 100%;
-            text-align: center;
+        /* ── PESERTA label ── */
+        .lbl-peserta {
+            font-size: 22pt;
+            font-weight: 900;
+            color: #0d3a73;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 0.5mm;
+        }
+
+        /* ── Event name ── */
+        .lbl-event {
+            font-size: 11pt;
+            font-weight: 900;
+            color: #0d3a73;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+            padding: 0 3mm;
+            margin-bottom: 0.5mm;
+        }
+
+        /* ── Lokasi & Tanggal ── */
+        .lbl-place {
+            font-size: 8pt;
+            font-weight: 700;
+            color: #1a5276;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            line-height: 1;
             margin-bottom: 3mm;
         }
-        .photo-box {
+
+        /* ── Foto Kotak (1:1) ── */
+        .photo-area {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 4mm;
+        }
+        .photo-square {
             display: inline-block;
-            width: 28mm;
-            height: 35mm;
-            border: 2px solid #ffffff;
+            width: 30mm;
+            height: 30mm;
             border-radius: 2mm;
             overflow: hidden;
-            background: #f1f5f9;
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+            background-color: #dbeafe;
+            position: relative;
         }
-        .photo-box img {
+        .photo-square img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            display: block;
         }
         .photo-placeholder {
             display: inline-block;
-            width: 28mm;
-            height: 35mm;
-            border: 2px solid #e2e8f0;
+            width: 30mm;
+            height: 30mm;
             border-radius: 2mm;
-            background: #f1f5f9;
+            border: 2.5px solid #ffffff;
+            background: #dbeafe;
             text-align: center;
-            padding-top: 11mm;
-            color: #94a3b8;
-            font-size: 22pt;
+            padding-top: 7mm;
+            color: #1a5276;
+            font-size: 18pt;
             font-weight: bold;
         }
 
-        /* Nama */
-        .name {
-            font-size: 10.5pt;
-            font-weight: bold;
-            color: #0f172a;
-            text-transform: uppercase;
-            line-height: 1.2;
-            padding: 0 4mm;
-            margin-bottom: 1mm;
-            word-wrap: break-word;
+        /* ── Nickname badge ── */
+        .nickname-area {
+            margin-bottom: 3.5mm;
         }
-        .unit {
-            font-size: 7pt;
-            color: #64748b;
-            padding: 0 5mm;
-            margin-bottom: 2.5mm;
-            line-height: 1.3;
-            word-wrap: break-word;
-        }
-
-        /* Badge event */
-        .pill-wrap {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 3mm;
-        }
-        .pill {
+        .nickname-badge {
             display: inline-block;
-            background-color: #1A6D9B;
+            background: #f5b300;
             color: #ffffff;
-            font-size: 6pt;
-            font-weight: bold;
-            padding: 1mm 3.5mm;
-            border-radius: 1mm;
+            font-size: 14pt;
+            font-weight: 900;
+            padding: 1.5mm 8mm;
+            border-radius: 2.5mm;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
-        /* QR Code */
-        .qr-wrap {
+        /* ── Nama Lengkap ── */
+        .full-name {
+            font-size: 10.5pt;
+            font-weight: 900;
+            color: #0d3a73;
+            text-transform: uppercase;
+            padding: 0 4mm;
+            margin-bottom: 1.2mm;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        /* ── Unit Kerja ── */
+        .unit-text {
+            font-size: 7.5pt;
+            color: #1a5276;
+            font-weight: 600;
+            padding: 0 5mm;
+            margin-bottom: 2mm;
+            line-height: 1.3;
+        }
+
+        /* ── QR Code ── */
+        .qr-area {
             width: 100%;
             text-align: center;
         }
         .qr-box {
             display: inline-block;
-            width: 28mm;
-            height: 28mm;
-            border: 1px solid #e2e8f0;
+            width: 25mm;
+            height: 25mm;
+            border: 1px solid #93c5fd;
             padding: 1mm;
             background: #fff;
             border-radius: 1.5mm;
@@ -164,62 +188,32 @@
             width: 100%;
             height: 100%;
         }
-        .scan-label {
-            font-size: 6pt;
-            font-weight: bold;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-top: 1.5mm;
-        }
 
-        /* ═══════════════════════════
-           BACK SIDE
-        ═══════════════════════════ */
+        /* ═══ BACK CARD ═══ */
         .card-back {
             width: 86mm;
             height: 137mm;
-            background: #fff;
             overflow: hidden;
             position: relative;
+            background: #fff;
         }
         .back-body {
+            position: relative;
+            z-index: 1;
             padding: 9mm 7mm 0;
         }
-        .back-header {
-            text-align: center;
-            padding-bottom: 3mm;
-            border-bottom: 2px solid #1A6D9B;
-            margin-bottom: 4mm;
-        }
-        .back-logo {
-            height: 13mm;
-            object-fit: contain;
-            margin-bottom: 1.5mm;
-        }
-        .back-title {
-            font-size: 9.5pt;
-            font-weight: 800;
-            color: #1A6D9B;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
         .rules-title {
             font-size: 7.5pt;
             font-weight: 800;
-            color: #0f172a;
+            color: #0d3a73;
             text-transform: uppercase;
-            border-bottom: 1.5px solid #D4A017;
+            border-bottom: 1.5px solid #f5b300;
             padding-bottom: 1.5mm;
             margin-bottom: 3mm;
         }
-
-        /* Tabel bullet untuk DomPDF — paling stabil */
         .rule-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 1mm;
         }
         .rule-table td {
             padding: 0;
@@ -228,7 +222,7 @@
         .rule-dot {
             width: 4mm;
             font-size: 11pt;
-            color: #1A6D9B;
+            color: #0d3a73;
             font-weight: bold;
             padding-right: 1mm;
             line-height: 1.3;
@@ -239,27 +233,6 @@
             line-height: 1.4;
             padding-bottom: 2mm;
         }
-
-        .back-footer {
-            position: absolute;
-            bottom: 9mm;
-            left: 0;
-            width: 100%;
-            text-align: center;
-        }
-        .org {
-            font-size: 7pt;
-            font-weight: 700;
-            color: #475569;
-            text-transform: uppercase;
-        }
-        .org-sub {
-            font-size: 5.5pt;
-            color: #64748b;
-            text-transform: uppercase;
-            margin-top: 0.8mm;
-            letter-spacing: 0.3px;
-        }
     </style>
 </head>
 <body>
@@ -267,64 +240,87 @@
 {{-- ═════════════ FRONT SIDE ═════════════ --}}
 <div class="card-front page-break">
 
-    {{-- Background elemen (absolute) --}}
-    <div class="hdr-bg"></div>
-    <div class="hdr-gold"></div>
-    <div class="ftr-gold"></div>
-    <div class="ftr-bar"></div>
+    {{-- Background image --}}
+    <img class="card-bg" src="{{ public_path('IDCARD.png') }}">
 
-    {{-- Konten mengalir normal --}}
-    <div class="front-body">
+    {{-- Content --}}
+    <div class="card-content">
 
-        <div class="logo-wrap">
-            <img src="{{ public_path('logo.webp') }}" class="logo-img" alt="Logo">
+        {{-- Logo UMS --}}
+        <div class="logo-area">
+            <div class="logo-badge">
+                <img src="{{ public_path('logo.webp') }}" alt="UMS">
+            </div>
         </div>
 
-        <div class="photo-wrap">
+        {{-- PESERTA --}}
+        <div class="lbl-peserta">PESERTA</div>
+
+        {{-- Nama Event --}}
+        <div class="lbl-event">{{ $event->nama_event }}</div>
+
+        {{-- Lokasi & Tanggal --}}
+        <div class="lbl-place">
+            {{ $event->lokasi }},
+            @if($event->tanggal_mulai && $event->tanggal_selesai)
+                @if($event->tanggal_mulai->format('m Y') === $event->tanggal_selesai->format('m Y'))
+                    {{ $event->tanggal_mulai->format('d') }}-{{ $event->tanggal_selesai->format('d M Y') }}
+                @else
+                    {{ $event->tanggal_mulai->format('d M Y') }} - {{ $event->tanggal_selesai->format('d M Y') }}
+                @endif
+            @elseif($event->tanggal_mulai)
+                {{ $event->tanggal_mulai->format('d M Y') }}
+            @endif
+        </div>
+
+        {{-- Foto Kotak --}}
+        <div class="photo-area">
             @if($peserta->foto)
-                <div class="photo-box">
-                    <img src="{{ $peserta->foto_pdf_path }}" alt="Foto Peserta">
+                <div class="photo-square">
+                    <img src="{{ $peserta->foto_pdf_path }}" alt="Foto">
                 </div>
             @else
                 <div class="photo-placeholder">?</div>
             @endif
         </div>
 
-        <div class="name">{{ $peserta->nama_lengkap }}</div>
-        <div class="unit">{{ $peserta->unit_kerja ?? 'Peserta Baitul Arqam' }}</div>
+        {{-- Nickname --}}
+        @if($peserta->nama_panggilan)
+            <div class="nickname-area">
+                <span class="nickname-badge">{{ $peserta->nama_panggilan }}</span>
+            </div>
+        @endif
 
-        <div class="pill-wrap">
-            <span class="pill">{{ Str::limit($event->nama_event, 42) }}</span>
-        </div>
+        {{-- Nama Lengkap --}}
+        <div class="full-name">{{ $peserta->nama_lengkap }}</div>
 
-        <div class="qr-wrap">
+        {{-- Unit Kerja --}}
+        <div class="unit-text">{{ $peserta->unit_kerja ?? 'Peserta Baitul Arqam' }}</div>
+
+        {{-- QR Code murni --}}
+        <div class="qr-area">
             @php
-                $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(90)->margin(0)->generate($qrData);
+                $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+                    ->errorCorrection('M')
+                    ->size(100)
+                    ->margin(0)
+                    ->generate($qrData);
             @endphp
             <div class="qr-box">
                 <img src="data:image/svg+xml;base64,{{ base64_encode($qrCode) }}" alt="QR Code">
             </div>
-            <div class="scan-label">Scan untuk Presensi</div>
         </div>
 
     </div>
+
 </div>
 
 {{-- ═════════════ BACK SIDE ═════════════ --}}
 <div class="card-back">
-
-    <div class="ftr-gold"></div>
-    <div class="ftr-bar"></div>
+    <img class="card-bg" src="{{ public_path('IDCARD.png') }}">
 
     <div class="back-body">
-
-        <div class="back-header">
-            <img src="{{ public_path('logo-mpksdi-1.png') }}" class="back-logo" alt="Logo MPKSDI">
-            <div class="back-title">Baitul Arqam Terpadu</div>
-        </div>
-
-        <div class="rules-title">Tata Tertib</div>
-
+        <div class="rules-title" style="padding-top: 20mm;">Tata Tertib</div>
         <table class="rule-table">
             <tr>
                 <td class="rule-dot">•</td>
@@ -336,7 +332,7 @@
             </tr>
             <tr>
                 <td class="rule-dot">•</td>
-                <td class="rule-text">Hadir di ruangan 15 menit sebelum materi dimulai.</td>
+                <td class="rule-text">Hadir di ruangan 5 menit sebelum materi dimulai.</td>
             </tr>
             <tr>
                 <td class="rule-dot">•</td>
@@ -344,21 +340,14 @@
             </tr>
             <tr>
                 <td class="rule-dot">•</td>
-                <td class="rule-text">Dilarang merokok di seluruh area kegiatan.</td>
+                <td class="rule-text">Tidak mengoperasikan HP selama sesi berlangsung.</td>
             </tr>
             <tr>
                 <td class="rule-dot">•</td>
                 <td class="rule-text">Menjaga kebersihan dan fasilitas di lokasi acara.</td>
             </tr>
         </table>
-
     </div>
-
-    <div class="back-footer">
-        <div class="org">Majelis Pendidikan Kader &amp; SDI</div>
-        <div class="org-sub">Pimpinan Daerah Muhammadiyah Karanganyar</div>
-    </div>
-
 </div>
 
 </body>

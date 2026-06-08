@@ -43,7 +43,17 @@ class User extends Authenticatable
         return $this->role === 'peserta';
     }
 
+    public function isFasilitator(): bool
+    {
+        return $this->role === 'fasilitator';
+    }
+
     // ── Relasi ─────────────────────────────────
+
+    public function assignedEvents()
+    {
+        return $this->belongsToMany(Event::class, 'event_fasilitator', 'user_id', 'event_id')->withTimestamps();
+    }
 
     public function peserta()
     {

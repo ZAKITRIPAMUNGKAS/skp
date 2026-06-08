@@ -185,6 +185,23 @@
                                 </p>
                                 @endif
 
+                                @if(!empty($sesi['pemateri']))
+                                <p class="mt-1.5 text-xs font-medium text-gray-500 flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    Pemateri: <span class="font-semibold text-gray-700">{{ $sesi['pemateri'] }}</span>
+                                </p>
+                                @endif
+
+                                @if(!empty($sesi['file_materi']))
+                                <div class="mt-3">
+                                    <a href="{{ asset('storage/' . $sesi['file_materi']) }}" target="_blank"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold rounded-lg transition-all border border-primary/20">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        Unduh Materi
+                                    </a>
+                                </div>
+                                @endif
+
                                 {{-- Time badges --}}
                                 @if(!empty($sesi['waktu_mulai']) || !empty($sesi['waktu_selesai']))
                                 <div class="mt-2 flex items-center gap-2 flex-wrap">

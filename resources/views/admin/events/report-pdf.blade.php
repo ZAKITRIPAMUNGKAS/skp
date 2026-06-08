@@ -187,7 +187,7 @@
         <div class="clear"></div>
         
         <p style="margin-top: 50px; font-size: 8px; color: #9ca3af; text-align: center;">
-            Dokumen ini dihasilkan secara otomatis oleh Sistem ARQAM Digital.<br>
+            Dokumen ini dihasilkan secara otomatis oleh Sistem ARQAM App.<br>
             Keaslian data dapat diverifikasi melalui sistem administrasi pusat.
         </p>
     </div>

@@ -17,8 +17,23 @@ class EventController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Event::withCount('eventPesertaAktif')
-            ->latest();
+        $user = auth()->user();
+        $query = Event::withCount('eventPesertaAktif');
+
+        if ($user->isFasilitator()) {
+            // Hanya tampilkan event yang ditugaskan ke fasilitator ini
+            $query->whereHas('facilitators', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            });
+        } elseif ($user->isAdmin()) {
+            // Admin utama melihat semua event miliknya atau seluruh event?
+            // "Admin dapat mengelola seluruh event yang dibuatnya." -> mari kita batasi created_by = admin_id jika diperlukan,
+            // atau jika admin ingin melihat semua event. Mari batasi created_by jika itu adalah rules yang diinginkan.
+            // "Admin: Dapat membuat event. Dapat mengelola seluruh event yang dibuatnya."
+            $query->where('created_by', $user->id);
+        }
+
+        $query->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -86,13 +101,34 @@ class EventController extends Controller
         // Sesi
         $sessions = $event->sesi()->orderBy('urutan')->get();
 
+        // Data Fasilitator (Hanya untuk Admin Utama)
+        $allFasilitators = [];
+        $assignedFasilitatorIds = [];
+        if (auth()->user()->isAdmin()) {
+            $allFasilitators = \App\Models\User::where('role', 'fasilitator')->get();
+            $assignedFasilitatorIds = $event->facilitators()->pluck('users.id')->toArray();
+        }
+
+        // Logs aktivitas khusus untuk event ini (Dilihat oleh Admin Utama)
+        $eventLogs = [];
+        if (auth()->user()->isAdmin()) {
+            $eventLogs = \App\Models\ActivityLog::where('event_id', $event->id)
+                ->with('user')
+                ->latest()
+                ->take(100)
+                ->get();
+        }
+
         return view('admin.events.show', compact(
             'event',
             'totalPeserta',
             'completedPretest',
             'completedAfektif',
             'participants',
-            'sessions'
+            'sessions',
+            'allFasilitators',
+            'assignedFasilitatorIds',
+            'eventLogs'
         ));
     }
 
@@ -182,5 +218,49 @@ class EventController extends Controller
     {
         $fileName = 'Laporan_Hasil_Baitul_Arqam_' . str_replace(' ', '_', $event->nama_event) . '.xlsx';
         return Excel::download(new PenilaianExport($event->id), $fileName);
+    }
+
+    public function assignFacilitators(Request $request, Event $event)
+    {
+        // Hanya bisa dilakukan oleh Admin
+        if (!auth()->user()->isAdmin()) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $validated = $request->validate([
+            'facilitators' => 'nullable|array',
+            'facilitators.*' => 'exists:users,id',
+        ]);
+
+        $facilitators = $validated['facilitators'] ?? [];
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($event, $facilitators) {
+            $oldIds = $event->facilitators()->pluck('users.id')->toArray();
+            
+            $event->facilitators()->sync($facilitators);
+
+            // Log activity manually for the assignment
+            if (auth()->check()) {
+                $user = auth()->user();
+                $oldNames = \App\Models\User::whereIn('id', $oldIds)->pluck('name')->toArray();
+                $newNames = \App\Models\User::whereIn('id', $facilitators)->pluck('name')->toArray();
+
+                \App\Models\ActivityLog::create([
+                    'user_id'     => $user->id,
+                    'event_id'    => $event->id,
+                    'action'      => 'updated',
+                    'role_user'   => $user->role,
+                    'model_type'  => get_class($event),
+                    'model_id'    => $event->id,
+                    'description' => "Admin '{$user->name}' memperbarui penugasan fasilitator untuk event '{$event->nama_event}'",
+                    'old_values'  => ['facilitators' => $oldNames],
+                    'new_values'  => ['facilitators' => $newNames],
+                    'ip_address'  => request()->ip(),
+                ]);
+            }
+        });
+
+        return redirect()->route('admin.events.show', $event)
+            ->with('success', 'Fasilitator berhasil diperbarui!');
     }
 }

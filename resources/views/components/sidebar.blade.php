@@ -1,6 +1,8 @@
 {{-- Sidebar Component --}}
 @php
-    $isAdmin = auth()->check() && auth()->user()->isAdmin();
+    $user = auth()->user();
+    $isAdmin = $user && $user->isAdmin();
+    $isFasilitator = $user && $user->isFasilitator();
     $currentRoute = request()->route() ? request()->route()->getName() : '';
 @endphp
 
@@ -21,29 +23,36 @@
             <span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Menu Utama</span>
         </div>
 
-        @if($isAdmin)
-            {{-- Admin Menu --}}
-            <x-sidebar-item icon="dashboard" label="Dashboard" route="admin.dashboard" :collapsed="false" />
+        @if($isAdmin || $isFasilitator)
+            {{-- Admin & Fasilitator Menu --}}
+            @if($isAdmin)
+                <x-sidebar-item icon="dashboard" label="Dashboard" route="admin.dashboard" :collapsed="false" />
+            @endif
 
             <div x-show="!sidebarCollapsed" class="px-3 mt-5 mb-2">
                 <span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Kelola</span>
             </div>
             <x-sidebar-item icon="event" label="Kelola Event" route="admin.events.index" :collapsed="false" />
-            <x-sidebar-item icon="people" label="Kelola Peserta" route="admin.participants.index" :collapsed="false" />
-            <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" />
+            
+            @if($isAdmin)
+                <x-sidebar-item icon="people" label="Kelola Peserta" route="admin.participants.index" :collapsed="false" />
+                <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" />
+                <x-sidebar-item icon="image" label="Galeri Pelatihan" route="admin.galleries.index" :collapsed="false" />
+                <x-sidebar-item icon="comment" label="Testimoni" route="admin.testimonials.index" :collapsed="false" />
 
-            <div x-show="!sidebarCollapsed" class="px-3 mt-5 mb-2">
-                <span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Sistem</span>
-            </div>
-            <x-sidebar-item icon="logs" label="Log Aktivitas" route="admin.logs.index" :collapsed="false" />
-            <x-sidebar-item icon="report" label="Laporan" route="admin.dashboard" :collapsed="false" />
+                <div x-show="!sidebarCollapsed" class="px-3 mt-5 mb-2">
+                    <span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Sistem</span>
+                </div>
+                <x-sidebar-item icon="logs" label="Log Aktivitas" route="admin.logs.index" :collapsed="false" />
+                <x-sidebar-item icon="report" label="Laporan" route="admin.dashboard" :collapsed="false" />
+            @endif
         @else
             {{-- Peserta Menu --}}
             <x-sidebar-item icon="dashboard" label="Dashboard" route="peserta.dashboard" :collapsed="false" />
             <x-sidebar-item icon="quiz" label="Pretest / Posttest" route="peserta.tes.index" :collapsed="false" />
             <x-sidebar-item icon="affective" label="Evaluasi Afektif" route="peserta.afektif.index_root" :collapsed="false" />
             <x-sidebar-item icon="attendance" label="Kehadiran" route="peserta.kehadiran" :collapsed="false" />
-            <x-sidebar-item icon="survey" label="Angket Evaluasi" route="peserta.angket.index_root" :collapsed="false" />
+            <x-sidebar-item icon="survey" label="Kuisioner" route="peserta.angket.index_root" :collapsed="false" />
             <x-sidebar-item icon="ranking" label="Hasil Penilaian" route="peserta.hasil" :collapsed="false" />
         @endif
     </nav>
@@ -96,17 +105,21 @@
         </button>
     </div>
 
-    {{-- Mobile Navigation (Admin Only) --}}
-    @if($isAdmin)
+    {{-- Mobile Navigation (Admin & Fasilitator) --}}
+    @if($isAdmin || $isFasilitator)
     <nav class="flex-1 overflow-y-auto sidebar-scroll py-4 px-3">
-        <x-sidebar-item icon="dashboard" label="Dashboard" route="admin.dashboard" :collapsed="false" :mobile="true" />
+        @if($isAdmin)
+            <x-sidebar-item icon="dashboard" label="Dashboard" route="admin.dashboard" :collapsed="false" :mobile="true" />
+        @endif
         <div class="px-3 mt-5 mb-2"><span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Kelola</span></div>
         <x-sidebar-item icon="event" label="Kelola Event" route="admin.events.index" :collapsed="false" :mobile="true" />
-        <x-sidebar-item icon="people" label="Kelola Peserta" route="admin.participants.index" :collapsed="false" :mobile="true" />
-        <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" :mobile="true" />
-        <div class="px-3 mt-5 mb-2"><span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Sistem</span></div>
-        <x-sidebar-item icon="logs" label="Log Aktivitas" route="admin.logs.index" :collapsed="false" :mobile="true" />
-        <x-sidebar-item icon="report" label="Laporan" route="admin.dashboard" :collapsed="false" :mobile="true" />
+            <x-sidebar-item icon="people" label="Kelola Peserta" route="admin.participants.index" :collapsed="false" :mobile="true" />
+            <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" :mobile="true" />
+            <x-sidebar-item icon="image" label="Galeri Pelatihan" route="admin.galleries.index" :collapsed="false" :mobile="true" />
+            <x-sidebar-item icon="comment" label="Testimoni" route="admin.testimonials.index" :collapsed="false" :mobile="true" />
+            <div class="px-3 mt-5 mb-2"><span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Sistem</span></div>
+            <x-sidebar-item icon="logs" label="Log Aktivitas" route="admin.logs.index" :collapsed="false" :mobile="true" />
+            <x-sidebar-item icon="report" label="Laporan" route="admin.dashboard" :collapsed="false" :mobile="true" />
     </nav>
     @else
     <nav class="flex-1 overflow-y-auto sidebar-scroll py-4 px-3 flex flex-col items-center justify-center text-center opacity-50 p-6">

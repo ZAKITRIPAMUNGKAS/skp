@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventSesi extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Loggable;
 
     protected $table = 'event_sesi';
 
@@ -15,6 +15,8 @@ class EventSesi extends Model
         'event_id',
         'nama_sesi',
         'urutan',
+        'pemateri',
+        'file_materi',
     ];
 
     // ── Relasi ─────────────────────────────────

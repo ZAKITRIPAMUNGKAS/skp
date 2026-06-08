@@ -14,15 +14,14 @@
 
     <x-page-header title="Buat Event Baru" subtitle="Tambah kegiatan Baitul Arqam baru" />
 
-    <x-card class="max-w-3xl">
+    <x-card>
         <form method="POST" action="{{ route('admin.events.store') }}">
             @csrf
             @include('admin.events._form')
 
             <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
                 <x-button variant="ghost" href="{{ route('admin.events.index') }}">Batal</x-button>
-                <x-button type="submit" variant="primary">
-                    <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <x-button type="submit" variant="primary" icon='<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>'>
                     Simpan Event
                 </x-button>
             </div>

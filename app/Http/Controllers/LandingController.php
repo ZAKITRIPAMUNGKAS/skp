@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Peserta;
+use App\Models\Gallery;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
@@ -26,12 +28,17 @@ class LandingController extends Controller
             $activeEvent = Event::latest('tanggal_mulai')->first();
         }
 
+        $galleries = Gallery::orderBy('urutan')->get();
+        $testimonials = Testimonial::orderBy('urutan')->get();
+
         return view('landing.index', compact(
             'totalEvents', 
             'totalAlumni', 
             'totalMitra', 
             'totalSertifikat', 
-            'activeEvent'
+            'activeEvent',
+            'galleries',
+            'testimonials'
         ));
     }
 }

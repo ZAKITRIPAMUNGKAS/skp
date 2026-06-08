@@ -15,6 +15,7 @@ class AngketItem extends Model
         'event_id',
         'kategori',
         'teks_item',
+        'tipe',
         'urutan',
     ];
 

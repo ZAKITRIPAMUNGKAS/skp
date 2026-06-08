@@ -43,6 +43,9 @@ class ProfileController extends Controller
             'jabatan_aum'    => 'nullable|string|max:255',
             'ukuran_kaos'    => 'nullable|string|max:10',
             'alamat_rumah'   => 'nullable|string',
+            'bahasa_dikuasai' => 'required|array|min:1',
+            'bahasa_dikuasai.*' => 'string|max:100',
+            'hafalan_quran_1' => 'required|string|max:255',
             'foto'           => 'nullable|image|max:2048',
             'password'       => 'nullable|min:6|confirmed'
         ]);
@@ -67,6 +70,10 @@ class ProfileController extends Controller
         $peserta->jabatan_aum = $validated['jabatan_aum'] ?? null;
         $peserta->ukuran_kaos = $validated['ukuran_kaos'] ?? null;
         $peserta->alamat_rumah = $validated['alamat_rumah'] ?? null;
+        
+        // Simpan bahasa asing & hafalan quran
+        $peserta->bahasa_dikuasai = json_encode($validated['bahasa_dikuasai']);
+        $peserta->hafalan_quran_1 = $validated['hafalan_quran_1'];
 
         if (!empty($validated['tanggal_lahir'])) {
             $peserta->umur = \Carbon\Carbon::parse($validated['tanggal_lahir'])->age;

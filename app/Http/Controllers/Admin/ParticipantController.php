@@ -327,6 +327,7 @@ class ParticipantController extends Controller
 
     public function downloadIdCards(Event $event)
     {
+        set_time_limit(300);
         $participants = EventPeserta::where('event_id', $event->id)
             ->where('status_aktif', true)
             ->with('peserta')
@@ -361,6 +362,7 @@ class ParticipantController extends Controller
 
     public function downloadIdCard(Event $event, Peserta $participant)
     {
+        set_time_limit(120);
         $ep = EventPeserta::where('event_id', $event->id)
             ->where('peserta_id', $participant->id)
             ->first();

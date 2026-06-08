@@ -32,6 +32,8 @@ class AuthController extends Controller
 
             if (auth()->user()->isAdmin()) {
                 return redirect()->intended('/admin/dashboard');
+            } elseif (auth()->user()->isFasilitator()) {
+                return redirect()->intended('/admin/events');
             }
 
             return redirect()->intended('/peserta/dashboard');

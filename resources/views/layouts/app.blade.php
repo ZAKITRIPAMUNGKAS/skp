@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'ARQAM App') — Sistem Evaluasi Baitul Arqam</title>
-    <link rel="icon" type="image/png" href="{{ asset('logo-mpksdi-1.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logoums.png') }}">
 
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,7 +38,49 @@
     </style>
     @yield('head_extra')
 </head>
-<body class="h-full font-body antialiased">
+<body class="h-full font-body antialiased"
+      x-data="{ loading: false }"
+      x-on:page-loading.window="loading = true">
+      
+    {{-- Premium Full-Page Loading Spinner --}}
+    <div x-show="loading" 
+         x-transition:enter="transition-opacity duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 bg-white/70 backdrop-blur-md z-[99999] flex flex-col items-center justify-center"
+         style="display: none;">
+        <div class="flex flex-col items-center gap-4">
+            <div class="relative w-12 h-12">
+                <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p class="text-xs font-semibold text-primary uppercase tracking-widest animate-pulse">Memuat Halaman...</p>
+        </div>
+    </div>
+
     @yield('content')
+
+    {{-- Global Loading Listener --}}
+    <script>
+        window.addEventListener('beforeunload', function(e) {
+            const activeEl = document.activeElement;
+            if (activeEl && activeEl.tagName === 'A') {
+                const href = activeEl.getAttribute('href');
+                const target = activeEl.getAttribute('target');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript:') && target !== '_blank') {
+                    window.dispatchEvent(new CustomEvent('page-loading'));
+                }
+            } else if (activeEl && (activeEl.tagName === 'BUTTON' || activeEl.getAttribute('type') === 'submit')) {
+                window.dispatchEvent(new CustomEvent('page-loading'));
+            }
+        });
+        
+        document.addEventListener('submit', function() {
+            window.dispatchEvent(new CustomEvent('page-loading'));
+        });
+    </script>
 </body>
 </html>

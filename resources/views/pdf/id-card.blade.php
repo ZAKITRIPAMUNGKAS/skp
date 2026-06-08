@@ -207,9 +207,9 @@
                             <ul class="rules-list">
                                 <li>ID Card wajib dikenakan selama acara berlangsung.</li>
                                 <li>Presensi kehadiran dilakukan melalui scan QR Code.</li>
-                                <li>Hadir di ruangan 15 menit sebelum materi dimulai.</li>
+                                <li>Hadir di ruangan 5 menit sebelum materi dimulai.</li>
                                 <li>Menjaga ketenangan dan adab selama sesi materi.</li>
-                                <li>Dilarang merokok di seluruh area kegiatan.</li>
+                                <li>Tidak Mengoperasikan HP Smartphone selama sesi berlangsung.</li>
                                 <li>Menjaga kebersihan dan fasilitas di lokasi acara.</li>
                             </ul>
                         </div>
