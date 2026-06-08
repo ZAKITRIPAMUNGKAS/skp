@@ -274,3 +274,29 @@ Route::middleware(['auth', 'peserta'])->prefix('peserta')->name('peserta.')->gro
     // Hasil Penilaian
     Route::get('/hasil', [\App\Http\Controllers\Peserta\DashboardController::class, 'hasil'])->name('hasil');
 });
+
+// ── Rute Sementara Hapus Semua Peserta ──
+Route::get('/rahasia-hapus-peserta', function() {
+    if (!auth()->check() || auth()->user()->role !== 'admin') {
+        return 'Akses ditolak. Anda harus login sebagai admin.';
+    }
+
+    \Illuminate\Support\Facades\DB::beginTransaction();
+    try {
+        // 1. Hapus pendaftaran event
+        \App\Models\EventPeserta::query()->delete();
+        
+        // 2. Hapus profile peserta
+        \App\Models\Peserta::query()->delete();
+        
+        // 3. Hapus user account yang role-nya peserta
+        \App\Models\User::where('role', 'peserta')->delete();
+
+        \Illuminate\Support\Facades\DB::commit();
+        return 'Sukses! Seluruh data peserta dan akun loginnya telah berhasil dihapus.';
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\DB::rollBack();
+        return 'Gagal menghapus data: ' . $e->getMessage();
+    }
+});
+
