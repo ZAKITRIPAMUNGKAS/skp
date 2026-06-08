@@ -124,34 +124,48 @@ class Peserta extends Model
 
         $path = $this->foto;
         $isRemote = str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
-        
+
         if ($isRemote) {
+            // Remote images (e.g. Google Drive): fetch with strict timeout
+            // Return null immediately to show placeholder if anything fails
             try {
                 $url = $this->foto_url;
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 3); // 3 seconds timeout
-                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                $data = curl_exec($ch);
-                $mime = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-                curl_close($ch);
+                $data = null;
+                $mime = 'image/jpeg';
 
-                if ($data && !empty($data)) {
-                    if (empty($mime) || !str_contains($mime, 'image/')) {
-                        $mime = 'image/jpeg';
+                if (function_exists('curl_init')) {
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    $data = curl_exec($ch);
+                    $ct = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+                    curl_close($ch);
+                    if ($ct && str_contains($ct, 'image/')) {
+                        $mime = $ct;
                     }
+                } else {
+                    // Fallback: file_get_contents with 3-second timeout
+                    $ctx = stream_context_create([
+                        'http' => ['timeout' => 3],
+                        'https' => ['timeout' => 3],
+                    ]);
+                    $data = @file_get_contents($url, false, $ctx);
+                }
+
+                if ($data && strlen((string)$data) > 100) {
                     return 'data:' . $mime . ';base64,' . base64_encode($data);
                 }
-            } catch (\Exception $e) {
-                // Ignore and fallback
+            } catch (\Throwable $e) {
+                // Catch ALL errors including \Error (e.g. undefined function)
             }
             return null;
         }
 
-        // Local file
+        // Local file — read directly from disk, no network involved
         $localPath = public_path('storage/' . $path);
         if (file_exists($localPath)) {
             $data = @file_get_contents($localPath);

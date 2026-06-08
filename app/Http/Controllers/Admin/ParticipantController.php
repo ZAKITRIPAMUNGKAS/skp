@@ -340,8 +340,8 @@ class ParticipantController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.events.batch-idcard-pdf', [
             'event' => $event,
             'participants' => $participants
-        ])->setPaper([0, 0, 243.7, 388.3]) // Menggunakan ukuran ID Card 86mm x 137mm agar pas cetak
-          ->setOption('isRemoteEnabled', true);
+        ])->setPaper([0, 0, 243.7, 388.3])
+          ->setOption('isRemoteEnabled', false); // Photos are base64, no remote fetch needed
 
         return $pdf->stream('Master_ID_Cards_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
     }
@@ -372,7 +372,7 @@ class ParticipantController extends Controller
             'peserta' => $participant,
             'qrData' => $qrData
         ])->setPaper([0, 0, 243.7, 388.3])
-          ->setOption('isRemoteEnabled', true);
+          ->setOption('isRemoteEnabled', false); // All images are base64, no remote fetch needed
 
         return $pdf->stream('ID_Card_' . str_replace(' ', '_', $participant->nama_lengkap) . '.pdf');
     }

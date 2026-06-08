@@ -226,11 +226,18 @@
 </head>
 <body>
 
+@php
+    $idcardBgPath = public_path('IDCARD.png');
+    $idcardBg = file_exists($idcardBgPath)
+        ? 'data:image/png;base64,' . base64_encode(file_get_contents($idcardBgPath))
+        : '';
+@endphp
+
 {{-- ═════════════ FRONT SIDE ═════════════ --}}
 <div class="card-front page-break">
 
     {{-- Background image --}}
-    <img class="card-bg" src="{{ public_path('IDCARD.png') }}">
+    <img class="card-bg" src="{{ $idcardBg }}">
 
     {{-- Content --}}
     <div class="card-content">
@@ -299,7 +306,7 @@
 
 {{-- ═════════════ BACK SIDE ═════════════ --}}
 <div class="card-back">
-    <img class="card-bg" src="{{ public_path('IDCARD.png') }}">
+    <img class="card-bg" src="{{ $idcardBg }}">
 
     <div class="back-body">
         <div class="rules-title" style="padding-top: 20mm;">Tata Tertib</div>

@@ -226,6 +226,13 @@
 </head>
 <body>
 
+@php
+    $idcardBgPath = public_path('IDCARD.png');
+    $idcardBg = file_exists($idcardBgPath)
+        ? 'data:image/png;base64,' . base64_encode(file_get_contents($idcardBgPath))
+        : '';
+@endphp
+
 @foreach($participants as $ep)
     @php
         $p = $ep->peserta;
@@ -250,7 +257,7 @@
     {{-- ═════════════ FRONT SIDE ═════════════ --}}
     <div class="card-front page-break">
         {{-- Background image --}}
-        <img class="card-bg" src="{{ public_path('IDCARD.png') }}">
+        <img class="card-bg" src="{{ $idcardBg }}">
 
         {{-- Content --}}
         <div class="card-content">
@@ -309,7 +316,7 @@
 
     {{-- ═════════════ BACK SIDE ═════════════ --}}
     <div class="card-back {{ !$loop->last ? 'page-break' : '' }}">
-        <img class="card-bg" src="{{ public_path('IDCARD.png') }}">
+        <img class="card-bg" src="{{ $idcardBg }}">
 
         <div class="back-body">
             <div class="rules-title" style="padding-top: 20mm;">Tata Tertib</div>
