@@ -337,6 +337,10 @@ class ParticipantController extends Controller
             return back()->with('error', 'Belum ada peserta di event ini.');
         }
 
+        // Pre-fetch remote photos in parallel before rendering PDF
+        $pesertas = $participants->pluck('peserta');
+        \App\Models\Peserta::prefetchRemotePhotos($pesertas);
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.events.batch-idcard-pdf', [
             'event' => $event,
             'participants' => $participants
@@ -366,6 +370,9 @@ class ParticipantController extends Controller
                 $ep->update(['qr_code' => $qrData]);
             }
         }
+
+        // Pre-fetch remote photo before rendering PDF
+        \App\Models\Peserta::prefetchRemotePhotos([$participant]);
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('peserta.idcard-pdf', [
             'event' => $event,

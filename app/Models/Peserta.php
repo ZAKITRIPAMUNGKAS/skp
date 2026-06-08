@@ -126,8 +126,22 @@ class Peserta extends Model
         $isRemote = str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
 
         if ($isRemote) {
-            // Remote images (e.g. Google Drive): fetch with strict timeout
-            // Return null immediately to show placeholder if anything fails
+            $cacheKey = md5($path);
+            $cacheDir = storage_path('photo_cache');
+            $cachePath = $cacheDir . '/' . $cacheKey;
+
+            if (file_exists($cachePath)) {
+                $size = @filesize($cachePath);
+                if ($size === 0) {
+                    return null; // Failure marker
+                }
+                $data = @file_get_contents($cachePath);
+                if ($data !== false && strlen($data) > 0) {
+                    return $data;
+                }
+            }
+
+            // Single fallback if not pre-fetched (or if cache was deleted/missed)
             try {
                 $url = $this->foto_url;
                 $data = null;
@@ -148,7 +162,6 @@ class Peserta extends Model
                         $mime = $ct;
                     }
                 } else {
-                    // Fallback: file_get_contents with 3-second timeout
                     $ctx = stream_context_create([
                         'http' => ['timeout' => 3],
                         'https' => ['timeout' => 3],
@@ -157,10 +170,23 @@ class Peserta extends Model
                 }
 
                 if ($data && strlen((string)$data) > 100) {
-                    return 'data:' . $mime . ';base64,' . base64_encode($data);
+                    $base64Data = 'data:' . $mime . ';base64,' . base64_encode($data);
+                    if (!file_exists($cacheDir)) {
+                        @mkdir($cacheDir, 0755, true);
+                    }
+                    @file_put_contents($cachePath, $base64Data);
+                    return $base64Data;
+                } else {
+                    if (!file_exists($cacheDir)) {
+                        @mkdir($cacheDir, 0755, true);
+                    }
+                    @file_put_contents($cachePath, '');
                 }
             } catch (\Throwable $e) {
-                // Catch ALL errors including \Error (e.g. undefined function)
+                if (!file_exists($cacheDir)) {
+                    @mkdir($cacheDir, 0755, true);
+                }
+                @file_put_contents($cachePath, '');
             }
             return null;
         }
@@ -180,6 +206,103 @@ class Peserta extends Model
         }
 
         return null;
+    }
+
+    public static function prefetchRemotePhotos($pesertaCollection)
+    {
+        $urls = [];
+        $cacheDir = storage_path('photo_cache');
+        if (!file_exists($cacheDir)) {
+            @mkdir($cacheDir, 0755, true);
+        }
+
+        foreach ($pesertaCollection as $p) {
+            if ($p && $p->foto) {
+                $path = $p->foto;
+                $isRemote = str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
+                if ($isRemote) {
+                    $cacheKey = md5($path);
+                    $cachePath = $cacheDir . '/' . $cacheKey;
+                    if (!file_exists($cachePath)) {
+                        $urls[$cacheKey] = $p->foto_url;
+                    }
+                }
+            }
+        }
+
+        if (empty($urls)) {
+            return;
+        }
+
+        if (function_exists('curl_multi_init')) {
+            $mh = curl_multi_init();
+            $handles = [];
+
+            foreach ($urls as $key => $url) {
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 4); // 4 seconds max per request
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_multi_add_handle($mh, $ch);
+                $handles[$key] = $ch;
+            }
+
+            $active = null;
+            do {
+                $mrc = curl_multi_exec($mh, $active);
+            } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+            while ($active && $mrc == CURLM_OK) {
+                if (curl_multi_select($mh) != -1) {
+                    do {
+                        $mrc = curl_multi_exec($mh, $active);
+                    } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+                }
+            }
+
+            foreach ($handles as $key => $ch) {
+                $data = curl_multi_getcontent($ch);
+                $ct = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+                curl_multi_remove_handle($mh, $ch);
+                curl_close($ch);
+
+                $cachePath = $cacheDir . '/' . $key;
+                if ($data && strlen($data) > 100) {
+                    $mime = ($ct && str_contains($ct, 'image/')) ? $ct : 'image/jpeg';
+                    $base64Data = 'data:' . $mime . ';base64,' . base64_encode($data);
+                    @file_put_contents($cachePath, $base64Data);
+                } else {
+                    // Mark as failed (0-byte file)
+                    @file_put_contents($cachePath, '');
+                }
+            }
+
+            curl_multi_close($mh);
+        } else {
+            // Fallback to serial downloads with low timeout
+            foreach ($urls as $key => $url) {
+                $cachePath = $cacheDir . '/' . $key;
+                try {
+                    $ctx = stream_context_create([
+                        'http' => ['timeout' => 2],
+                        'https' => ['timeout' => 2],
+                    ]);
+                    $data = @file_get_contents($url, false, $ctx);
+                    if ($data && strlen($data) > 100) {
+                        $mime = 'image/jpeg';
+                        $base64Data = 'data:' . $mime . ';base64,' . base64_encode($data);
+                        @file_put_contents($cachePath, $base64Data);
+                    } else {
+                        @file_put_contents($cachePath, '');
+                    }
+                } catch (\Throwable $e) {
+                    @file_put_contents($cachePath, '');
+                }
+            }
+        }
     }
 
     /**

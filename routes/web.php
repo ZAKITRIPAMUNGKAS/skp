@@ -59,6 +59,21 @@ Route::get('/clear-opcache-action', function() {
     \Illuminate\Support\Facades\Artisan::call('cache:clear');
     \Illuminate\Support\Facades\Artisan::call('view:clear');
 
+    // Clean photo cache
+    $photoCacheDir = storage_path('photo_cache');
+    $photoCacheMsg = "";
+    if (file_exists($photoCacheDir)) {
+        $files = glob($photoCacheDir . '/*');
+        $deletedCount = 0;
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                @unlink($file);
+                $deletedCount++;
+            }
+        }
+        $photoCacheMsg = " & Cache foto dibersihkan ($deletedCount file)";
+    }
+
     $opcacheMsg = "OPcache tidak aktif pada server ini.";
     if (function_exists('opcache_reset')) {
         if (opcache_reset()) {
@@ -67,7 +82,7 @@ Route::get('/clear-opcache-action', function() {
             $opcacheMsg = "Fungsi opcache_reset tersedia namun gagal dijalankan.";
         }
     }
-    return "SUCCESS: Seluruh cache Laravel (Route, Config, Cache, View) berhasil dibersihkan! & " . $opcacheMsg;
+    return "SUCCESS: Seluruh cache Laravel (Route, Config, Cache, View) berhasil dibersihkan!" . $photoCacheMsg . " & " . $opcacheMsg;
 });
 
 // ── Route Membuat Symlink Secara Aman di Hosting ──────
