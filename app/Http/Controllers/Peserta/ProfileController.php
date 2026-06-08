@@ -43,7 +43,7 @@ class ProfileController extends Controller
             'jabatan_aum'    => 'nullable|string|max:255',
             'ukuran_kaos'    => 'nullable|string|max:10',
             'alamat_rumah'   => 'nullable|string',
-            'bahasa_dikuasai' => 'required|array|min:1',
+            'bahasa_dikuasai' => 'nullable|array',
             'bahasa_dikuasai.*' => 'string|max:100',
             'hafalan_quran_1' => 'required|string|max:255',
             'foto'           => 'nullable|image|max:2048',
@@ -72,7 +72,9 @@ class ProfileController extends Controller
         $peserta->alamat_rumah = $validated['alamat_rumah'] ?? null;
         
         // Simpan bahasa asing & hafalan quran
-        $peserta->bahasa_dikuasai = json_encode($validated['bahasa_dikuasai']);
+        $peserta->bahasa_dikuasai = !empty($validated['bahasa_dikuasai']) 
+            ? json_encode($validated['bahasa_dikuasai']) 
+            : null;
         $peserta->hafalan_quran_1 = $validated['hafalan_quran_1'];
 
         if (!empty($validated['tanggal_lahir'])) {

@@ -15,7 +15,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-bold text-blue-900 group-hover:text-blue-700 transition-colors flex items-center gap-2">
-                        🎯 Presentasi Analisis </span>
+                        🎯 Presentasi Analisis
                     </p>
                     <p class="text-xs text-gray-500 mt-1">Tampilan slideshow interaktif: demografi, Al-Qur'an, aktivitas, kehadiran, nilai & peserta terbaik. Tekan → atau Spasi untuk navigasi.</p>
                 </div>

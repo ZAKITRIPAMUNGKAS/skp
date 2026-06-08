@@ -109,12 +109,17 @@
             overflow: hidden;
             border: 2.5px solid #ffffff;
             box-shadow: 0 3px 10px rgba(0,0,0,0.18);
-            background-color: #dbeafe;
+            background-color: #ffffff;
             position: relative;
         }
         .photo-square img {
             width: 100%;
             height: auto;
+            min-height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: block;
         }
         .photo-placeholder {

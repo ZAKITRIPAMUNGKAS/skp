@@ -327,7 +327,7 @@ class ParticipantController extends Controller
 
     public function downloadIdCards(Event $event)
     {
-        set_time_limit(300);
+        set_time_limit(180);
         $participants = EventPeserta::where('event_id', $event->id)
             ->where('status_aktif', true)
             ->with('peserta')
@@ -337,27 +337,13 @@ class ParticipantController extends Controller
             return back()->with('error', 'Belum ada peserta di event ini.');
         }
 
-        // Auto-generate missing QR codes
-        foreach ($participants as $ep) {
-            if (empty($ep->qr_code)) {
-                $token = hash_hmac('sha256', $event->id . '-' . $ep->peserta_id, config('app.key'));
-                $qrCode = base64_encode(json_encode([
-                    'e' => $event->id,
-                    'p' => $ep->peserta_id,
-                    't' => $token
-                ]));
-                $ep->update(['qr_code' => $qrCode]);
-                $ep->qr_code = $qrCode; // Update in-memory object
-            }
-        }
-
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.events.batch-idcard-pdf', [
             'event' => $event,
             'participants' => $participants
-        ])->setPaper('a4', 'portrait')
-          ->setOption('isRemoteEnabled', true); // Ukuran A4
+        ])->setPaper([0, 0, 243.7, 388.3]) // Menggunakan ukuran ID Card 86mm x 137mm agar pas cetak
+          ->setOption('isRemoteEnabled', true);
 
-        return $pdf->stream('ID_Cards_A4_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
+        return $pdf->stream('Master_ID_Cards_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
     }
 
     public function downloadIdCard(Event $event, Peserta $participant)

@@ -36,6 +36,7 @@
             
             @if($isAdmin)
                 <x-sidebar-item icon="people" label="Kelola Peserta" route="admin.participants.index" :collapsed="false" />
+                <x-sidebar-item icon="fasilitator" label="Kelola Fasilitator" route="admin.fasilitator.index" :collapsed="false" />
                 <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" />
                 <x-sidebar-item icon="image" label="Galeri Pelatihan" route="admin.galleries.index" :collapsed="false" />
                 <x-sidebar-item icon="comment" label="Testimoni" route="admin.testimonials.index" :collapsed="false" />
@@ -113,13 +114,16 @@
         @endif
         <div class="px-3 mt-5 mb-2"><span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Kelola</span></div>
         <x-sidebar-item icon="event" label="Kelola Event" route="admin.events.index" :collapsed="false" :mobile="true" />
+        @if($isAdmin)
             <x-sidebar-item icon="people" label="Kelola Peserta" route="admin.participants.index" :collapsed="false" :mobile="true" />
+            <x-sidebar-item icon="fasilitator" label="Kelola Fasilitator" route="admin.fasilitator.index" :collapsed="false" :mobile="true" />
             <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" :mobile="true" />
             <x-sidebar-item icon="image" label="Galeri Pelatihan" route="admin.galleries.index" :collapsed="false" :mobile="true" />
             <x-sidebar-item icon="comment" label="Testimoni" route="admin.testimonials.index" :collapsed="false" :mobile="true" />
             <div class="px-3 mt-5 mb-2"><span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Sistem</span></div>
             <x-sidebar-item icon="logs" label="Log Aktivitas" route="admin.logs.index" :collapsed="false" :mobile="true" />
             <x-sidebar-item icon="report" label="Laporan" route="admin.dashboard" :collapsed="false" :mobile="true" />
+        @endif
     </nav>
     @else
     <nav class="flex-1 overflow-y-auto sidebar-scroll py-4 px-3 flex flex-col items-center justify-center text-center opacity-50 p-6">

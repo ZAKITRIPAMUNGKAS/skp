@@ -143,11 +143,11 @@
                     "Evaluasi Baitul Arqam kini terstandardisasi dengan penilaian multi-dimensi (kognitif, afektif, psikomotorik) yang dapat dipantau langsung secara real-time."
                 </p>
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-[#D4A017] flex items-center justify-center font-bold text-xs text-[#06293F]">
-                        L
+                    <div class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center">
+                        <img src="logoums.png" alt="UMS Logo" class="w-full h-full object-contain">
                     </div>
                     <div>
-                        <h4 class="text-xs font-bold text-white">Lembaga Pengembangan Pendidikan (LP3A)</h4>
+                        <h4 class="text-xs font-bold text-white">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h4>
                         <p class="text-[10px] text-white/50">Universitas Muhammadiyah Surakarta</p>
                     </div>
                 </div>

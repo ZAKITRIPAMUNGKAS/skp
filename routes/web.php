@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AfektifController;
 use App\Http\Controllers\Admin\PsikomotorController;
 use App\Http\Controllers\Admin\AngketController;
 use App\Http\Controllers\Admin\AhpSawController;
+use App\Http\Controllers\Admin\FasilitatorController;
 use App\Http\Controllers\Peserta\TesController;
 use App\Http\Controllers\Peserta\AfektifPesertaController;
 use App\Http\Controllers\Peserta\AngketPesertaController;
@@ -146,10 +147,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
         Route::post('/events', [EventController::class, 'store'])->name('events.store');
         Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+
+        // Kelola Fasilitator
+        Route::get('/fasilitator', [FasilitatorController::class, 'index'])->name('fasilitator.index');
+        Route::get('/fasilitator/{id}', [FasilitatorController::class, 'show'])->name('fasilitator.show');
+        Route::post('/fasilitator', [FasilitatorController::class, 'store'])->name('fasilitator.store');
+        Route::delete('/fasilitator/{id}', [FasilitatorController::class, 'destroy'])->name('fasilitator.destroy');
+        Route::post('/fasilitator/{id}/reset-password', [FasilitatorController::class, 'resetPassword'])->name('fasilitator.resetPassword');
     });
 
     // Rute Event Listing (Bisa diakses Admin & Fasilitator, tapi isinya difilter)
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
+
+    // Profil Admin & Fasilitator
+    Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profile.update');
 
     // Rute Spesifik Event (Harus diverifikasi kepemilikan / penugasan via event_access)
     Route::middleware('event_access')->group(function () {

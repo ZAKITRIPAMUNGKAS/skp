@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'peserta' => \App\Http\Middleware\PesertaMiddleware::class,
+            'admin_only' => \App\Http\Middleware\AdminOnlyMiddleware::class,
+            'event_access' => \App\Http\Middleware\CheckEventAccess::class,
         ]);
 
         $middleware->redirectGuestsTo('/login');
