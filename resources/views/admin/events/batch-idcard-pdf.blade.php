@@ -43,23 +43,7 @@
             text-align: center;
         }
 
-        /* ── Logo area ── */
-        .logo-area {
-            padding-top: 4mm;
-            padding-bottom: 2mm;
-        }
-        .logo-badge {
-            display: inline-block;
-            background: #ffffff;
-            border-radius: 6mm;
-            padding: 1.2mm 4mm;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-        }
-        .logo-badge img {
-            height: 8mm;
-            object-fit: contain;
-            vertical-align: middle;
-        }
+        /* ── Logo area removed ── */
 
         /* ── PESERTA label ── */
         .lbl-peserta {
@@ -270,13 +254,6 @@
 
         {{-- Content --}}
         <div class="card-content">
-            {{-- Logo UMS --}}
-            <div class="logo-area">
-                <div class="logo-badge">
-                    <img src="{{ public_path('Logoums.png') }}" alt="UMS">
-                </div>
-            </div>
-
             {{-- PESERTA --}}
             <div class="lbl-peserta">PESERTA</div>
 
