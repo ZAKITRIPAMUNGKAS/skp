@@ -77,72 +77,255 @@ class Peserta extends Model
         'tanggal_lahir' => 'date',
     ];
 
-    public function getProvinsiAttribute($value)
+    public function getResolvedAddressComponents()
     {
-        if (empty($value) || strtolower(trim($value)) === 'lainnya') {
-            if (!empty($this->alamat_rumah)) {
-                $address = strtolower($this->alamat_rumah);
-                $provinces = [
-                    'jawa tengah' => 'Jawa Tengah',
-                    'jawa timur' => 'Jawa Timur',
-                    'jawa barat' => 'Jawa Barat',
-                    'dki jakarta' => 'DKI Jakarta',
-                    'jakarta' => 'DKI Jakarta',
-                    'yogyakarta' => 'DIY Yogyakarta',
-                    'diy' => 'DIY Yogyakarta',
-                    'banten' => 'Banten',
-                    'bali' => 'Bali',
-                    'aceh' => 'Aceh',
-                    'sumatera utara' => 'Sumatera Utara',
-                    'sumatera barat' => 'Sumatera Barat',
-                    'riau' => 'Riau',
-                    'kepulauan riau' => 'Kepulauan Riau',
-                    'jambi' => 'Jambi',
-                    'sumatera selatan' => 'Sumatera Selatan',
-                    'bangka belitung' => 'Bangka Belitung',
-                    'bengkulu' => 'Bengkulu',
-                    'lampung' => 'Lampung',
-                    'kalimantan barat' => 'Kalimantan Barat',
-                    'kalimantan tengah' => 'Kalimantan Tengah',
-                    'kalimantan selatan' => 'Kalimantan Selatan',
-                    'kalimantan timur' => 'Kalimantan Timur',
-                    'kalimantan utara' => 'Kalimantan Utara',
-                    'sulawesi utara' => 'Sulawesi Utara',
-                    'sulawesi tengah' => 'Sulawesi Tengah',
-                    'sulawesi selatan' => 'Sulawesi Selatan',
-                    'sulawesi tenggara' => 'Sulawesi Tenggara',
-                    'gorontalo' => 'Gorontalo',
-                    'sulawesi barat' => 'Sulawesi Barat',
-                    'nusa tenggara barat' => 'Nusa Tenggara Barat',
-                    'ntb' => 'Nusa Tenggara Barat',
-                    'nusa tenggara timur' => 'Nusa Tenggara Timur',
-                    'ntt' => 'Nusa Tenggara Timur',
-                    'maluku' => 'Maluku',
-                    'maluku utara' => 'Maluku Utara',
-                    'papua' => 'Papua'
-                ];
-                foreach ($provinces as $key => $name) {
-                    if (str_contains($address, $key)) {
-                        return $name;
-                    }
+        if (empty($this->alamat_rumah)) {
+            return [
+                'provinsi' => $this->attributes['provinsi'] ?? null,
+                'kabupaten' => $this->attributes['kabupaten'] ?? null,
+                'kecamatan' => $this->attributes['kecamatan'] ?? null,
+                'desa_kelurahan' => $this->attributes['desa_kelurahan'] ?? null,
+            ];
+        }
+
+        $address = $this->alamat_rumah;
+        $cleanAddress = strtolower($address);
+
+        // 1. Resolve Provinsi
+        $resolvedProv = $this->attributes['provinsi'] ?? null;
+        if (empty($resolvedProv) || strtolower(trim($resolvedProv)) === 'lainnya') {
+            $resolvedProv = null;
+        }
+        
+        $provinces = [
+            'jawa tengah' => 'Jawa Tengah',
+            'jawa timur' => 'Jawa Timur',
+            'jawa barat' => 'Jawa Barat',
+            'dki jakarta' => 'DKI Jakarta',
+            'jakarta' => 'DKI Jakarta',
+            'yogyakarta' => 'DIY Yogyakarta',
+            'diy' => 'DIY Yogyakarta',
+            'banten' => 'Banten',
+            'bali' => 'Bali',
+            'aceh' => 'Aceh',
+            'sumatera utara' => 'Sumatera Utara',
+            'sumatera barat' => 'Sumatera Barat',
+            'riau' => 'Riau',
+            'kepulauan riau' => 'Kepulauan Riau',
+            'jambi' => 'Jambi',
+            'sumatera selatan' => 'Sumatera Selatan',
+            'bangka belitung' => 'Bangka Belitung',
+            'bengkulu' => 'Bengkulu',
+            'lampung' => 'Lampung',
+            'kalimantan barat' => 'Kalimantan Barat',
+            'kalimantan tengah' => 'Kalimantan Tengah',
+            'kalimantan selatan' => 'Kalimantan Selatan',
+            'kalimantan timur' => 'Kalimantan Timur',
+            'kalimantan utara' => 'Kalimantan Utara',
+            'sulawesi utara' => 'Sulawesi Utara',
+            'sulawesi tengah' => 'Sulawesi Tengah',
+            'sulawesi selatan' => 'Sulawesi Selatan',
+            'sulawesi tenggara' => 'Sulawesi Tenggara',
+            'gorontalo' => 'Gorontalo',
+            'sulawesi barat' => 'Sulawesi Barat',
+            'nusa tenggara barat' => 'Nusa Tenggara Barat',
+            'ntb' => 'Nusa Tenggara Barat',
+            'nusa tenggara timur' => 'Nusa Tenggara Timur',
+            'ntt' => 'Nusa Tenggara Timur',
+            'maluku' => 'Maluku',
+            'maluku utara' => 'Maluku Utara',
+            'papua' => 'Papua'
+        ];
+        foreach ($provinces as $key => $name) {
+            if (str_contains($cleanAddress, $key)) {
+                $resolvedProv = $name;
+                break;
+            }
+        }
+        if (empty($resolvedProv)) {
+            $resolvedProv = $this->attributes['provinsi'] ?? null;
+        }
+
+        // 2. Resolve Kabupaten
+        $resolvedKab = $this->attributes['kabupaten'] ?? null;
+        if (empty($resolvedKab) || strtolower(trim($resolvedKab)) === 'lainnya') {
+            $resolvedKab = null;
+        }
+
+        if (preg_match('/((?:kabupaten|kab\.|kota)\s*[a-zA-Z\s]+)/i', $address, $matches)) {
+            $captured = trim(explode(',', $matches[1])[0]);
+            $captured = preg_replace('/^kab\./i', 'Kabupaten', $captured);
+            $resolvedKab = ucwords(strtolower($captured));
+        } else {
+            $cities = [
+                'pacitan' => 'Kabupaten Pacitan',
+                'sragen' => 'Kabupaten Sragen',
+                'surakarta' => 'Kota Surakarta',
+                'solo' => 'Kota Surakarta',
+                'rembang' => 'Kabupaten Rembang',
+                'probolinggo' => 'Kota Probolinggo',
+                'pekanbaru' => 'Kota Pekanbaru',
+                'bantul' => 'Kabupaten Bantul',
+                'semarang' => 'Kota Semarang',
+                'klaten' => 'Kabupaten Klaten',
+                'boyolali' => 'Kabupaten Boyolali',
+                'karanganyar' => 'Kabupaten Karanganyar',
+                'sukoharjo' => 'Kabupaten Sukoharjo',
+                'yogyakarta' => 'Kota Yogyakarta',
+                'jogja' => 'Kota Yogyakarta',
+                'sleman' => 'Kabupaten Sleman',
+                'wonogiri' => 'Kabupaten Wonogiri',
+                'pati' => 'Kabupaten Pati',
+                'kendal' => 'Kabupaten Kendal',
+                'temanggung' => 'Kabupaten Temanggung',
+                'magelang' => 'Kota Magelang',
+                'purworejo' => 'Kabupaten Purworejo',
+                'kebumen' => 'Kabupaten Kebumen',
+                'banyumas' => 'Kabupaten Banyumas',
+                'cilacap' => 'Kabupaten Cilacap',
+                'brebes' => 'Kabupaten Brebes',
+                'tegal' => 'Kota Tegal',
+                'pemalang' => 'Kabupaten Pemalang',
+                'pekalongan' => 'Kota Pekalongan',
+                'batang' => 'Kabupaten Batang',
+                'demak' => 'Kabupaten Demak',
+                'kudus' => 'Kabupaten Kudus',
+                'jepara' => 'Kabupaten Jepara',
+                'blora' => 'Kabupaten Blora',
+                'grobogan' => 'Kabupaten Grobogan',
+                'ngawi' => 'Kabupaten Ngawi',
+                'magetan' => 'Kabupaten Magetan',
+                'madiun' => 'Kota Madiun',
+                'ponorogo' => 'Kabupaten Ponorogo',
+                'trenggalek' => 'Kabupaten Trenggalek',
+                'tulungagung' => 'Kabupaten Tulungagung',
+                'blitar' => 'Kota Blitar',
+                'kediri' => 'Kota Kediri',
+                'nganjuk' => 'Kabupaten Nganjuk',
+                'bojonegoro' => 'Kabupaten Bojonegoro',
+                'tuban' => 'Kabupaten Tuban',
+                'lamongan' => 'Kabupaten Lamongan',
+                'gresik' => 'Kabupaten Gresik',
+                'surabaya' => 'Kota Surabaya',
+                'sidoarjo' => 'Kabupaten Sidoarjo',
+                'mojokerto' => 'Kota Mojokerto',
+                'jombang' => 'Kabupaten Jombang',
+                'malang' => 'Kota Malang',
+                'pasuruan' => 'Kota Pasuruan',
+                'lumajang' => 'Kabupaten Lumajang',
+                'jember' => 'Kabupaten Jember',
+                'bondowoso' => 'Kabupaten Bondowoso',
+                'situbondo' => 'Kabupaten Situbondo',
+                'banyuwangi' => 'Kabupaten Banyuwangi',
+                'tangerang' => 'Kabupaten Tangerang',
+                'jakarta' => 'Kota Jakarta',
+                'bandung' => 'Kota Bandung',
+                'bogor' => 'Kota Bogor',
+                'depok' => 'Kota Depok',
+                'bekasi' => 'Kota Bekasi'
+            ];
+            foreach ($cities as $key => $name) {
+                if (str_contains($cleanAddress, $key)) {
+                    $resolvedKab = $name;
+                    break;
                 }
             }
         }
-        return $value;
+        if (empty($resolvedKab)) {
+            $resolvedKab = $this->attributes['kabupaten'] ?? null;
+        }
+
+        // 3. Resolve Kecamatan
+        $resolvedKec = $this->attributes['kecamatan'] ?? null;
+        if (preg_match('/(?:kecamatan|kec\.)\s*([a-zA-Z\s]+)/i', $address, $matches)) {
+            $captured = trim(explode(',', $matches[1])[0]);
+            if (!empty($captured) && strlen($captured) < 30) {
+                $resolvedKec = ucwords(strtolower($captured));
+            }
+        }
+
+        // 4. Resolve Desa/Kelurahan
+        $resolvedDesa = $this->attributes['desa_kelurahan'] ?? null;
+        if (preg_match('/(?:desa|kelurahan|ds\.|kel\.)\s*([a-zA-Z\s]+)/i', $address, $matches)) {
+            $captured = trim(explode(',', $matches[1])[0]);
+            if (!empty($captured) && strlen($captured) < 30) {
+                $resolvedDesa = ucwords(strtolower($captured));
+            }
+        }
+
+        // 5. Check for Mismatch with DB Kabupaten
+        $dbKab = $this->attributes['kabupaten'] ?? '';
+        $dbKabClean = strtolower(preg_replace('/[^a-z]/', '', $dbKab));
+        $resolvedKabClean = strtolower(preg_replace('/[^a-z]/', '', $resolvedKab));
+
+        if (!empty($dbKabClean) && $dbKabClean !== $resolvedKabClean && strtolower($dbKab) !== 'lainnya') {
+            // Address mismatch! Extract details from comma-separated tokens
+            $parts = array_map('trim', explode(',', $address));
+            
+            $filteredParts = [];
+            foreach ($parts as $part) {
+                $partClean = strtolower($part);
+                $isProv = false;
+                foreach ($provinces as $key => $name) {
+                    if ($partClean === $key || $partClean === strtolower($name) || str_contains($partClean, $key)) {
+                        $isProv = true;
+                        break;
+                    }
+                }
+                if (!$isProv) {
+                    $filteredParts[] = $part;
+                }
+            }
+
+            $fpCount = count($filteredParts);
+            if ($fpCount >= 2) {
+                $lastPart = strtolower($filteredParts[$fpCount - 1]);
+                $kabWord = strtolower(str_replace(['kabupaten', 'kota'], '', $resolvedKab));
+                $kabWord = trim($kabWord);
+
+                if (str_contains($lastPart, $kabWord)) {
+                    $kecPart = $filteredParts[$fpCount - 2];
+                    $resolvedKec = ucwords(strtolower(preg_replace('/^(kecamatan|kec\.)\s*/i', '', $kecPart)));
+
+                    if ($fpCount >= 3) {
+                        $desaPart = $filteredParts[$fpCount - 3];
+                        $resolvedDesa = ucwords(strtolower(preg_replace('/^(desa|kelurahan|ds\.|kel\.)\s*/i', '', $desaPart)));
+                    } else {
+                        $resolvedDesa = '—';
+                    }
+                }
+            } else {
+                $resolvedKec = '—';
+                $resolvedDesa = '—';
+            }
+        }
+
+        return [
+            'provinsi' => $resolvedProv,
+            'kabupaten' => $resolvedKab,
+            'kecamatan' => $resolvedKec,
+            'desa_kelurahan' => $resolvedDesa,
+        ];
+    }
+
+    public function getProvinsiAttribute($value)
+    {
+        return $this->getResolvedAddressComponents()['provinsi'];
     }
 
     public function getKabupatenAttribute($value)
     {
-        if (empty($value) || strtolower(trim($value)) === 'lainnya') {
-            if (!empty($this->alamat_rumah)) {
-                if (preg_match('/((?:kabupaten|kab\.|kota)\s*[a-zA-Z]+)/i', $this->alamat_rumah, $matches)) {
-                    $captured = trim($matches[1]);
-                    $captured = preg_replace('/^kab\./i', 'Kabupaten', $captured);
-                    return ucwords(strtolower($captured));
-                }
-            }
-        }
-        return $value;
+        return $this->getResolvedAddressComponents()['kabupaten'];
+    }
+
+    public function getKecamatanAttribute($value)
+    {
+        return $this->getResolvedAddressComponents()['kecamatan'];
+    }
+
+    public function getDesaKelurahanAttribute($value)
+    {
+        return $this->getResolvedAddressComponents()['desa_kelurahan'];
     }
 
     public function getFotoUrlAttribute()
