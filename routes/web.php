@@ -83,14 +83,36 @@ Route::get('/generate-symlink', function () {
         }
     }
     
-    // Jalankan perintah OS ln -s sebagai alternatif di server Linux
-    $output = shell_exec("ln -s " . escapeshellarg($targetStorage) . " " . escapeshellarg($publicStorage) . " 2>&1");
-    
-    if (file_exists($publicStorage)) {
-        return "SUCCESS: Symlink berhasil dibuat otomatis via terminal (ln -s) menuju " . $publicStorage;
+    // Fallback 1: Gunakan shell_exec jika tersedia
+    if (function_exists('shell_exec')) {
+        $output = @shell_exec("ln -s " . escapeshellarg($targetStorage) . " " . escapeshellarg($publicStorage) . " 2>&1");
+        if (file_exists($publicStorage)) {
+            return "SUCCESS: Symlink berhasil dibuat otomatis via terminal (ln -s) menuju " . $publicStorage;
+        }
     }
     
-    return "FAILED: Gagal membuat symlink. Detail error terminal: " . $output;
+    // Fallback 2: Gunakan popen jika shell_exec tidak ada tapi popen ada
+    if (function_exists('popen')) {
+        $handle = @popen("ln -s " . escapeshellarg($targetStorage) . " " . escapeshellarg($publicStorage) . " 2>&1", 'r');
+        if (is_resource($handle)) {
+            @pclose($handle);
+        }
+        if (file_exists($publicStorage)) {
+            return "SUCCESS: Symlink berhasil dibuat otomatis via popen (ln -s) menuju " . $publicStorage;
+        }
+    }
+    
+    // Fallback 3: Gunakan system jika tersedia
+    if (function_exists('system')) {
+        ob_start();
+        @system("ln -s " . escapeshellarg($targetStorage) . " " . escapeshellarg($publicStorage) . " 2>&1");
+        ob_end_clean();
+        if (file_exists($publicStorage)) {
+            return "SUCCESS: Symlink berhasil dibuat otomatis via system (ln -s) menuju " . $publicStorage;
+        }
+    }
+    
+    return "FAILED: Semua fungsi eksekusi (symlink, shell_exec, popen, system) dinonaktifkan di server. Silakan hubungi penyedia hosting atau jalankan manual lewat SSH: 'ln -s " . $targetStorage . " " . $publicStorage . "'";
 });
 
 // ── Rute Admin ──────────────────────────────────────
