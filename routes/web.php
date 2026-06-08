@@ -52,13 +52,21 @@ Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name
 
 // ── Temporary OPcache Clear Route ────────────────────
 Route::get('/clear-opcache-action', function() {
+    // Clear Laravel caches
+    \Illuminate\Support\Facades\Artisan::call('route:clear');
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+
+    $opcacheMsg = "OPcache tidak aktif pada server ini.";
     if (function_exists('opcache_reset')) {
         if (opcache_reset()) {
-            return "SUCCESS: OPcache PHP berhasil di-reset via Laravel Route! Memori cPanel sekarang menggunakan kode terbaru.";
+            $opcacheMsg = "OPcache PHP berhasil di-reset!";
+        } else {
+            $opcacheMsg = "Fungsi opcache_reset tersedia namun gagal dijalankan.";
         }
-        return "WARNING: Fungsi opcache_reset tersedia namun gagal dijalankan.";
     }
-    return "INFO: OPcache tidak aktif pada server ini.";
+    return "SUCCESS: Seluruh cache Laravel (Route, Config, Cache, View) berhasil dibersihkan! & " . $opcacheMsg;
 });
 
 // ── Route Membuat Symlink Secara Aman di Hosting ──────
