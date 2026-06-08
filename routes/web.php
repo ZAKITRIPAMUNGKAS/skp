@@ -65,21 +65,32 @@ Route::get('/clear-opcache-action', function() {
 Route::get('/generate-symlink', function () {
     // Cari path folder storage di public_html secara otomatis/dinamis
     $publicStorage = base_path('../public_html/storage');
+    $targetStorage = storage_path('app/public');
     
     if (file_exists($publicStorage)) {
         if (is_link($publicStorage)) {
-            unlink($publicStorage);
+            @unlink($publicStorage);
         } else {
             // Rename folder fisik jika bukan symlink agar tidak bentrok
-            rename($publicStorage, $publicStorage . '_backup_' . time());
+            @rename($publicStorage, $publicStorage . '_backup_' . time());
         }
     }
     
-    if (symlink(storage_path('app/public'), $publicStorage)) {
-        return "SUCCESS: Symlink berhasil dibuat otomatis menuju " . $publicStorage;
+    // Gunakan shell_exec sebagai fallback jika fungsi php symlink() di-disable di php.ini hosting
+    if (function_exists('symlink')) {
+        if (@symlink($targetStorage, $publicStorage)) {
+            return "SUCCESS: Symlink berhasil dibuat otomatis via symlink() menuju " . $publicStorage;
+        }
     }
     
-    return "FAILED: Gagal membuat symlink. Pastikan folder public_html dapat ditulis (writable).";
+    // Jalankan perintah OS ln -s sebagai alternatif di server Linux
+    $output = shell_exec("ln -s " . escapeshellarg($targetStorage) . " " . escapeshellarg($publicStorage) . " 2>&1");
+    
+    if (file_exists($publicStorage)) {
+        return "SUCCESS: Symlink berhasil dibuat otomatis via terminal (ln -s) menuju " . $publicStorage;
+    }
+    
+    return "FAILED: Gagal membuat symlink. Detail error terminal: " . $output;
 });
 
 // ── Rute Admin ──────────────────────────────────────
