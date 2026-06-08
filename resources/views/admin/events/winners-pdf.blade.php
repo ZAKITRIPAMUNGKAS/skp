@@ -361,7 +361,8 @@
                         <img src="{{ public_path('Logoums.png') }}" class="logo-img" alt="Logo ArqamApp" onerror="this.style.display='none'">
                     </td>
                     <td class="header-text-td">
-                        <h3>Majelis Pendidikan Kader PP Muhammadiyah</h3>
+                        <h3 style="margin-top: 10px; margin-bottom: 2px; font-size: 10px;">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h3>
+                        <h3 style="margin-top: 0; margin-bottom: 5px; font-weight: normal; font-size: 10px; color: #555;">Universitas Muhammadiyah Surakarta</h3>
                         <h1>DOKUMEN PENGHARGAAN</h1>
                     </td>
                     <td class="badge-td">

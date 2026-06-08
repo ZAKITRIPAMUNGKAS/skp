@@ -357,9 +357,8 @@
                 <img src="{{ public_path('Logoums.png') }}" class="logo-img" alt="Logo ArqamApp">
             </td>
             <td class="judul-instansi-td">
-                <h4 style="margin-top: 20px; margin-bottom: 2px;">
-    Majelis Pendidikan Kader PP Muhammadiyah
-</h4>
+                <h4 style="margin-top: 10px; margin-bottom: 2px; font-size: 11px;">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h4>
+                <h4 style="margin-top: 0; margin-bottom: 5px; font-weight: normal; font-size: 11px; color: #555;">Universitas Muhammadiyah Surakarta</h4>
                 <h1>Formulir Biodata Peserta</h1>
                 <div class="tag-event-container">
                     <span class="tag-event">{{ $event->nama_event }}</span>

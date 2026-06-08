@@ -104,7 +104,8 @@
     <div class="header">
         <div class="logo-section">
             <h1>LAPORAN HASIL EVALUASI</h1>
-            <h2>MAJELIS PENDIDIKAN KADER - PP MUHAMMADIYAH</h2>
+            <h2 style="font-size: 9px; margin-bottom: 2px;">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h2>
+            <h2 style="font-size: 9px; font-weight: normal; margin-top: 0; margin-bottom: 5px; color: #555;">Universitas Muhammadiyah Surakarta</h2>
             <p style="margin: 0; font-size: 9px; color: #6b7280;">Sistem Informasi Perkaderan ARQAM Digital</p>
         </div>
         <img src="{{ public_path('images/arka/arka_penilai.png') }}" class="mascot">

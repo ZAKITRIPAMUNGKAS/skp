@@ -166,7 +166,7 @@
 
         <div class="footer">
             <p>Dicetak otomatis oleh Sistem ARQAM pada {{ now()->format('d/m/Y H:i') }}</p>
-            <p>&copy; {{ date('Y') }} Majelis Pendidikan Kader - Pimpinan Pusat Muhammadiyah</p>
+            <p>&copy; {{ date('Y') }} Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni (LP3A) Universitas Muhammadiyah Surakarta</p>
         </div>
     </div>
 </body>
