@@ -167,7 +167,7 @@
                 <div class="relative animate-floating-slow hidden lg:block perspective-1000">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary-900 to-transparent rounded-3xl transform rotate-3 scale-105 opacity-40 blur-xl"></div>
                     <div class="bg-gray-900 rounded-[2.5rem] border-[12px] border-gray-800 shadow-2xl overflow-hidden relative z-10 aspect-[4/3] group transform hover:rotate-0 transition-transform duration-700">
-                        <img src="{{ asset('hero.jpg') }}" alt="ARQAM Training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="{{ asset('hero.JPG') }}" alt="ARQAM Training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
                             <p class="text-white text-sm font-medium">Baitul Arqam Dosen UMS</p>
                         </div>
@@ -255,7 +255,7 @@
                 <div class="relative" data-aos="fade-right">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary/15 to-accent/15 rounded-[2rem] transform rotate-3 scale-105 filter blur-lg"></div>
                     <div class="relative z-10 bg-white rounded-[2rem] border border-slate-100 shadow-soft overflow-hidden aspect-[4/3] group">
-                        <img src="{{ asset('kegiatan.jpg') }}" alt="Baitul Arqam LP3A UMS" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="{{ asset('kegiatan.JPG') }}" alt="Baitul Arqam LP3A UMS" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-6">
                             <p class="text-white text-sm font-semibold font-heading">Kegiatan Baitul Arqam LP3A UMS</p>
                         </div>
