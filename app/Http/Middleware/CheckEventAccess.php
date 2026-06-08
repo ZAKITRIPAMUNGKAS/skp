@@ -26,8 +26,8 @@ class CheckEventAccess
             abort(401);
         }
 
-        // 1. Jika user adalah Admin & pemilik event
-        if ($user->isAdmin() && $event->created_by === $user->id) {
+        // 1. Jika user adalah Admin (Admin Utama memiliki akses ke semua event)
+        if ($user->isAdmin()) {
             return $next($request);
         }
 
