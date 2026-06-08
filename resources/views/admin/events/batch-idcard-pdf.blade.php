@@ -273,7 +273,7 @@
             {{-- Logo UMS --}}
             <div class="logo-area">
                 <div class="logo-badge">
-                    <img src="{{ public_path('logo.webp') }}" alt="UMS">
+                    <img src="{{ public_path('Logoums.png') }}" alt="UMS">
                 </div>
             </div>
 

@@ -358,7 +358,7 @@
             <table class="header-table">
                 <tr>
                     <td style="width: 150px; vertical-align: middle;">
-                        <img src="{{ public_path('logo.webp') }}" class="logo-img" alt="Logo ArqamApp" onerror="this.style.display='none'">
+                        <img src="{{ public_path('Logoums.png') }}" class="logo-img" alt="Logo ArqamApp" onerror="this.style.display='none'">
                     </td>
                     <td class="header-text-td">
                         <h3>Majelis Pendidikan Kader PP Muhammadiyah</h3>

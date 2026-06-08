@@ -354,7 +354,7 @@
     <table class="kop-table">
         <tr>
             <td style="width: 50px;">
-                <img src="{{ public_path('logo.webp') }}" class="logo-img" alt="Logo ArqamApp">
+                <img src="{{ public_path('Logoums.png') }}" class="logo-img" alt="Logo ArqamApp">
             </td>
             <td class="judul-instansi-td">
                 <h4 style="margin-top: 20px; margin-bottom: 2px;">

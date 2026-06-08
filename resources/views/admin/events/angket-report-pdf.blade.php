@@ -289,7 +289,7 @@
     <table class="kop-table">
         <tr>
             <td style="width: 120px; vertical-align: middle;">
-                <img src="{{ public_path('logo.webp') }}" class="logo-img" alt="Logo ArqamApp" onerror="this.style.display='none'">
+                <img src="{{ public_path('Logoums.png') }}" class="logo-img" alt="Logo ArqamApp" onerror="this.style.display='none'">
             </td>
             <td class="judul-instansi-td">
                 <<h4 style="margin-top: 20px; margin-bottom: 2px;">Majelis Pendidikan Kader PP Muhammadiyah</h4>
