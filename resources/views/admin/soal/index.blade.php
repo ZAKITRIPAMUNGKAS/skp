@@ -10,19 +10,31 @@
     targetSoalTeks: '', 
     tipe: 'pretest', 
     selectedEventId: '',
-    selectedSoalIds: [],
+    selectedSoalIds: JSON.parse(localStorage.getItem('selected_soal_ids') || '[]'),
     eventsData: {{ $events->map(fn($e) => ['id' => $e->id, 'nama_event' => $e->nama_event, 'sessions' => $e->eventSesi->map(fn($s) => ['id' => $s->id, 'nama_sesi' => $s->nama_sesi])])->toJson() }},
+    
+    init() {
+        this.$watch('selectedSoalIds', value => {
+            localStorage.setItem('selected_soal_ids', JSON.stringify(value));
+        });
+    },
     get sessions() {
         if (!this.selectedEventId) return [];
         const ev = this.eventsData.find(e => e.id == this.selectedEventId);
         return ev ? ev.sessions : [];
     },
     toggleAll(e) {
+        const currentPageIds = @json($soals->pluck('id')->toArray());
         if (e.target.checked) {
-            this.selectedSoalIds = @json($soals->pluck('id')->toArray());
+            this.selectedSoalIds = [...new Set([...this.selectedSoalIds, ...currentPageIds])];
         } else {
-            this.selectedSoalIds = [];
+            this.selectedSoalIds = this.selectedSoalIds.filter(id => !currentPageIds.includes(id));
         }
+    },
+    isAllPageSelected() {
+        const currentPageIds = @json($soals->pluck('id')->toArray());
+        if (currentPageIds.length === 0) return false;
+        return currentPageIds.every(id => this.selectedSoalIds.includes(id));
     }
 }">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -62,7 +74,7 @@
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100">
                         <th class="px-6 py-4 font-semibold text-gray-600 w-12 text-center">
-                            <input type="checkbox" @change="toggleAll($event)" :checked="selectedSoalIds.length === {{ count($soals) }} && {{ count($soals) }} > 0" class="rounded border-gray-300 text-primary focus:ring-primary cursor-pointer">
+                            <input type="checkbox" @change="toggleAll($event)" :checked="isAllPageSelected()" class="rounded border-gray-300 text-primary focus:ring-primary cursor-pointer">
                         </th>
                         <th class="px-6 py-4 font-semibold text-gray-600">Teks Soal</th>
                         <th class="px-6 py-4 font-semibold text-gray-600">Event Asal</th>
@@ -211,7 +223,7 @@
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-            <form action="{{ route('admin.soal.copyBulk') }}" method="POST" class="p-6">
+            <form action="{{ route('admin.soal.copyBulk') }}" method="POST" class="p-6" @submit="localStorage.removeItem('selected_soal_ids')">
                 @csrf
                 
                 <!-- Hidden inputs for selected IDs -->
