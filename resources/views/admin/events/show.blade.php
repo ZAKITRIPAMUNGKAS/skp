@@ -35,6 +35,25 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
+                @if($event->status === 'persiapan')
+                    <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline">
+                        @csrf
+                        <input type="hidden" name="status" value="berlangsung">
+                        <x-button type="submit" variant="success" size="sm">
+                            <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
+                            Mulai Event
+                        </x-button>
+                    </form>
+                @elseif($event->status === 'berlangsung')
+                    <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan event ini? Status yang sudah diselesaikan tidak dapat diubah kembali.');">
+                        @csrf
+                        <input type="hidden" name="status" value="selesai">
+                        <x-button type="submit" variant="danger" size="sm">
+                            <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0"/></svg>
+                            Selesaikan Event
+                        </x-button>
+                    </form>
+                @endif
                 <x-button variant="ghost" size="sm" href="{{ route('admin.events.edit', $event) }}">
                     <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     Edit

@@ -274,4 +274,36 @@ class EventController extends Controller
 
         return $pdf->stream('Surat_Tugas_Fasilitator_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
     }
+
+    public function updateStatus(Request $request, Event $event)
+    {
+        $request->validate([
+            'status' => 'required|in:persiapan,berlangsung,selesai'
+        ]);
+
+        $oldStatus = $event->status;
+        $newStatus = $request->status;
+
+        $event->status = $newStatus;
+        $event->save();
+
+        if (auth()->check()) {
+            $user = auth()->user();
+            \App\Models\ActivityLog::create([
+                'user_id'     => $user->id,
+                'event_id'    => $event->id,
+                'action'      => 'updated',
+                'role_user'   => $user->role,
+                'model_type'  => get_class($event),
+                'model_id'    => $event->id,
+                'description' => "Admin '{$user->name}' memperbarui status event '{$event->nama_event}' dari '{$oldStatus}' menjadi '{$newStatus}'",
+                'old_values'  => ['status' => $oldStatus],
+                'new_values'  => ['status' => $newStatus],
+                'ip_address'  => request()->ip(),
+            ]);
+        }
+
+        return redirect()->route('admin.events.show', $event)
+            ->with('success', 'Status event berhasil diperbarui menjadi ' . ucfirst($newStatus) . '!');
+    }
 }

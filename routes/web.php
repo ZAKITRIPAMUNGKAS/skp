@@ -183,6 +183,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
         Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
         Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+        Route::post('/events/{event}/status', [EventController::class, 'updateStatus'])->name('events.updateStatus');
         Route::post('/events/{event}/facilitators', [EventController::class, 'assignFacilitators'])->name('events.assignFacilitators');
         Route::get('/events/{event}/report', [EventController::class, 'downloadReport'])->name('events.report');
         Route::get('/events/{event}/winners-report', [EventController::class, 'downloadWinnersReport'])->name('events.winnersReport');
