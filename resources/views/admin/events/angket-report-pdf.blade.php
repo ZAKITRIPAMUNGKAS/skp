@@ -289,7 +289,7 @@
     <table class="kop-table">
         <tr>
             <td style="width: 120px; vertical-align: middle;">
-                <img src="{{ public_path('Logoums.png') }}" class="logo-img" alt="Logo ArqamApp" onerror="this.style.display='none'">
+                <img src="{{ public_path('logo.png') }}" class="logo-img" alt="Logo UMS" onerror="this.style.display='none'">
             </td>
             <td class="judul-instansi-td">
                 <h4 style="margin-top: 10px; margin-bottom: 2px; font-size: 11px;">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h4>

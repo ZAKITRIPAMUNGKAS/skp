@@ -115,7 +115,7 @@
 
     <div class="content">
         <div class="header-section">
-            <img src="{{ public_path('Logoums.png') }}" class="logo-top">
+            <img src="{{ public_path('logo.png') }}" class="logo-top">
             <div class="org-name">PIMPINAN DAERAH MUHAMMADIYAH KARANGANYAR</div>
             <div class="dept-name">Majelis Pendidikan Kader dan Sumber Daya Insani</div>
         </div>

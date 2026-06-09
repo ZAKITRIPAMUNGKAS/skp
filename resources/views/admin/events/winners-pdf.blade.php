@@ -358,7 +358,7 @@
             <table class="header-table">
                 <tr>
                     <td style="width: 150px; vertical-align: middle;">
-                        <img src="{{ public_path('Logoums.png') }}" class="logo-img" alt="Logo ArqamApp" onerror="this.style.display='none'">
+                        <img src="{{ public_path('logo.png') }}" class="logo-img" alt="Logo UMS" onerror="this.style.display='none'">
                     </td>
                     <td class="header-text-td">
                         <h3 style="margin-top: 10px; margin-bottom: 2px; font-size: 10px;">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h3>

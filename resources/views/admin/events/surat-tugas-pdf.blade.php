@@ -181,7 +181,7 @@
                 <td class="kop-logo-container">
                     <table style="border: none; border-collapse: collapse;">
                         <tr style="vertical-align: middle; padding: 0; border: none; background: transparent;">
-                                <img src="{{ public_path('Logo.webp') }}" style="width: 200px; height: auto;" alt="Logo UMS">
+                                <img src="{{ public_path('logo.png') }}" style="width: 200px; height: auto;" alt="Logo UMS">
                         </tr>
                     </table>
                 </td>
