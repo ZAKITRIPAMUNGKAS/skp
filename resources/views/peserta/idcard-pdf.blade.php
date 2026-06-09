@@ -41,7 +41,7 @@
             z-index: 1;
             width: 100%;
             text-align: center;
-            padding-top: 20mm;
+            padding-top: 16mm;
         }
 
         /* ── PESERTA label ── */
@@ -128,11 +128,11 @@
             background: #f5b300;
             color: #ffffff;
             font-size: 14pt;
-            font-weight: 900;
+            font-weight: bold;
+            font-family: 'Arial Black', 'Arial-BoldMT', 'Helvetica-Bold', sans-serif;
             padding: 1.5mm 8mm;
             border-radius: 2.5mm;
             text-transform: uppercase;
-            text-style: bold;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
