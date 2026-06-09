@@ -127,9 +127,8 @@
             display: inline-block;
             background: #f5b300;
             color: #ffffff;
-            font-size: 14pt;
-            font-weight: bold;
-            font-family: 'Arial Black', 'Arial-BoldMT', 'Helvetica-Bold', sans-serif;
+            font-size: 16pt;
+            font-weight: 900;
             padding: 1.5mm 8mm;
             border-radius: 2.5mm;
             text-transform: uppercase;
