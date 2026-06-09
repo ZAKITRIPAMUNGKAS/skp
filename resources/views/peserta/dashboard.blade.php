@@ -112,8 +112,29 @@
                 <img src="{{ asset('images/arka/arka_greeting.png') }}" alt="Arka Greeting" class="w-full h-full object-contain drop-shadow-2xl">
             </div>
         </div>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    @if($activeEvent->status === 'persiapan')
+        <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl p-8 md:p-12 text-center max-w-2xl mx-auto space-y-6 animate-fade-in my-8">
+            <div class="w-32 h-32 mx-auto bg-amber-50 rounded-full flex items-center justify-center border border-amber-100">
+                <img src="{{ asset('images/arka/arka_penilai.png') }}" alt="Mascot Waiting" class="w-24 h-24 object-contain">
+            </div>
+            <div class="space-y-2">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-850 uppercase tracking-wider">
+                    Status: Persiapan
+                </span>
+                <h2 class="text-2xl md:text-3xl font-heading font-extrabold text-gray-800">Kegiatan Belum Dimulai</h2>
+            </div>
+            <p class="text-gray-500 text-sm leading-relaxed max-w-md mx-auto">
+                Kegiatan <strong>{{ $activeEvent->nama_event }}</strong> saat ini masih dalam tahap persiapan. Seluruh fitur evaluasi, tes mandiri, jadwal, dan presensi kehadiran akan diaktifkan secara otomatis setelah event dimulai oleh panitia.
+            </p>
+            <div class="pt-4">
+                <a href="{{ route('peserta.profile.index') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-2xl font-bold text-sm hover:bg-primary/95 transition-all shadow-md active:scale-95">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    Lengkapi / Edit Profil Saya
+                </a>
+            </div>
+        </div>
+    @else
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {{-- LEFT COLUMN: TICKET & QUICK STATS (4 cols) --}}
         <div class="lg:col-span-4 space-y-8">
@@ -569,7 +590,7 @@
             @endif
 
         </div>
-    </div>
+    @endif
     @else
         <div class="flex flex-col items-center justify-center py-20 text-center">
             <div class="w-64 h-64 mb-8">

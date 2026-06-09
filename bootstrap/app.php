@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin_only' => \App\Http\Middleware\AdminOnlyMiddleware::class,
             'event_access' => \App\Http\Middleware\CheckEventAccess::class,
             'profile_completed' => \App\Http\Middleware\CheckProfileCompletion::class,
+            'event_started' => \App\Http\Middleware\CheckEventStarted::class,
         ]);
 
         $middleware->redirectGuestsTo('/login');

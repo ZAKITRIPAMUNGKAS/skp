@@ -265,7 +265,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 // ── Peserta Routes ────────────────────────────────────
-Route::middleware(['auth', 'peserta', 'profile_completed'])->prefix('peserta')->name('peserta.')->group(function () {
+Route::middleware(['auth', 'peserta', 'profile_completed', 'event_started'])->prefix('peserta')->name('peserta.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Peserta\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/notifications/poll', [\App\Http\Controllers\Peserta\NotificationController::class, 'poll'])->name('notifications.poll');
     
