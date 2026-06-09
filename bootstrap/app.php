@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'peserta' => \App\Http\Middleware\PesertaMiddleware::class,
             'admin_only' => \App\Http\Middleware\AdminOnlyMiddleware::class,
             'event_access' => \App\Http\Middleware\CheckEventAccess::class,
+            'profile_completed' => \App\Http\Middleware\CheckProfileCompletion::class,
         ]);
 
         $middleware->redirectGuestsTo('/login');
