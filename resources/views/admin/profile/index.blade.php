@@ -27,8 +27,12 @@
         
         {{-- Profile Summary Card --}}
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col items-center text-center h-fit">
-            <div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-4 ring-4 ring-primary/5">
-                <span class="text-2xl font-bold text-primary">{{ strtoupper(substr($user->name, 0, 2)) }}</span>
+            <div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-4 ring-4 ring-primary/5 overflow-hidden">
+                @if($user->foto_url)
+                    <img src="{{ $user->foto_url }}" class="w-full h-full object-cover">
+                @else
+                    <span class="text-2xl font-bold text-primary">{{ strtoupper(substr($user->name, 0, 2)) }}</span>
+                @endif
             </div>
             
             <h3 class="text-lg font-bold text-gray-800">{{ $user->name }}</h3>
@@ -91,6 +95,63 @@
                         @error('email')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Foto Profil (Maks. 2MB, otomatis dipotong 1x1)</label>
+                        <div x-data="{ 
+                            previewUrl: '{{ $user->foto_url ?? '' }}', 
+                            warning: '',
+                            handleFile(e) {
+                                const file = e.target.files[0];
+                                if (!file) return;
+                                if (file.size > 2 * 1024 * 1024) {
+                                    this.warning = 'Ukuran berkas melebihi 2MB! Silakan pilih berkas yang lebih kecil atau kurangi ukurannya.';
+                                    this.previewUrl = '{{ $user->foto_url ?? '' }}';
+                                    e.target.value = '';
+                                    document.getElementById('cropped_foto_input').value = '';
+                                    return;
+                                }
+                                this.warning = '';
+                                
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                    const img = new Image();
+                                    img.onload = () => {
+                                        const canvas = document.createElement('canvas');
+                                        const size = Math.min(img.width, img.height);
+                                        canvas.width = size;
+                                        canvas.height = size;
+                                        const ctx = canvas.getContext('2d');
+                                        ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, size, size);
+                                        const croppedDataUrl = canvas.toDataURL('image/jpeg');
+                                        this.previewUrl = croppedDataUrl;
+                                        document.getElementById('cropped_foto_input').value = croppedDataUrl;
+                                    };
+                                    img.src = event.target.result;
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        }">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
+                                    <template x-if="previewUrl">
+                                        <img :src="previewUrl" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!previewUrl">
+                                        <svg class="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </template>
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" accept="image/*" @change="handleFile($event)"
+                                           class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                                </div>
+                            </div>
+                            <p x-show="warning" class="mt-2 text-xs font-semibold text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-100" x-text="warning" x-cloak></p>
+                            <input type="hidden" name="cropped_foto" id="cropped_foto_input">
+                        </div>
                     </div>
 
                     <div class="border-t border-gray-100 my-6 pt-5">

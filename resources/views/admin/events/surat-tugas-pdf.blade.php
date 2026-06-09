@@ -4,48 +4,93 @@
     <meta charset="utf-8">
     <title>Surat Tugas Fasilitator - {{ $event->nama_event }}</title>
     <style>
+        @page {
+            margin: 0;
+        }
         body {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 11pt;
+            font-size: 10.5pt;
             color: #333;
             line-height: 1.5;
             margin: 0;
             padding: 0;
+            background-color: #ffffff;
         }
         .container {
-            padding: 10px 30px;
+            padding: 30px 45px 50px 45px;
+            position: relative;
+        }
+        /* Top Left Yellow Accent Bar */
+        .top-left-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 105px;
+            background-color: #ffd000;
         }
         /* Kop Surat */
         .kop-table {
             width: 100%;
-            border-bottom: 3px double #000;
-            padding-bottom: 12px;
-            margin-bottom: 25px;
+            border-collapse: collapse;
+            margin-bottom: 5px;
         }
         .kop-table td {
             border: none !important;
             background: transparent !important;
             padding: 0 !important;
         }
-        .kop-title {
-            font-size: 13pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #114B32;
-            margin: 0;
+        .kop-logo-container {
+            width: 45%;
+            vertical-align: middle;
+            text-align: left;
+            padding-left: 10px;
+        }
+        .kop-info-container {
+            width: 55%;
+            vertical-align: middle;
+            text-align: right;
             line-height: 1.3;
         }
-        .kop-subtitle {
-            font-size: 11.5pt;
-            margin: 3px 0 0 0;
+        .ums-title-large {
+            font-size: 32pt;
             font-weight: bold;
-            color: #000;
+            color: #0b3a75;
+            font-family: Arial, Helvetica, sans-serif;
+            letter-spacing: -1.5px;
+            line-height: 0.8;
+            margin: 0;
+        }
+        .ums-subtitle-large {
+            font-size: 7.5pt;
+            font-weight: bold;
+            color: #0b3a75;
+            text-transform: uppercase;
+            margin-top: 4px;
+            letter-spacing: 0.2px;
+        }
+        .kop-dept-title {
+            font-size: 9.5pt;
+            font-weight: bold;
+            color: #0b3a75;
+            margin: 0;
+        }
+        .kop-dept-subtitle {
+            font-size: 8.5pt;
+            font-weight: bold;
+            color: #444444;
+            margin: 2px 0 0 0;
         }
         .kop-address {
-            font-size: 7.5pt;
-            margin: 5px 0 0 0;
-            color: #555;
-            font-style: italic;
+            font-size: 6.8pt;
+            color: #666666;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        .header-line {
+            border-bottom: 2px solid #0b3a75;
+            margin-bottom: 25px;
+            margin-top: 5px;
         }
         /* Judul Surat */
         .surat-header {
@@ -55,14 +100,16 @@
         .surat-title {
             font-size: 13pt;
             font-weight: bold;
-            text-decoration: underline;
             text-transform: uppercase;
             margin: 0;
+            color: #111;
+            letter-spacing: 0.5px;
         }
         .surat-number {
             font-size: 9.5pt;
             margin-top: 4px;
-            color: #444;
+            color: #333;
+            font-weight: bold;
         }
         /* Isi Surat */
         .surat-body {
@@ -75,76 +122,82 @@
             margin: 15px 0;
         }
         .table-data th, .table-data td {
-            border: 1px solid #ddd;
+            border: 1px solid #cccccc;
             padding: 8px 10px;
             text-align: left;
-            font-size: 10pt;
+            font-size: 9.5pt;
         }
         .table-data th {
-            background-color: #f8f9fa;
+            background-color: #f2f5fa;
             font-weight: bold;
-            color: #114B32;
+            color: #0b3a75;
         }
         .table-data tr:nth-child(even) {
             background-color: #fafafa;
         }
-        /* Tanda Tangan */
-        .signature-container {
-            margin-top: 40px;
+        /* Footer fixed position at the page bottom */
+        .footer-fixed {
+            position: absolute;
+            bottom: 0;
+            left: 0;
             width: 100%;
+            background-color: #ffffff;
+            text-align: center;
         }
-        .signature-table {
+        .footer-social-table {
             width: 100%;
-            border: none;
+            border-collapse: collapse;
+            margin-bottom: 6px;
         }
-        .signature-table td {
+        .footer-social-table td {
+            text-align: center;
+            font-size: 8pt;
+            color: #0b3a75;
+            font-weight: bold;
             border: none !important;
             background: transparent !important;
-            width: 50%;
-            text-align: center;
-            font-size: 10.5pt;
             padding: 0 !important;
+            vertical-align: middle;
         }
-        .signature-space {
-            height: 65px;
+        .footer-yellow-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ffd000;
         }
-        .signature-name {
-            font-weight: bold;
-            text-decoration: underline;
-        }
-        .signature-nip {
-            font-size: 9pt;
-            color: #555;
-        }
-        /* Footer */
-        .footer-note {
-            position: fixed;
-            bottom: -15px;
-            left: 30px;
-            right: 30px;
-            text-align: center;
-            font-size: 7.5pt;
-            color: #888;
-            border-top: 1px solid #eee;
-            padding-top: 6px;
+        .social-icon {
+            vertical-align: middle;
+            margin-right: 4px;
         }
     </style>
 </head>
 <body>
+    <!-- Top Left Accent Bar -->
+    <div class="top-left-bar"></div>
+
     <div class="container">
         {{-- Kop Surat --}}
         <table class="kop-table">
             <tr>
-                <td style="width: 15%; text-align: left; vertical-align: middle;">
-                    <img src="https://upload.wikimedia.org/wikipedia/id/8/8a/Logo_UMS.png" style="width: 70px; height: auto;" alt="Logo UMS">
+                <td class="kop-logo-container">
+                    <table style="border: none; border-collapse: collapse;">
+                        <tr style="vertical-align: middle; padding: 0; border: none; background: transparent;">
+                                <img src="{{ public_path('Logo.webp') }}" style="width: 200px; height: auto;" alt="Logo UMS">
+                        </tr>
+                    </table>
                 </td>
-                <td style="width: 85%; text-align: center; vertical-align: middle;">
-                    <h1 class="kop-title">LEMBAGA PENGEMBANGAN PERSYARIKATAN PENGKADERAN & ALUMNI</h1>
-                    <div class="kop-subtitle">UNIVERSITAS MUHAMMADIYAH SURAKARTA</div>
-                    <div class="kop-address">Jl. A. Yani, Pabelan, Kartasura, Sukoharjo, Jawa Tengah 57162 | Telp: (0271) 717417 | Email: lpppa@ums.ac.id</div>
+                <td class="kop-info-container">
+                    <h1 class="kop-dept-title">Lembaga Pengembangan Pembinaan Al-Islam & Kemuhammadiyahan (LP3A)</h1>
+                    <div class="kop-dept-subtitle">Universitas Muhammadiyah Surakarta</div>
+                    <div class="kop-address">
+                        Gedung Induk Siti Walidah Lantai 3 Sayap Selatan, Jl. A. Yani No.157, Pabelan, Kartasura, Sukoharjo 57162, Jawa Tengah<br>
+                        Telp. +62 271-717417 | E-mail: lp3a@ums.ac.id | Website: https://lp3a.ums.ac.id
+                    </div>
                 </td>
             </tr>
         </table>
+
+        {{-- Divider Line --}}
+        <div class="header-line"></div>
 
         {{-- Judul Surat --}}
         <div class="surat-header">
@@ -154,8 +207,10 @@
 
         {{-- Isi Surat --}}
         <div class="surat-body">
-            <p style="margin-top: 0;">Bismillahirrohmanirrohim,</p>
-            <p>Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni (LPPPA) Universitas Muhammadiyah Surakarta dengan ini menugaskan kepada nama-nama berikut:</p>
+            {{-- Assalamualaikum as Indonesian Text --}}
+            <p style="margin-top: 0; font-weight: bold; font-style: italic;">Assalamu'alaikum Wr. Wb.</p>
+
+            <p style="text-indent: 30px;">Lembaga Pengembangan Pembinaan Al-Islam dan Kemuhammadiyahan (LP3A) Universitas Muhammadiyah Surakarta dengan ini menugaskan kepada nama-nama berikut:</p>
 
             <table class="table-data">
                 <thead>
@@ -184,10 +239,10 @@
 
             <p>Untuk bertindak sebagai <strong>Fasilitator / Pendamping</strong> pada kegiatan <strong>{{ $event->nama_event }}</strong>, yang akan dilaksanakan pada:</p>
             
-            <table style="border: none; margin-left: 20px; font-size: 10.5pt;">
+            <table style="border: none; margin-left: 20px; font-size: 10pt; margin-bottom: 15px;">
                 <tr>
-                    <td style="padding: 2px 10px 2px 0; font-weight: bold; width: 100px; border: none; background: transparent;">Tanggal</td>
-                    <td style="padding: 2px 10px; border: none; background: transparent;">:</td>
+                    <td style="padding: 2px 10px 2px 0; font-weight: bold; width: 80px; border: none; background: transparent;">Tanggal</td>
+                    <td style="padding: 2px 5px; border: none; background: transparent;">:</td>
                     <td style="padding: 2px 10px; border: none; background: transparent;">
                         {{ \Carbon\Carbon::parse($event->tanggal_mulai)->translatedFormat('d F Y') }}
                         s/d
@@ -196,38 +251,72 @@
                 </tr>
                 <tr>
                     <td style="padding: 2px 10px 2px 0; font-weight: bold; border: none; background: transparent;">Tempat</td>
-                    <td style="padding: 2px 10px; border: none; background: transparent;">:</td>
+                    <td style="padding: 2px 5px; border: none; background: transparent;">:</td>
                     <td style="padding: 2px 10px; border: none; background: transparent;">{{ $event->lokasi ?? 'Ditentukan Panitia' }}</td>
                 </tr>
             </table>
 
-            <p style="margin-top: 20px; margin-bottom: 0;">Demikian surat tugas ini dibuat untuk dilaksanakan dengan seksama dan penuh rasa tanggung jawab. Semoga Allah SWT senantiasa memberikan kemudahan dan petunjuk dalam menjalankan amanah ini.</p>
+            <p style="margin-top: 15px; margin-bottom: 0; text-indent: 30px;">Demikian surat tugas ini dibuat untuk dilaksanakan dengan seksama dan penuh rasa tanggung jawab. Semoga Allah SWT senantiasa memberikan kemudahan dan petunjuk dalam menjalankan amanah ini.</p>
         </div>
 
-        {{-- Tanda Tangan --}}
-        <div class="signature-container">
-            <table class="signature-table">
-                <tr>
-                    <td>
-                        {{-- Spacing kiri kosong --}}
-                    </td>
-                    <td>
-                        <div>Surakarta, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</div>
-                        <div style="font-weight: bold; margin-top: 4px; line-height: 1.3;">
-                            Kabid. Kaderisasi, Pembinaan Ortom<br>dan Beasiswa Kader
-                        </div>
-                        <div class="signature-space"></div>
-                        <div class="signature-name">Azizah Fatmawati, S.T., M.Cs</div>
-                        <div class="signature-nip">NIDN. 0628048601</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        {{-- Ending Greeting & Signature Block Side-by-Side --}}
+        <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 25px;">
+            <tr>
+                <td style="width: 45%; vertical-align: top; text-align: left; border: none; background: transparent; padding: 0; font-weight: bold; font-style: italic; padding-top: 8px;">
+                    Wassalamu'alaikum Wr. Wb.
+                </td>
+                <td style="width: 55%; vertical-align: top; text-align: left; border: none; background: transparent; padding: 0; padding-left: 40px; font-size: 10pt; line-height: 1.4;">
+                    <div>Surakarta, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</div>
+                    <div style="font-weight: bold; margin-top: 3px;">
+                        Kabid. Kaderisasi, Pembinaan Ortom<br>dan Beasiswa Kader
+                    </div>
+                    <div style="height: 40px; font-style: italic; color: #777; padding-top: 12px; font-size: 9pt;"></div>
+                    <div style="font-weight: bold; font-size: 10.5pt; text-decoration: none;">Azizah Fatmawati, S.T., M.Cs</div>
+                    <div style="font-size: 9pt; color: #555; margin-top: 1px;">NIDN. 0626118101</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-        {{-- Footer --}}
-        <div class="footer-note">
-            Dokumen ini diterbitkan secara elektronik oleh LPPPA UMS. Verifikasi keaslian dokumen dapat divalidasi melalui sistem ARQAM.
-        </div>
+    {{-- Footer Accent at the very bottom --}}
+    <div class="footer-fixed">
+        <table class="footer-social-table" style="background-color: ">
+            <tr>
+                <td>
+                    <!-- Globe Web Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </span>
+                    lp3a.ums.ac.id
+                </td>
+                <td>
+                    <!-- Instagram Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </span>
+                    @lp3aums
+                </td>
+                <td>
+                    <!-- Email Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </span>
+                    lp3a@ums.ac.id
+                </td>
+            </tr>
+        </table>
+        <div class="footer-yellow-bar"></div>
     </div>
 </body>
 </html>
