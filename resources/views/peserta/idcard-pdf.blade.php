@@ -41,7 +41,7 @@
             z-index: 1;
             width: 100%;
             text-align: center;
-            padding-top: 14mm;
+            padding-top: 20mm;
         }
 
         /* ── PESERTA label ── */
