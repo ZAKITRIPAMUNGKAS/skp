@@ -17,32 +17,43 @@
                 </div>
                 
                 @if(count($allFasilitators) > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                         @foreach($allFasilitators as $fasilitator)
                             @php
                                 $isChecked = in_array($fasilitator->id, $assignedFasilitatorIds);
                             @endphp
                             <label x-data="{ checked: {{ $isChecked ? 'true' : 'false' }} }"
                                    :class="checked ? 'border-primary bg-primary/5 ring-2 ring-primary/10 shadow-md' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 bg-white'"
-                                   class="relative flex items-center gap-4 p-5 rounded-2xl border transition-all cursor-pointer select-none group">
+                                   class="relative flex flex-col p-5 rounded-3xl border transition-all cursor-pointer select-none group w-full text-center">
                                 
-                                <input type="checkbox" name="facilitators[]" value="{{ $fasilitator->id }}"
-                                       @change="checked = $el.checked"
-                                       @if($isChecked) checked @endif
-                                       class="w-5 h-5 text-primary focus:ring-primary/20 rounded-lg border-gray-300 cursor-pointer transition-all">
+                                {{-- Checkbox --}}
+                                <div class="absolute top-4 right-4 z-10">
+                                    <input type="checkbox" name="facilitators[]" value="{{ $fasilitator->id }}"
+                                           @change="checked = $el.checked"
+                                           @if($isChecked) checked @endif
+                                           class="w-5 h-5 text-primary focus:ring-primary/20 rounded-lg border-gray-300 cursor-pointer transition-all">
+                                </div>
                                 
-                                <div :class="checked ? 'bg-primary/10 text-primary' : 'bg-slate-50 text-slate-400 group-hover:bg-slate-100'"
-                                     class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
+                                {{-- Photo (1x1 square) --}}
+                                <div class="w-full aspect-square rounded-2xl overflow-hidden mb-4 bg-slate-50 flex items-center justify-center border border-gray-100 shrink-0">
+                                    @if($fasilitator->foto_url)
+                                        <img src="{{ $fasilitator->foto_url }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                    @else
+                                        <div :class="checked ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-400'" 
+                                             class="w-full h-full flex items-center justify-center transition-colors">
+                                            <svg class="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                        </div>
+                                    @endif
                                 </div>
 
-                                <div class="flex-1 min-w-0">
+                                {{-- Name & Details --}}
+                                <div class="min-w-0">
                                     <span class="block text-sm font-bold text-gray-800 truncate group-hover:text-primary transition-colors" x-text="'{{ addslashes($fasilitator->name) }}'"></span>
-                                    <div class="flex flex-col gap-0.5 mt-1">
+                                    <div class="flex flex-col gap-0.5 mt-1 items-center">
                                         <span class="text-xs text-gray-500 font-medium">@<span x-text="'{{ addslashes($fasilitator->username) }}'"></span></span>
-                                        <span class="text-[10px] text-gray-400 truncate" x-text="'{{ addslashes($fasilitator->email) }}'"></span>
+                                        <span class="text-[10px] text-gray-400 truncate max-w-full px-2" x-text="'{{ addslashes($fasilitator->email) }}'"></span>
                                     </div>
                                 </div>
                             </label>

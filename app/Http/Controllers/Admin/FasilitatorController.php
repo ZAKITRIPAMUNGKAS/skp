@@ -16,7 +16,7 @@ class FasilitatorController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::select(['id', 'name', 'email', 'username', 'role', 'created_at'])
+        $query = User::select(['id', 'name', 'email', 'username', 'role', 'foto', 'created_at'])
             ->where('role', 'fasilitator')
             ->withCount('assignedEvents')
             ->latest();
@@ -73,12 +73,26 @@ class FasilitatorController extends Controller
 
         DB::beginTransaction();
         try {
+            $fotoPath = null;
+            if ($request->filled('cropped_foto')) {
+                $base64Image = $request->cropped_foto;
+                $image_parts = explode(";base64,", $base64Image);
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1] ?? 'jpeg';
+                $image_base64 = base64_decode($image_parts[1]);
+                
+                $fileName = 'foto_' . time() . '_' . Str::random(10) . '.' . $image_type;
+                \Illuminate\Support\Facades\Storage::disk('public')->put('users/' . $fileName, $image_base64);
+                $fotoPath = 'users/' . $fileName;
+            }
+
             User::create([
                 'name'     => $validated['name'],
                 'email'    => $validated['email'],
                 'username' => $validated['username'],
                 'password' => Hash::make($validated['password']),
                 'role'     => 'fasilitator',
+                'foto'     => $fotoPath,
             ]);
 
             DB::commit();
