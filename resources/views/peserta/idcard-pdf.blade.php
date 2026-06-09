@@ -132,6 +132,7 @@
             padding: 1.5mm 8mm;
             border-radius: 2.5mm;
             text-transform: uppercase;
+            text-style: bold;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
