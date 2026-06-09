@@ -269,7 +269,8 @@ class EventController extends Controller
         $facilitators = $event->facilitators()->get();
 
         $pdf = Pdf::loadView('admin.events.surat-tugas-pdf', compact('event', 'facilitators'))
-            ->setPaper('a4', 'portrait');
+            ->setPaper('a4', 'portrait')
+            ->setOption('isRemoteEnabled', true);
 
         return $pdf->stream('Surat_Tugas_Fasilitator_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
     }
