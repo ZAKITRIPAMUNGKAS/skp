@@ -308,7 +308,7 @@
     <img class="card-bg" src="{{ $idcardBg }}">
 
     <div class="back-body">
-        <div class="rules-title" style="padding-top: 20mm;">Tata Tertib</div>
+        <div class="rules-title" style="padding-top: 15mm;">Tata Tertib</div>
         <table class="rule-table">
             <tr>
                 <td class="rule-dot">•</td>
@@ -335,6 +335,9 @@
                 <td class="rule-text">Menjaga kebersihan dan fasilitas di lokasi acara.</td>
             </tr>
         </table>
+        <div style="text-align: center; margin-top: 15px;">
+              <img style="width: 90%;" src="{{ public_path('kata.png') }}" alt="Kata Penutup">
+        </div>
     </div>
 </div>
 

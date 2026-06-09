@@ -1,5 +1,5 @@
 {{-- Topbar Component --}}
-<header class="sticky top-0 z-[40] bg-white/80 backdrop-blur-sm border-b border-gray-200/60">
+<header class="relative z-[40] bg-white border-b border-gray-200/60">
     <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         {{-- Left: Hamburger + Breadcrumb --}}
         <div class="flex items-center gap-4">

@@ -101,6 +101,11 @@ class DashboardController extends Controller
                 ->where('peserta_id', $peserta->id)
                 ->count();
 
+            $attendedSessionIds = Absensi::where('event_id', $eventId)
+                ->where('peserta_id', $peserta->id)
+                ->pluck('sesi_id')
+                ->toArray();
+
             $progress = [
                 'pretest'        => $pretestDone,
                 'pretest_done'   => $pretestDoneCount,
@@ -168,7 +173,7 @@ class DashboardController extends Controller
             }
         }
 
-        return view('peserta.dashboard', compact('peserta', 'activeEvent', 'eventPeserta', 'progress', 'scores', 'sesiStatus', 'chartData'));
+        return view('peserta.dashboard', compact('peserta', 'activeEvent', 'eventPeserta', 'progress', 'scores', 'sesiStatus', 'chartData', 'materials', 'attendedSessionIds'));
     }
 
     public function downloadSertifikat(Event $event)

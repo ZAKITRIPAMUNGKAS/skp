@@ -520,6 +520,79 @@
                 </div>
             </div>
 
+            {{-- Materials Download Card --}}
+            @if($materials && $materials->count() > 0)
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
+                <div class="px-8 py-8 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-xl font-heading font-bold text-gray-800">Materi Sesi Kegiatan</h3>
+                        <p class="text-sm text-gray-500">Unduh file presentasi dan dokumen materi pelatihan.</p>
+                    </div>
+                </div>
+                <div class="p-8">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                    <th class="pb-3 w-16">Sesi</th>
+                                    <th class="pb-3">Judul Sesi / Pemateri</th>
+                                    <th class="pb-3 text-center w-24">Kehadiran</th>
+                                    <th class="pb-3 text-right w-40">Materi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                @foreach($materials as $material)
+                                    @php
+                                        $isAttended = in_array($material->id, $attendedSessionIds);
+                                    @endphp
+                                    <tr class="group hover:bg-gray-50/50 transition-colors">
+                                        <td class="py-4 font-heading font-extrabold text-gray-400">
+                                            {{ str_pad($material->urutan, 2, '0', STR_PAD_LEFT) }}
+                                        </td>
+                                        <td class="py-4">
+                                            <div class="font-bold text-gray-800 text-sm leading-snug group-hover:text-primary transition-colors">
+                                                {{ $material->nama_sesi }}
+                                            </div>
+                                            @if($material->pemateri)
+                                                <div class="text-xs text-gray-400 mt-0.5 font-medium flex items-center gap-1">
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                                    {{ $material->pemateri }}
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="py-4 text-center">
+                                            @if($isAttended)
+                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600 border border-green-100">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                                    Hadir
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-50 text-gray-400 border border-gray-100">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                                                    Belum
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="py-4 text-right">
+                                            @if($material->file_materi)
+                                                <a href="{{ asset('storage/' . $material->file_materi) }}" target="_blank"
+                                                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold rounded-xl transition-all border border-primary/20 hover:border-transparent active:scale-95 shadow-sm">
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                                    Unduh
+                                                </a>
+                                            @else
+                                                <span class="text-xs text-gray-400 font-medium italic">Belum Diunggah</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             {{-- Competency Radar Chart & Info --}}
             @if($chartData)
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">

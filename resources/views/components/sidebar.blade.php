@@ -50,6 +50,7 @@
         @else
             {{-- Peserta Menu --}}
             <x-sidebar-item icon="dashboard" label="Dashboard" route="peserta.dashboard" :collapsed="false" />
+            <x-sidebar-item icon="event" label="Jadwal Sesi" route="peserta.jadwal" :collapsed="false" />
             <x-sidebar-item icon="quiz" label="Pretest / Posttest" route="peserta.tes.index" :collapsed="false" />
             <x-sidebar-item icon="affective" label="Evaluasi Afektif" route="peserta.afektif.index_root" :collapsed="false" />
             <x-sidebar-item icon="attendance" label="Kehadiran" route="peserta.kehadiran" :collapsed="false" />
