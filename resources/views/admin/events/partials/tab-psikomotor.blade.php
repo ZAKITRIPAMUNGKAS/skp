@@ -147,7 +147,7 @@ function psikomotorManager() {
 
         getRowPercentage(row) {
             const total = this.getRowTotal(row);
-            const max = this.templates.reduce((sum, t) => sum + t.skor_maks, 0);
+            const max = this.templates.reduce((sum, t) => sum + (parseInt(t.skor_maks) || 0), 0);
             return max > 0 ? Math.round((total / max) * 100) : 0;
         },
 
