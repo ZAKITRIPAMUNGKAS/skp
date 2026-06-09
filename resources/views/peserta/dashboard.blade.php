@@ -71,47 +71,6 @@
     @endif
 
     @if($activeEvent)
-    {{-- 1. PREMIUM WELCOME BANNER --}}
-    <div class="relative overflow-hidden bg-primary rounded-[2.5rem] shadow-2xl shadow-primary/20">
-        {{-- Background Decorations --}}
-        <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent/20 rounded-full -ml-32 -mb-32 blur-3xl"></div>
-        
-        <div class="relative px-8 py-10 md:px-12 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div class="flex-1 text-center md:text-left space-y-4">
-                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-xs font-bold uppercase tracking-widest border border-white/20">
-                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                    Peserta Aktif
-                </div>
-                <h1 class="text-4xl md:text-5xl font-heading font-extrabold text-white leading-[1.1]">
-                    Assalamu'alaikum,<br>
-                    <span class="text-accent-200">{{ $peserta->nama_lengkap }}</span>
-                </h1>
-                <p class="text-primary-100 text-lg max-w-lg leading-relaxed">
-                    Senang melihat Anda kembali. Mari selesaikan tahapan evaluasi Baitul Arqam Anda hari ini dengan semangat!
-                </p>
-                <div class="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
-                    <div class="px-5 py-3 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm">
-                        <span class="block text-[10px] text-primary-200 uppercase font-bold tracking-wider mb-0.5">Progress Sesi</span>
-                        <span class="text-xl font-bold text-white">{{ $progress['attended'] ?? 0 }} / {{ $progress['total_sesi'] ?? 0 }}</span>
-                    </div>
-                    <div class="px-5 py-3 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm">
-                        <span class="block text-[10px] text-primary-200 uppercase font-bold tracking-wider mb-0.5">Status Akhir</span>
-                        <span class="text-xl font-bold text-white">
-                            @if($activeEvent->status == 'selesai')
-                                {{ $scores->predikat ?? 'Menunggu' }}
-                            @else
-                                Sedang Berjalan
-                            @endif
-                        </span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="w-64 h-64 md:w-80 md:h-80 flex-shrink-0 animate-float-slow">
-                <img src="{{ asset('images/arka/arka_greeting.png') }}" alt="Arka Greeting" class="w-full h-full object-contain drop-shadow-2xl">
-            </div>
-        </div>
     @if($activeEvent->status === 'persiapan')
         <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl p-8 md:p-12 text-center max-w-2xl mx-auto space-y-6 animate-fade-in my-8">
             <div class="w-32 h-32 mx-auto bg-amber-50 rounded-full flex items-center justify-center border border-amber-100">
@@ -134,6 +93,49 @@
             </div>
         </div>
     @else
+        {{-- 1. PREMIUM WELCOME BANNER --}}
+        <div class="relative overflow-hidden bg-primary rounded-[2.5rem] shadow-2xl shadow-primary/20">
+            {{-- Background Decorations --}}
+            <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent/20 rounded-full -ml-32 -mb-32 blur-3xl"></div>
+            
+            <div class="relative px-8 py-10 md:px-12 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex-1 text-center md:text-left space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-xs font-bold uppercase tracking-widest border border-white/20">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        Peserta Aktif
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-heading font-extrabold text-white leading-[1.1]">
+                        Assalamu'alaikum,<br>
+                        <span class="text-accent-200">{{ $peserta->nama_lengkap }}</span>
+                    </h1>
+                    <p class="text-primary-100 text-lg max-w-lg leading-relaxed">
+                        Senang melihat Anda kembali. Mari selesaikan tahapan evaluasi Baitul Arqam Anda hari ini dengan semangat!
+                    </p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
+                        <div class="px-5 py-3 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm">
+                            <span class="block text-[10px] text-primary-200 uppercase font-bold tracking-wider mb-0.5">Progress Sesi</span>
+                            <span class="text-xl font-bold text-white">{{ $progress['attended'] ?? 0 }} / {{ $progress['total_sesi'] ?? 0 }}</span>
+                        </div>
+                        <div class="px-5 py-3 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm">
+                            <span class="block text-[10px] text-primary-200 uppercase font-bold tracking-wider mb-0.5">Status Akhir</span>
+                            <span class="text-xl font-bold text-white">
+                                @if($activeEvent->status == 'selesai')
+                                    {{ $scores->predikat ?? 'Menunggu' }}
+                                @else
+                                    Sedang Berjalan
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="w-64 h-64 md:w-80 md:h-80 flex-shrink-0 animate-float-slow">
+                    <img src="{{ asset('images/arka/arka_greeting.png') }}" alt="Arka Greeting" class="w-full h-full object-contain drop-shadow-2xl">
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {{-- LEFT COLUMN: TICKET & QUICK STATS (4 cols) --}}
