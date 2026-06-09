@@ -3,7 +3,28 @@
 @section('title', 'Bank Soal — ARQAM')
 
 @section('content')
-<div class="p-6" x-data="{ showCopyModal: false, targetSoalUrl: '', targetSoalTeks: '', tipe: 'pretest' }">
+<div class="p-6" x-data="{ 
+    showCopyModal: false, 
+    showBulkCopyModal: false, 
+    targetSoalUrl: '', 
+    targetSoalTeks: '', 
+    tipe: 'pretest', 
+    selectedEventId: '',
+    selectedSoalIds: [],
+    eventsData: {{ $events->map(fn($e) => ['id' => $e->id, 'nama_event' => $e->nama_event, 'sessions' => $e->eventSesi->map(fn($s) => ['id' => $s->id, 'nama_sesi' => $s->nama_sesi])])->toJson() }},
+    get sessions() {
+        if (!this.selectedEventId) return [];
+        const ev = this.eventsData.find(e => e.id == this.selectedEventId);
+        return ev ? ev.sessions : [];
+    },
+    toggleAll(e) {
+        if (e.target.checked) {
+            this.selectedSoalIds = @json($soals->pluck('id')->toArray());
+        } else {
+            this.selectedSoalIds = [];
+        }
+    }
+}">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
             <h1 class="text-2xl font-bold font-heading text-gray-800">Bank Soal</h1>
@@ -29,11 +50,20 @@
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100">
+                        <th class="px-6 py-4 font-semibold text-gray-600 w-12 text-center">
+                            <input type="checkbox" @change="toggleAll($event)" :checked="selectedSoalIds.length === {{ count($soals) }} && {{ count($soals) }} > 0" class="rounded border-gray-300 text-primary focus:ring-primary cursor-pointer">
+                        </th>
                         <th class="px-6 py-4 font-semibold text-gray-600">Teks Soal</th>
                         <th class="px-6 py-4 font-semibold text-gray-600">Event Asal</th>
                         <th class="px-6 py-4 font-semibold text-gray-600 text-center">Tipe</th>
@@ -43,6 +73,9 @@
                 <tbody class="divide-y divide-gray-50">
                     @forelse($soals as $s)
                     <tr class="hover:bg-gray-50/50 transition-colors group">
+                        <td class="px-6 py-4 text-center">
+                            <input type="checkbox" :value="{{ $s->id }}" x-model="selectedSoalIds" class="rounded border-gray-300 text-primary focus:ring-primary cursor-pointer">
+                        </td>
                         <td class="px-6 py-4">
                             <p class="text-gray-800 line-clamp-2 max-w-md">{{ $s->teks_soal }}</p>
                             <div class="flex gap-1 mt-1">
@@ -64,7 +97,7 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-3">
                                 <button type="button" 
-                                        @click="targetSoalUrl = '{{ route('admin.soal.copyToEvent', $s) }}'; targetSoalTeks = '{{ addslashes($s->teks_soal) }}'; tipe = '{{ $s->tipe }}'; showCopyModal = true"
+                                        @click="targetSoalUrl = '{{ route('admin.soal.copyToEvent', $s) }}'; targetSoalTeks = '{{ addslashes($s->teks_soal) }}'; tipe = '{{ $s->tipe }}'; selectedEventId = ''; showCopyModal = true"
                                         class="text-xs px-2.5 py-1 bg-blue-50 text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors font-medium">
                                     Salin ke Event Lain
                                 </button>
@@ -76,7 +109,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-12 text-center text-gray-400">
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-400">
                             Tidak ada data soal ditemukan.
                         </td>
                     </tr>
@@ -92,13 +125,37 @@
         @endif
     </div>
 
+    <!-- Floating Action Bar for Bulk Action -->
+    <div x-show="selectedSoalIds.length > 0" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-10"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-10"
+         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-6 border border-slate-800"
+         style="display: none;">
+        <span class="text-sm font-medium">
+            <span class="text-blue-400 font-bold" x-text="selectedSoalIds.length"></span> soal terpilih
+        </span>
+        <div class="h-4 w-px bg-slate-700"></div>
+        <div class="flex gap-2">
+            <button type="button" @click="selectedSoalIds = []" class="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+                Batal
+            </button>
+            <button type="button" @click="selectedEventId = ''; showBulkCopyModal = true" class="px-4 py-1.5 text-xs font-bold bg-primary text-white rounded-xl hover:bg-primary/95 transition-colors shadow-sm">
+                Salin ke Event
+            </button>
+        </div>
+    </div>
+
     {{-- Copy Single Question Modal --}}
     <div x-show="showCopyModal" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
          @click.self="showCopyModal = false" style="display: none;">
         <div x-show="showCopyModal" x-transition class="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-md">
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
                 <h3 class="text-lg font-bold text-gray-800 font-heading">Salin Soal</h3>
-                <button @click="showCopyModal = false" class="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg transition-colors">
+                <button type="button" @click="showCopyModal = false" class="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg transition-colors">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -109,11 +166,20 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Event Target</label>
-                        <select name="target_event_id" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
+                        <select name="target_event_id" x-model="selectedEventId" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
                             <option value="">-- Pilih Event --</option>
-                            @foreach(\App\Models\Event::orderByDesc('tanggal_mulai')->get() as $e)
-                                <option value="{{ $e->id }}">{{ $e->nama_event }}</option>
-                            @endforeach
+                            <template x-for="ev in eventsData" :key="ev.id">
+                                <option :value="ev.id" x-text="ev.nama_event"></option>
+                            </template>
+                        </select>
+                    </div>
+                    <div x-show="sessions.length > 0">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Sesi/Materi Target (Opsional)</label>
+                        <select name="event_sesi_id" class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
+                            <option value="">-- Pilih Sesi --</option>
+                            <template x-for="ses in sessions" :key="ses.id">
+                                <option :value="ses.id" x-text="ses.nama_sesi"></option>
+                            </template>
                         </select>
                     </div>
                     <div>
@@ -129,6 +195,66 @@
                     <button type="button" @click="showCopyModal = false" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-xl transition-colors font-medium">Batal</button>
                     <button type="submit" class="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
                         Salin Soal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Copy Bulk Questions Modal --}}
+    <div x-show="showBulkCopyModal" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+         @click.self="showBulkCopyModal = false" style="display: none;">
+        <div x-show="showBulkCopyModal" x-transition class="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-md">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+                <h3 class="text-lg font-bold text-gray-800 font-heading">Salin Banyak Soal</h3>
+                <button type="button" @click="showBulkCopyModal = false" class="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form action="{{ route('admin.soal.copyBulk') }}" method="POST" class="p-6">
+                @csrf
+                
+                <!-- Hidden inputs for selected IDs -->
+                <template x-for="id in selectedSoalIds" :key="id">
+                    <input type="hidden" name="soal_ids[]" :value="id">
+                </template>
+
+                <p class="text-xs text-gray-600 mb-4 bg-blue-50 p-3 rounded-xl border border-blue-100 font-medium">
+                    Akan menyalin <span class="text-blue-600 font-bold" x-text="selectedSoalIds.length"></span> soal yang Anda pilih ke event target.
+                </p>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Event Target</label>
+                        <select name="target_event_id" x-model="selectedEventId" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
+                            <option value="">-- Pilih Event --</option>
+                            <template x-for="ev in eventsData" :key="ev.id">
+                                <option :value="ev.id" x-text="ev.nama_event"></option>
+                            </template>
+                        </select>
+                    </div>
+                    <div x-show="sessions.length > 0">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Sesi/Materi Target (Opsional)</label>
+                        <select name="event_sesi_id" class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
+                            <option value="">-- Pilih Sesi --</option>
+                            <template x-for="ses in sessions" :key="ses.id">
+                                <option :value="ses.id" x-text="ses.nama_sesi"></option>
+                            </template>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Tes di Target</label>
+                        <select name="tipe" x-model="tipe" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
+                            <option value="pretest">PRETEST</option>
+                            <option value="posttest">POSTTEST</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" @click="showBulkCopyModal = false" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-xl transition-colors font-medium">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
+                        Salin Semua Soal
                     </button>
                 </div>
             </form>

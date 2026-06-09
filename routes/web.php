@@ -258,6 +258,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
 
     Route::post('/absensi/scan', [AbsensiController::class, 'scan'])->name('absensi.process');
+    Route::post('/soal/copy-bulk', [SoalController::class, 'copyBulk'])->name('soal.copyBulk');
     Route::post('/soal/{soal}/copy-to-event', [SoalController::class, 'copyToEvent'])->name('soal.copyToEvent');
 });
 

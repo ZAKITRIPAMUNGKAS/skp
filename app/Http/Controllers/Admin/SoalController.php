@@ -21,8 +21,9 @@ class SoalController extends Controller
         }
 
         $soals = $query->paginate(20)->withQueryString();
+        $events = Event::with('eventSesi')->orderByDesc('tanggal_mulai')->get();
 
-        return view('admin.soal.index', compact('soals'));
+        return view('admin.soal.index', compact('soals', 'events'));
     }
 
     /**
@@ -239,6 +240,7 @@ class SoalController extends Controller
     {
         $request->validate([
             'target_event_id' => 'required|exists:events,id',
+            'event_sesi_id'   => 'nullable|exists:event_sesi,id',
             'tipe'            => 'required|in:pretest,posttest'
         ]);
 
@@ -249,10 +251,11 @@ class SoalController extends Controller
             ->max('urutan') ?? 0;
 
         $newSoal = Soal::create([
-            'event_id'  => $targetEvent->id,
-            'tipe'      => $request->tipe,
-            'teks_soal' => $soal->teks_soal,
-            'urutan'    => $latestUrutan + 1,
+            'event_id'      => $targetEvent->id,
+            'event_sesi_id' => $request->event_sesi_id,
+            'tipe'          => $request->tipe,
+            'teks_soal'     => $soal->teks_soal,
+            'urutan'        => $latestUrutan + 1,
         ]);
 
         foreach ($soal->pilihanJawaban as $p) {
@@ -265,6 +268,55 @@ class SoalController extends Controller
         }
 
         return back()->with('success', 'Soal berhasil disalin ke event: ' . $targetEvent->nama_event);
+    }
+
+    /**
+     * Salin beberapa soal sekaligus ke event lain.
+     */
+    public function copyBulk(Request $request)
+    {
+        $request->validate([
+            'soal_ids'        => 'required|array',
+            'soal_ids.*'      => 'exists:soal,id',
+            'target_event_id' => 'required|exists:events,id',
+            'event_sesi_id'   => 'nullable|exists:event_sesi,id',
+            'tipe'            => 'required|in:pretest,posttest'
+        ]);
+
+        $targetEvent = Event::findOrFail($request->target_event_id);
+        $soals = Soal::whereIn('id', $request->soal_ids)->with('pilihanJawaban')->get();
+
+        if ($soals->isEmpty()) {
+            return back()->with('error', 'Tidak ada soal yang dipilih.');
+        }
+
+        $latestUrutan = Soal::where('event_id', $targetEvent->id)
+            ->where('tipe', $request->tipe)
+            ->max('urutan') ?? 0;
+
+        $copiedCount = 0;
+        foreach ($soals as $soal) {
+            $latestUrutan++;
+            $newSoal = Soal::create([
+                'event_id'      => $targetEvent->id,
+                'event_sesi_id' => $request->event_sesi_id,
+                'tipe'          => $request->tipe,
+                'teks_soal'     => $soal->teks_soal,
+                'urutan'        => $latestUrutan,
+            ]);
+
+            foreach ($soal->pilihanJawaban as $p) {
+                PilihanJawaban::create([
+                    'soal_id'      => $newSoal->id,
+                    'huruf'        => $p->huruf,
+                    'teks_pilihan' => $p->teks_pilihan,
+                    'is_correct'   => $p->is_correct,
+                ]);
+            }
+            $copiedCount++;
+        }
+
+        return back()->with('success', "{$copiedCount} soal berhasil disalin ke event: " . $targetEvent->nama_event);
     }
 
     public function getMaterialData(Request $request, Event $event)
