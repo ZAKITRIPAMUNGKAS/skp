@@ -2,46 +2,64 @@
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-            <h3 class="text-lg font-semibold font-heading text-gray-800">Manajemen Fasilitator</h3>
-            <p class="text-sm text-gray-500 mt-1">Tugaskan fasilitator untuk membantu mengelola event ini.</p>
+            <h3 class="text-xl font-bold font-heading text-gray-800">Manajemen Fasilitator</h3>
+            <p class="text-xs text-gray-500 mt-1">Tugaskan instruktur / fasilitator untuk membantu mendampingi dan mengelola event ini.</p>
         </div>
     </div>
 
-    <div class="bg-gray-50 rounded-2xl p-6 border border-gray-150">
+    <div class="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm">
         <form method="POST" action="{{ route('admin.events.assignFacilitators', $event) }}">
             @csrf
-            <div class="space-y-4">
-                <label class="block text-sm font-semibold text-gray-700">Pilih Fasilitator yang Ditugaskan:</label>
+            <div class="space-y-6">
+                <div class="flex items-center gap-2 pb-4 border-b border-gray-100">
+                    <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                    <span class="text-sm font-bold text-gray-800">Pilih Fasilitator yang Ditugaskan:</span>
+                </div>
                 
                 @if(count($allFasilitators) > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         @foreach($allFasilitators as $fasilitator)
                             @php
                                 $isChecked = in_array($fasilitator->id, $assignedFasilitatorIds);
                             @endphp
-                            <label class="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer select-none">
+                            <label x-data="{ checked: {{ $isChecked ? 'true' : 'false' }} }"
+                                   :class="checked ? 'border-primary bg-primary/5 ring-2 ring-primary/10 shadow-md' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 bg-white'"
+                                   class="relative flex items-center gap-4 p-5 rounded-2xl border transition-all cursor-pointer select-none group">
+                                
                                 <input type="checkbox" name="facilitators[]" value="{{ $fasilitator->id }}"
+                                       @change="checked = $el.checked"
                                        @if($isChecked) checked @endif
-                                       class="mt-1 text-primary focus:ring-primary rounded border-gray-300">
-                                <div>
-                                    <span class="block text-sm font-medium text-gray-800">{{ $fasilitator->name }}</span>
-                                    <span class="block text-xs text-gray-400 font-mono">@</span><span class="text-xs text-gray-400 font-mono">{{ $fasilitator->username }}</span>
-                                    <span class="block text-xs text-gray-400 mt-0.5">{{ $fasilitator->email }}</span>
+                                       class="w-5 h-5 text-primary focus:ring-primary/20 rounded-lg border-gray-300 cursor-pointer transition-all">
+                                
+                                <div :class="checked ? 'bg-primary/10 text-primary' : 'bg-slate-50 text-slate-400 group-hover:bg-slate-100'"
+                                     class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+
+                                <div class="flex-1 min-w-0">
+                                    <span class="block text-sm font-bold text-gray-800 truncate group-hover:text-primary transition-colors" x-text="'{{ addslashes($fasilitator->name) }}'"></span>
+                                    <div class="flex flex-col gap-0.5 mt-1">
+                                        <span class="text-xs text-gray-500 font-medium">@<span x-text="'{{ addslashes($fasilitator->username) }}'"></span></span>
+                                        <span class="text-[10px] text-gray-400 truncate" x-text="'{{ addslashes($fasilitator->email) }}'"></span>
+                                    </div>
                                 </div>
                             </label>
                         @endforeach
                     </div>
                 @else
-                    <div class="text-center py-6 text-gray-500">
-                        <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="text-center py-12 text-gray-400 border-2 border-dashed border-gray-150 rounded-2xl bg-gray-50/30">
+                        <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
-                        Belum ada user dengan role <strong>Fasilitator</strong> di sistem.
+                        <p class="text-sm font-semibold text-gray-600">Belum ada user Fasilitator</p>
+                        <p class="text-xs text-gray-400 mt-1">Belum ada user dengan role <strong>Fasilitator</strong> di dalam sistem.</p>
                     </div>
                 @endif
 
-                <div class="flex justify-end pt-4 border-t border-gray-200/60 mt-6">
-                    <x-button type="submit" variant="primary">
+                <div class="flex justify-end pt-5 border-t border-gray-100 mt-6">
+                    <x-button type="submit" variant="primary" class="px-6 py-3 font-semibold shadow-md hover:scale-[1.01] active:scale-95 transition-all">
                         Simpan Penugasan Fasilitator
                     </x-button>
                 </div>
