@@ -114,9 +114,9 @@
     <div class="container">
         {{-- Kop Surat --}}
         <div class="kop-surat">
-            <h1 class="kop-title">MAJELIS PENDIDIKAN KADER DAN SUMBER DAYA INSANI</h1>
-            <div class="kop-subtitle">PIMPINAN DAERAH MUHAMMADIYAH SURAKARTA</div>
-            <div class="kop-address">Jl. Ronggowarsito No. 123, Surakarta, Jawa Tengah | Telp: (0271) 645123 | Email: mpksdi.solo@gmail.com</div>
+            <h1 class="kop-title">LEMBAGA PENGEMBANGAN PERSYARIKATAN PENGKADERAN & ALUMNI</h1>
+            <div class="kop-subtitle">UNIVERSITAS MUHAMMADIYAH SURAKARTA</div>
+            <div class="kop-address">Jl. A. Yani, Pabelan, Kartasura, Sukoharjo, Jawa Tengah 57162 | Telp: (0271) 717417 | Email: lpppa@ums.ac.id</div>
         </div>
 
         {{-- Judul Surat --}}
@@ -128,7 +128,7 @@
         {{-- Isi Surat --}}
         <div class="surat-body">
             <p>Bismillahirrohmanirrohim,</p>
-            <p>Pimpinan Majelis Pendidikan Kader dan Sumber Daya Insani (MPKSDI) Pimpinan Daerah Muhammadiyah Surakarta dengan ini menugaskan kepada nama-nama berikut:</p>
+            <p>Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni (LPPPA) Universitas Muhammadiyah Surakarta dengan ini menugaskan kepada nama-nama berikut:</p>
 
             <table class="table-data">
                 <thead>
@@ -186,10 +186,10 @@
                     </td>
                     <td>
                         <div>Surakarta, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</div>
-                        <div style="font-weight: bold; margin-top: 5px;">Ketua MPKSDI PDM Surakarta</div>
+                        <div style="font-weight: bold; margin-top: 5px;">Ketua LPPPA UMS</div>
                         <div class="signature-space"></div>
-                        <div class="signature-name">Dr. H. M. Fauzi, M.Ag.</div>
-                        <div class="signature-nip">NBM. 823.123</div>
+                        <div class="signature-name">Dr. H. Mohammad Ali, M.Pd.</div>
+                        <div class="signature-nip">NBM. 854.321</div>
                     </td>
                 </tr>
             </table>
