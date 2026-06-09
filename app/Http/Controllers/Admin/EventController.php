@@ -263,4 +263,14 @@ class EventController extends Controller
         return redirect()->route('admin.events.show', $event)
             ->with('success', 'Fasilitator berhasil diperbarui!');
     }
+
+    public function downloadSuratTugas(Event $event)
+    {
+        $facilitators = $event->facilitators()->get();
+
+        $pdf = Pdf::loadView('admin.events.surat-tugas-pdf', compact('event', 'facilitators'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->stream('Surat_Tugas_Fasilitator_' . str_replace(' ', '_', $event->nama_event) . '.pdf');
+    }
 }
