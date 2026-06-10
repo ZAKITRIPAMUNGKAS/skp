@@ -225,7 +225,7 @@
                         <p class="text-4xl md:text-5xl font-heading font-black text-primary mb-2 flex justify-center items-baseline">
                             <span class="counter" data-target="{{ $totalAlumni }}">0</span><span class="text-accent text-3xl">+</span>
                         </p>
-                        <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Alumni Kader</p>
+                        <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Unit</p>
                     </div>
                     <div class="text-center px-4 pt-8 md:pt-0" data-aos="fade-up" data-aos-delay="200">
                         <p class="text-4xl md:text-5xl font-heading font-black text-primary mb-2 flex justify-center items-baseline">
@@ -237,7 +237,7 @@
                         <p class="text-4xl md:text-5xl font-heading font-black text-primary mb-2 flex justify-center items-baseline">
                             <span class="counter" data-target="{{ $totalMitra }}">0</span><span class="text-accent text-3xl">+</span>
                         </p>
-                        <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Instansi Mitra</p>
+                        <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Sebaran Unit</p>
                     </div>
                 </div>
             </div>
