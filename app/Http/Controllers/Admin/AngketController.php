@@ -22,6 +22,26 @@ class AngketController extends Controller
 
         $maxUrutan = AngketItem::where('event_id', $event->id)->where('kategori', $request->kategori)->max('urutan') ?? 0;
 
+        if ($request->kategori === 'B') {
+            $facilitators = $event->facilitators;
+            if ($facilitators->count() > 0) {
+                $itemsCreated = [];
+                $urutan = $maxUrutan + 1;
+                foreach ($facilitators as $f) {
+                    $teks = $request->teks_item . ' - ' . $f->name;
+                    $item = AngketItem::create([
+                        'event_id' => $event->id,
+                        'kategori' => $request->kategori,
+                        'teks_item'=> $teks,
+                        'tipe'     => $request->tipe ?? 'skala',
+                        'urutan'   => $urutan++,
+                    ]);
+                    $itemsCreated[] = $item;
+                }
+                return response()->json(['status' => 'success', 'item' => $itemsCreated]);
+            }
+        }
+
         $item = AngketItem::create([
             'event_id' => $event->id,
             'kategori' => $request->kategori,

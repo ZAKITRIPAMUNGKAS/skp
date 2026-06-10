@@ -113,7 +113,13 @@ function angketManager() {
             const data = await res.json();
             if (data.status === 'success') {
                 if (this.editingItem) { Object.assign(this.editingItem, data.item); }
-                else { this.allItems.push(data.item); }
+                else {
+                    if (Array.isArray(data.item)) {
+                        this.allItems.push(...data.item);
+                    } else {
+                        this.allItems.push(data.item);
+                    }
+                }
                 this.showForm = false;
             }
         },

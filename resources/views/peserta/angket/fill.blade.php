@@ -6,14 +6,11 @@
 @php
     $categoryLabels = [
         'A' => 'Materi & Narasumber',
-        'B' => 'Relevansi & Metode',
-        'C' => 'Fasilitas & Kebersihan',
-        'D' => 'Konsumsi (Makanan/Minuman)',
-        'E' => 'Layanan Instruktur & Waktu',
-        'F' => 'Sarana Prasarana Belajar',
-        'G' => 'Dampak & Manfaat Kegiatan',
-        'H' => 'Kejelasan Informasi & Panduan',
-        'I' => 'Kepuasan Umum & Voting',
+        'B' => 'Fasilitator',
+        'C' => 'Panitia',
+        'D' => 'Lokasi Baitul Arqam',
+        'E' => 'Konsumsi',
+        'F' => 'Kepuasan Pengguna',
     ];
 @endphp
 <div class="max-w-3xl mx-auto py-8 px-4" x-data="angketFill()">
