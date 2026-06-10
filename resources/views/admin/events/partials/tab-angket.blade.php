@@ -77,7 +77,7 @@
                         <option value="voting">Voting Peserta (Pilih Rekan Peserta)</option>
                     </select>
                 </div>
-                <div>
+                <div x-show="form.kategori !== 'B'">
                     <label class="text-sm text-gray-600 mb-1 block">Teks Pertanyaan</label>
                     <textarea x-model="form.teks_item" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none" placeholder="Tuliskan pertanyaan..."></textarea>
                 </div>
@@ -104,6 +104,9 @@ function angketManager() {
         editItem(item) { this.editingItem = item; this.form = { kategori: item.kategori, teks_item: item.teks_item, tipe: item.tipe || 'skala' }; this.showForm = true; },
 
         async saveItem() {
+            if (this.form.kategori === 'B') {
+                this.form.teks_item = 'Kinerja Fasilitator';
+            }
             if (!this.form.teks_item.trim()) return;
             const url = this.editingItem
                 ? '{{ route("admin.angket.updateItem", [$event, "__I__"]) }}'.replace('__I__', this.editingItem.id)
