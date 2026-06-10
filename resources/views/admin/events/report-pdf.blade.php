@@ -134,6 +134,7 @@
                 <th class="text-left">Instansi</th>
                 <th>Pre</th>
                 <th>Post</th>
+                <th>Gain</th>
                 <th>Afk</th>
                 <th>Psi</th>
                 <th>Hdr</th>
@@ -150,6 +151,7 @@
                 <td class="text-left" style="font-size: 9px;">{{ $row->peserta->unit_kerja ?? '-' }}</td>
                 <td>{{ number_format($row->nilai_pretest, 0) }}</td>
                 <td>{{ number_format($row->nilai_posttest, 0) }}</td>
+                <td class="font-bold">{{ number_format($row->n_gain_score, 2) }}</td>
                 <td>{{ number_format($row->nilai_afektif, 0) }}</td>
                 <td>{{ number_format($row->nilai_psikomotor, 0) }}</td>
                 <td>{{ number_format($row->nilai_kehadiran, 0) }}</td>

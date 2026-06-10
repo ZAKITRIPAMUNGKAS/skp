@@ -104,6 +104,10 @@ class PresentasiController extends Controller
         $avgPsikomotor = $penilaians->avg('nilai_psikomotor') ?? 0;
         $avgKehadiran  = $penilaians->avg('nilai_kehadiran') ?? 0;
 
+        $nGains = $penilaians->map(fn($p) => $p->n_gain_score);
+        $avgNGain = round($nGains->avg() ?? 0, 2);
+        $maxNGain = round($nGains->max() ?? 0, 2);
+
         $peningkatanRataRata = round($avgPosttest - $avgPretest, 1);
         $peningkatanTertinggi = $penilaians->map(function($p) {
             return $p->nilai_posttest - $p->nilai_pretest;
@@ -152,7 +156,7 @@ class PresentasiController extends Controller
             'predikat', 'kelulusan', 'angket',
             'avgUmur', 'minUmur', 'maxUmur', 'lancarPersen',
             'peningkatanRataRata', 'peningkatanTertinggi', 'avgSaw',
-            'bestSesiNama', 'bestSesiHadir'
+            'bestSesiNama', 'bestSesiHadir', 'avgNGain', 'maxNGain'
         ));
     }
 }

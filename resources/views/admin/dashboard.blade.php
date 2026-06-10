@@ -50,8 +50,8 @@
             </div>
         </div>
 
-        {{-- 4 Metrics Widgets --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {{-- 5 Metrics Widgets --}}
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <x-card hover="true" class="!p-5 border-l-4 border-l-blue-500">
                 <div class="flex items-start justify-between">
                     <div>
@@ -84,6 +84,27 @@
                     </div>
                     <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-500">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    </div>
+                </div>
+            </x-card>
+
+            <x-card hover="true" class="!p-5 border-l-4 border-l-purple-500">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rata-rata N-Gain</p>
+                        <h3 class="text-2xl font-bold text-gray-800">{{ number_format($stats['avg_ngain'], 2) }}</h3>
+                        <p class="text-[10px] text-gray-400 mt-1">
+                            Efektivitas: 
+                            <strong>
+                                @if($stats['avg_ngain'] > 0.7) Tinggi
+                                @elseif($stats['avg_ngain'] >= 0.3) Sedang
+                                @else Rendah
+                                @endif
+                            </strong>
+                        </p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
                     </div>
                 </div>
             </x-card>

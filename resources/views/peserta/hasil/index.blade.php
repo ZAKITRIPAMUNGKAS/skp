@@ -2,6 +2,74 @@
 
 @section('title', 'Hasil Penilaian Akhir')
 
+@if($activeEvent && $scores && $scores->ranking)
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('competencyRadarChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Pretest', 'Posttest', 'Afektif', 'Psikomotor', 'Kehadiran'],
+            datasets: [{
+                label: 'Kompetensi Anda',
+                data: [
+                    {{ (float) $scores->nilai_pretest }},
+                    {{ (float) $scores->nilai_posttest }},
+                    {{ (float) $scores->nilai_afektif }},
+                    {{ (float) $scores->nilai_psikomotor }},
+                    {{ (float) $scores->nilai_kehadiran }}
+                ],
+                backgroundColor: 'rgba(26, 109, 155, 0.15)',
+                borderColor: '#1A6D9B',
+                pointBackgroundColor: '#1A6D9B',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#1A6D9B',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: {
+                        display: true,
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    ticks: {
+                        stepSize: 20,
+                        font: { size: 9 }
+                    },
+                    pointLabels: {
+                        font: {
+                            family: "'Inter', sans-serif",
+                            size: 11,
+                            weight: 'bold'
+                        },
+                        color: '#4b5563'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+});
+</script>
+@endpush
+@endif
+
 @section('content')
 <div class="max-w-4xl mx-auto py-8 px-4">
     <x-page-header title="Hasil Penilaian" subtitle="Laporan kelulusan dan nilai akhir evaluasi" />
@@ -75,6 +143,24 @@
                     <div class="bg-gray-50 border border-gray-100 rounded-3xl p-5 text-center col-span-2 sm:col-span-1">
                         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Kehadiran</span>
                         <span class="text-2xl font-black text-gray-800">{{ $scores->nilai_kehadiran }}</span>
+                    </div>
+                </div>
+
+                {{-- Radar Chart & Kompetensi Analysis --}}
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-b border-gray-100 py-8">
+                    <div class="h-64 relative w-full">
+                        <canvas id="competencyRadarChart"></canvas>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="font-heading font-bold text-gray-700 text-sm">Grafik Kompetensi Diri</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">
+                            Grafik radar di samping memetakan pencapaian kompetensi Anda pada lima pilar penilaian Baitul Arqam. 
+                            Garis yang mendekati tepi luar menunjukkan keunggulan pada pilar tersebut, sedangkan area yang condong ke dalam menandai aspek yang masih memerlukan pembinaan lebih lanjut.
+                        </p>
+                        <div class="bg-purple-50 rounded-xl p-4 border border-purple-100 text-purple-700 text-xs">
+                            <strong>Analisis N-Gain Kognitif Anda:</strong> {{ number_format($scores->n_gain_score, 2) }} 
+                            (Efektivitas: <strong class="underline">{{ $scores->n_gain_category }}</strong>)
+                        </div>
                     </div>
                 </div>
 

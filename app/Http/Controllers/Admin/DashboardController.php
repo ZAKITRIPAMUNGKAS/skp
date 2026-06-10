@@ -37,6 +37,7 @@ class DashboardController extends Controller
             'avg_pretest'      => 0,
             'avg_posttest'     => 0,
             'avg_kehadiran'    => 0,
+            'avg_ngain'        => 0,
         ];
 
         $chartData = [
@@ -60,6 +61,9 @@ class DashboardController extends Controller
                 $stats['avg_pretest']   = $penilaian->avg('nilai_pretest') ?? 0;
                 $stats['avg_posttest']  = $penilaian->avg('nilai_posttest') ?? 0;
                 $stats['avg_kehadiran'] = $penilaian->avg('nilai_kehadiran') ?? 0;
+                
+                $nGains = $penilaian->map(fn($p) => $p->n_gain_score);
+                $stats['avg_ngain']     = $nGains->avg() ?? 0;
 
                 $chartData['predikat_data'] = [
                     $penilaian->where('predikat', 'Amat Baik')->count(),

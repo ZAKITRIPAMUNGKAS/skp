@@ -652,16 +652,25 @@
             <div class="bg-white p-6 rounded-2xl shadow-2xl col-span-2 h-80 border-4 border-navy-800">
                 <canvas id="cNilai"></canvas>
             </div>
-            <div class="col-span-1 space-y-4 text-left">
-                <div class="bg-white/10 p-5 rounded-xl border border-white/20 text-white">
-                    <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest">Peningkatan Rata-rata Tes</h4>
-                    <p class="text-3xl font-black mt-2">+{{ $peningkatanRataRata }} Poin</p>
-                    <p class="text-[11px] text-gray-300 mt-1">Mengukur efisiensi pemahaman materi ideologi selama kegiatan.</p>
+            <div class="col-span-1 space-y-3 text-left">
+                <div class="bg-white/10 p-3.5 rounded-xl border border-white/20 text-white">
+                    <h4 class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Peningkatan Rata-rata</h4>
+                    <p class="text-2xl font-black mt-1">+{{ $peningkatanRataRata }} Poin</p>
+                    <p class="text-[9px] text-gray-300 leading-tight">Selisih rata-rata nilai post-test dan pre-test.</p>
                 </div>
-                <div class="bg-white/10 p-5 rounded-xl border border-white/20 text-white">
-                    <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest">Peningkatan Tertinggi</h4>
-                    <p class="text-3xl font-black mt-2">+{{ $peningkatanTertinggi }} Poin</p>
-                    <p class="text-[11px] text-gray-300 mt-1">Peningkatan skor pre-test ke post-test terbesar yang dicapai peserta.</p>
+                <div class="bg-white/10 p-3.5 rounded-xl border border-white/20 text-white">
+                    <h4 class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Rata-rata N-Gain (Keefektifan)</h4>
+                    <p class="text-2xl font-black mt-1">{{ number_format($avgNGain, 2) }}
+                        <span class="text-xs font-normal text-yellow-300">
+                            (@if($avgNGain > 0.7) Tinggi @elseif($avgNGain >= 0.3) Sedang @else Rendah @endif)
+                        </span>
+                    </p>
+                    <p class="text-[9px] text-gray-300 leading-tight">Tingkat efektivitas peningkatan pengetahuan.</p>
+                </div>
+                <div class="bg-white/10 p-3.5 rounded-xl border border-white/20 text-white">
+                    <h4 class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">N-Gain Tertinggi Peserta</h4>
+                    <p class="text-2xl font-black mt-1">{{ number_format($maxNGain, 2) }}</p>
+                    <p class="text-[9px] text-gray-300 leading-tight">Pencapaian gain kognitif maksimal individu.</p>
                 </div>
             </div>
         </div>

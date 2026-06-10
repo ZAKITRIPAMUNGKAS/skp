@@ -89,6 +89,8 @@ class RankSawSheet implements FromCollection, WithHeadings, WithMapping, WithCol
             'K' => 20,  // Skor SAW DB
             'L' => 15,  // Predikat
             'M' => 18,  // Status Kelulusan
+            'N' => 18,  // N-Gain Score
+            'O' => 20,  // Efektivitas N-Gain
         ];
     }
 
@@ -107,7 +109,9 @@ class RankSawSheet implements FromCollection, WithHeadings, WithMapping, WithCol
             'Skor SAW (Excel Formula)',
             'Skor SAW Database (Aplikasi)',
             'Predikat',
-            'Status Kelulusan'
+            'Status Kelulusan',
+            'N-Gain (Kognitif)',
+            'Efektivitas N-Gain'
         ];
     }
 
@@ -154,6 +158,8 @@ class RankSawSheet implements FromCollection, WithHeadings, WithMapping, WithCol
             $row->skor_saw,
             $row->predikat,
             $row->status_kelulusan,
+            $row->n_gain_score,
+            $row->n_gain_category,
         ];
     }
 
@@ -180,6 +186,7 @@ class RankSawSheet implements FromCollection, WithHeadings, WithMapping, WithCol
                 // Terapkan format angka desimal
                 $sheet->getStyle("E2:I{$lastRow}")->getNumberFormat()->setFormatCode('0.00');
                 $sheet->getStyle("J2:K{$lastRow}")->getNumberFormat()->setFormatCode('0.0000');
+                $sheet->getStyle("N2:N{$lastRow}")->getNumberFormat()->setFormatCode('0.00');
 
                 // Tambahkan info bobot AHP yang digunakan
                 $w1 = $this->bobot ? $this->bobot->bobot_c1 : 0.20;
