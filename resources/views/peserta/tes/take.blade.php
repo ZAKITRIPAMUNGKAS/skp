@@ -315,7 +315,7 @@
                 this.remainingSeconds = Math.max(0, Math.round((targetTime - Date.now()) / 1000));
 
                 if (this.remainingSeconds <= 0) {
-                    this.submitAnswers();
+                    this.submitAnswers(true);
                     return;
                 }
 
@@ -324,7 +324,7 @@
                     this.remainingSeconds = Math.max(0, Math.round((targetTime - Date.now()) / 1000));
                     if (this.remainingSeconds <= 0) {
                         clearInterval(this.timerInterval);
-                        this.submitAnswers();
+                        this.submitAnswers(true);
                     }
                 }, 1000);
             },
@@ -349,7 +349,7 @@
                 return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
             },
 
-            async submitAnswers() {
+            async submitAnswers(isAutoSubmit = false) {
                 if (this.isSubmitting) return;
                 this.isSubmitting = true;
 
@@ -358,27 +358,37 @@
                     pilihan_id: parseInt(pilihanId),
                 }));
 
-                try {
-                    const res = await fetch('{{ route("peserta.tes.submit", [$event, $eventSesi, $tipe]) }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify({ answers: payload }),
-                    });
-                    const data = await res.json();
+                const executeSubmit = async () => {
+                    try {
+                        const res = await fetch('{{ route("peserta.tes.submit", [$event, $eventSesi, $tipe]) }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json',
+                            },
+                            body: JSON.stringify({ answers: payload }),
+                        });
+                        const data = await res.json();
 
-                    if (data.status === 'success') {
-                        localStorage.removeItem(storageKey);
-                        localStorage.removeItem(storageKey + '_target');
-                        clearInterval(this.timerInterval);
-                        window.location.href = '{{ route("peserta.tes.result", [$event, $eventSesi, $tipe]) }}';
+                        if (data.status === 'success') {
+                            localStorage.removeItem(storageKey);
+                            localStorage.removeItem(storageKey + '_target');
+                            clearInterval(this.timerInterval);
+                            window.location.href = '{{ route("peserta.tes.result", [$event, $eventSesi, $tipe]) }}';
+                        }
+                    } catch (e) {
+                        alert('Gagal mengirim jawaban. Silakan coba lagi.');
+                        this.isSubmitting = false;
                     }
-                } catch (e) {
-                    alert('Gagal mengirim jawaban. Silakan coba lagi.');
-                    this.isSubmitting = false;
+                };
+
+                if (isAutoSubmit) {
+                    // Beri jeda acak 0 - 5 detik (jitter) untuk memecah lonjakan request bersamaan
+                    const jitterDelay = Math.random() * 5000;
+                    setTimeout(executeSubmit, jitterDelay);
+                } else {
+                    await executeSubmit();
                 }
             },
         };
