@@ -134,11 +134,18 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
+        if (auth()->user()->isFasilitator()) {
+            abort(403, 'Akses ditolak. Fasilitator tidak diizinkan mengubah event.');
+        }
         return view('admin.events.edit', compact('event'));
     }
 
     public function update(Request $request, Event $event)
     {
+        if (auth()->user()->isFasilitator()) {
+            abort(403, 'Akses ditolak. Fasilitator tidak diizinkan mengubah event.');
+        }
+
         $validated = $request->validate([
             'nama_event'      => 'required|string|max:255',
             'tanggal_mulai'   => 'required|date',
@@ -157,6 +164,10 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
+        if (auth()->user()->isFasilitator()) {
+            abort(403, 'Akses ditolak. Fasilitator tidak diizinkan menghapus event.');
+        }
+
         $event->delete();
 
         return redirect()->route('admin.events.index')
