@@ -27,9 +27,9 @@ class PsikomotorController extends Controller
             ['jenis' => 'outbound', 'nama_aspek' => 'Kedisiplinan (Discipline)'],
             ['jenis' => 'outbound', 'nama_aspek' => 'Kerjasama Tim (Teamwork)'],
             ['jenis' => 'outbound', 'nama_aspek' => 'Komunikasi (Communication)'],
-            ['jenis' => 'ibadah',   'nama_aspek' => 'Gerakan Shalat (Movement)'],
-            ['jenis' => 'ibadah',   'nama_aspek' => 'Bacaan Shalat (Recitation)'],
-            ['jenis' => 'ibadah',   'nama_aspek' => 'Tata Tertib Tarjih (Tarjih Order)'],
+            ['jenis' => 'ibadah',   'nama_aspek' => 'Ketertiban Sholat (Orderliness)'],
+            ['jenis' => 'ibadah',   'nama_aspek' => 'Bacaan Al-Quran (Recitation)'],
+            ['jenis' => 'ibadah',   'nama_aspek' => 'Kesesuaian dengan Tarjih (Tarjih Compliance)'],
         ];
 
         foreach ($defaults as $d) {
