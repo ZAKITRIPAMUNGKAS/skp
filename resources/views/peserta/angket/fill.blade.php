@@ -139,7 +139,78 @@
             <span x-text="isSubmitting ? 'Menyimpan...' : 'Kirim Kuisioner'"></span>
         </button>
     </div>
+
+    {{-- Success Modal Overlay --}}
+    <div x-show="showSuccess" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md" style="display: none;">
+        <div x-show="showSuccess" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center border border-gray-100">
+            {{-- Checkmark Animation --}}
+            <div class="mb-6">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-black font-heading text-gray-800 mb-2">Terima Kasih!</h2>
+            <p class="text-sm text-gray-500 mb-6 leading-relaxed">Kuisioner evaluasi Baitul Arqam Anda telah berhasil disimpan.</p>
+            {{-- Redirecting Indicator --}}
+            <div class="flex items-center justify-center gap-2 text-xs font-semibold text-primary">
+                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Mengarahkan kembali ke Dashboard...</span>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+.checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 4;
+  stroke: #10b981;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px #10b981;
+  animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out 0s 1 both;
+  margin: 0 auto;
+}
+.checkmark__circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+  stroke: #10b981;
+  fill: none;
+  animation: stroke .6s cubic-bezier(0.650, 0.000, 0.450, 1.000) forwards;
+}
+.checkmark__check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke .3s cubic-bezier(0.650, 0.000, 0.450, 1.000) .8s forwards;
+}
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes scale {
+  0%, 100% {
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    transform: scale3d(1.15, 1.15, 1.15);
+  }
+}
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 40px #e6f4ea;
+  }
+}
+</style>
 
 <script>
 function angketFill() {
@@ -150,6 +221,7 @@ function angketFill() {
         nominasi_aktif_id: @json($existingComment?->nominasi_aktif_id ?? ''),
         nominasi_favorit_id: @json($existingComment?->nominasi_favorit_id ?? ''),
         isSubmitting: false,
+        showSuccess: false,
 
         setAnswer(itemId, jawaban) { this.answers[itemId] = jawaban; },
 
@@ -171,7 +243,12 @@ function angketFill() {
                     nominasi_favorit_id: parseInt(this.nominasi_favorit_id)
                 }),
             });
-            if (res.ok) { window.location.href = '{{ route("peserta.dashboard") }}'; }
+            if (res.ok) { 
+                this.showSuccess = true;
+                setTimeout(() => {
+                    window.location.href = '{{ route("peserta.dashboard") }}';
+                }, 2500);
+            }
             else { this.isSubmitting = false; alert('Gagal menyimpan.'); }
         },
     };
