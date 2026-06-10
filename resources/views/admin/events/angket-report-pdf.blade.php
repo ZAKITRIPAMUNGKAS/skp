@@ -1,269 +1,220 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
     <meta charset="utf-8">
-    <title>Laporan Angket Peserta – {{ $event->nama_event }}</title>
+    <title>Laporan Angket Peserta - {{ $event->nama_event }}</title>
     <style>
         @page {
-            size: A4 portrait;
-            margin: 15mm;
+            margin: 0;
         }
-
         body {
-            font-family: 'Century Gothic', 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-            font-size: 9pt;
-            color: #334155;
-            line-height: 1.5;
-            background: #ffffff;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        * {
-            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10pt;
+            color: #333;
+            line-height: 1.4;
             margin: 0;
             padding: 0;
+            background-color: #ffffff;
         }
-
         .page {
             page-break-after: always;
             position: relative;
+            padding: 30px 45px 50px 45px;
+            box-sizing: border-box;
+            min-height: 297mm;
         }
-
         .page:last-child {
             page-break-after: avoid;
         }
-
-        /* ========================================================
-           KOP SURAT RESMI (Tabel Murni)
-           ======================================================== */
+        /* Top Left Yellow Accent Bar */
+        .top-left-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 105px;
+            background-color: #ffd000;
+        }
+        /* Kop Surat */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
-            border-bottom: 4px solid #1A56DB; /* Biru Arqam */
+            margin-bottom: 5px;
+        }
+        .kop-table td {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+        }
+        .kop-logo-container {
+            width: 45%;
+            vertical-align: middle;
+            text-align: left;
+            padding-left: 10px;
+        }
+        .kop-info-container {
+            width: 55%;
+            vertical-align: middle;
+            text-align: right;
+            line-height: 1.3;
+        }
+        .kop-dept-title {
+            font-size: 9.5pt;
+            font-weight: bold;
+            color: #0b3a75;
+            margin: 0;
+        }
+        .kop-dept-subtitle {
+            font-size: 8.5pt;
+            font-weight: bold;
+            color: #444444;
+            margin: 2px 0 0 0;
+        }
+        .kop-address {
+            font-size: 6.8pt;
+            color: #666666;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        .header-line {
+            border-bottom: 2px solid #0b3a75;
+            margin-bottom: 20px;
+            margin-top: 5px;
+        }
+        /* Judul Laporan */
+        .surat-header {
+            text-align: center;
             margin-bottom: 20px;
         }
-
-        .kop-table td {
-            vertical-align: middle;
-            padding-bottom: 12px;
-        }
-
-        .logo-img {
-            height: 48px;
-            width: auto;
-            max-width: 140px;
-        }
-
-        .judul-instansi-td {
-            padding-left: 15px;
-        }
-
-        .judul-instansi-td h4 {
-            font-size: 8.5px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #64748B;
-            margin-bottom: 2px;
-            font-weight: 600;
-        }
-
-        .judul-instansi-td h1 {
-            font-size: 20px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #1E293B;
-        }
-
-        .tag-event-container {
-            margin-top: 2px;
-        }
-
-        .tag-event {
-            font-size: 9.5px;
+        .surat-title {
+            font-size: 13pt;
             font-weight: bold;
-            color: #1A56DB;
-            background-color: #EFF6FF;
-            padding: 2px 8px;
-            border: 1px solid #BFDBFE;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .kontrol-dokumen-td {
-            width: 120px;
-            text-align: right;
-        }
-
-        .kontrol-dokumen {
-            border: 1.5px solid #E2E8F0;
-            padding: 6px 12px;
-            background-color: #F8FAFC;
-            text-align: center;
-            display: inline-block;
-            border-radius: 8px;
-        }
-
-        .kontrol-dokumen .nomor {
-            font-size: 20px;
-            font-weight: 800;
-            line-height: 1;
-            color: #1A56DB;
-        }
-
-        .kontrol-dokumen .teks {
-            font-size: 8px;
             text-transform: uppercase;
+            margin: 0;
+            color: #111;
             letter-spacing: 0.5px;
-            margin-top: 3px;
-            color: #64748B;
         }
-
-        /* ========================================================
-           KOTAK IDENTITAS UTAMA
-           ======================================================== */
+        .surat-number {
+            font-size: 9.5pt;
+            margin-top: 4px;
+            color: #0b3a75;
+            font-weight: bold;
+        }
+        /* Identitas Peserta */
         .box-peserta {
             width: 100%;
-            border-left: 6px solid #1A56DB;
-            background-color: #F8FAFC;
-            padding: 12px 18px;
+            border-left: 5px solid #0b3a75;
+            background-color: #f4f7fa;
+            padding: 10px 15px;
             margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 4px 4px 0;
         }
-
         .box-peserta h2 {
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            color: #1E293B;
-            letter-spacing: 0.5px;
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            color: #111;
         }
-
         .box-peserta p {
-            font-size: 11px;
-            color: #475569;
+            font-size: 9.5pt;
+            color: #555;
             margin: 2px 0;
         }
-
         .box-peserta p strong {
             display: inline-block;
             width: 90px;
-            color: #64748B;
+            color: #444;
         }
 
-        /* ========================================================
-           TABEL ANGKET
-           ======================================================== */
+        /* Tabel Data Angket */
         .tabel-angket {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-
-        .tabel-angket th {
-            background-color: #F1F5F9;
-            color: #1E293B;
-            padding: 10px 12px;
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #E2E8F0;
+        .tabel-angket th, .tabel-angket td {
+            border: 1px solid #cccccc;
+            padding: 7px 10px;
             text-align: left;
-            font-weight: 700;
+            font-size: 9pt;
         }
-
-        .tabel-angket td {
-            border-bottom: 1px solid #E2E8F0;
-            padding: 9px 12px;
-            font-size: 10.5px;
-            vertical-align: middle;
-            color: #334155;
+        .tabel-angket th {
+            background-color: #f2f5fa;
+            font-weight: bold;
+            color: #0b3a75;
+            text-transform: uppercase;
+            font-size: 8.5pt;
+            letter-spacing: 0.2px;
         }
-
         .tabel-angket td.no {
-            width: 5%;
+            width: 6%;
             text-align: center;
             font-weight: bold;
-            color: #64748B;
+            color: #555;
         }
-
         .tabel-angket td.item {
-            width: 65%;
+            width: 64%;
         }
-
         .tabel-angket td.jawaban {
             width: 30%;
             text-align: center;
-            font-weight: 700;
+            font-weight: bold;
+        }
+        .tabel-angket tr:nth-child(even) {
+            background-color: #fafafa;
         }
 
-        /* ========================================================
-           KOTAK KOMENTAR / SARAN
-           ======================================================== */
+        /* Komentar Box */
         .komentar-box {
-            background-color: #F8FAFC;
-            border-left: 4px solid #FACA15; /* Kuning emas */
-            padding: 12px 16px;
-            border-radius: 0 6px 6px 0;
+            background-color: #fbfbfb;
+            border-left: 4px solid #ffd000;
+            padding: 10px 15px;
+            border-radius: 0 4px 4px 0;
+            border: 1px solid #eaeaea;
         }
-
         .komentar-title {
-            font-size: 9px;
-            font-weight: 800;
+            font-size: 8.5pt;
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #64748B;
-            margin-bottom: 6px;
+            color: #555;
+            margin-bottom: 4px;
         }
-
         .komentar-content {
             font-family: Georgia, serif;
-            font-size: 11px;
+            font-size: 10pt;
             font-style: italic;
-            color: #334155;
-            line-height: 1.6;
+            color: #222;
+            line-height: 1.5;
         }
 
-        /* ========================================================
-           FOOTER
-           ======================================================== */
+        /* Footer fixed position at the page bottom */
         .footer-fixed {
-            margin-top: 30px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
             width: 100%;
+            background-color: #ffffff;
+            text-align: center;
         }
-
-        .footer-line {
-            height: 3px;
-            background-color: #1A56DB;
-            margin-bottom: 6px;
-        }
-
-        .footer-table {
+        .footer-social-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 6px;
         }
-
-        .footer-text {
+        .footer-social-table td {
+            text-align: center;
             font-size: 8pt;
-            color: #64748B;
-            line-height: 1.3;
-            padding-left: 15mm;
-        }
-
-        .footer-text strong {
-            color: #1A56DB;
-        }
-
-        .footer-nomor {
-            text-align: right;
-            font-size: 8pt;
+            color: #0b3a75;
             font-weight: bold;
-            color: #1A56DB;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding-right: 15mm;
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            vertical-align: middle;
+        }
+        .footer-yellow-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ffd000;
         }
     </style>
 </head>
@@ -279,32 +230,43 @@
     $komentarObj = $komentars->where('peserta_id', $p->id)->first();
     $komentarTeks = $komentarObj ? $komentarObj->komentar : '— (Tidak ada saran/komentar tertulis)';
 @endphp
+
 <div class="page">
-    
-    <!-- HEADER DOKUMEN -->
+    <!-- Top Left Accent Bar -->
+    <div class="top-left-bar"></div>
+
+    {{-- Kop Surat --}}
     <table class="kop-table">
         <tr>
-            <td style="width: 120px; vertical-align: middle;">
-                <img src="{{ public_path('logo.png') }}" class="logo-img" alt="Logo UMS" onerror="this.style.display='none'">
+            <td class="kop-logo-container">
+                <table style="border: none; border-collapse: collapse;">
+                    <tr style="vertical-align: middle; padding: 0; border: none; background: transparent;">
+                            <img src="{{ public_path('logo.png') }}" style="width: 200px; height: auto;" alt="Logo UMS">
+                    </tr>
+                </table>
             </td>
-            <td class="judul-instansi-td">
-                <h4 style="margin-top: 10px; margin-bottom: 2px; font-size: 11px;">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h4>
-                <h4 style="margin-top: 0; margin-bottom: 5px; font-weight: normal; font-size: 11px; color: #555;">Universitas Muhammadiyah Surakarta</h4>
-                <h1>Laporan Angket Peserta</h1>
-                <div class="tag-event-container">
-                    <span class="tag-event">{{ $event->nama_event }}</span>
-                </div>
-            </td>
-            <td class="kontrol-dokumen-td">
-                <div class="kontrol-dokumen">
-                    <div class="nomor">{{ str_pad($noUrut, 2, '0', STR_PAD_LEFT) }}</div>
-                    <div class="teks">Halaman {{ $noUrut }} / {{ $totalAll }}</div>
+            <td class="kop-info-container">
+                <h1 class="kop-dept-title">Lembaga Pengembangan Pembinaan Al-Islam & Kemuhammadiyahan (LP3A)</h1>
+                <div class="kop-dept-subtitle">Universitas Muhammadiyah Surakarta</div>
+                <div class="kop-address">
+                    Gedung Induk Siti Walidah Lantai 3 Sayap Selatan, Jl. A. Yani No.157, Pabelan, Kartasura, Sukoharjo 57162, Jawa Tengah<br>
+                    Telp. +62 271-717417 | E-mail: lp3a@ums.ac.id | Website: https://lp3a.ums.ac.id
                 </div>
             </td>
         </tr>
     </table>
 
-    <!-- KOTAK IDENTITAS UTAMA -->
+    {{-- Divider Line --}}
+    <div class="header-line"></div>
+
+    {{-- Judul Laporan --}}
+    <div class="surat-header">
+        <h2 class="surat-title">LAPORAN ANGKET PESERTA</h2>
+        <div class="surat-number">{{ $event->nama_event }}</div>
+        <div style="font-size: 9pt; margin-top: 3px; color: #555; font-weight: bold;">Halaman {{ $noUrut }} dari {{ $totalAll }}</div>
+    </div>
+
+    <!-- IDENTITAS PESERTA -->
     <div class="box-peserta">
         <h2>{{ $p->nama_lengkap }}</h2>
         <p><strong>NIP/NBM</strong>: {{ $p->nim_nip_nbm ?: '—' }}</p>
@@ -328,14 +290,14 @@
 
     <!-- TABEL JAWABAN ANGKET PER KATEGORI -->
     @foreach($groupedItems as $kategori => $itemsInGroup)
-    <div style="margin-bottom: 15px; page-break-inside: avoid;">
-        <h3 style="font-size: 10px; font-weight: bold; margin-bottom: 6px; color: #1E293B; border-left: 3px solid #1A56DB; padding-left: 8px; text-transform: uppercase;">
+    <div style="margin-bottom: 12px; page-break-inside: avoid;">
+        <h3 style="font-size: 8.5pt; font-weight: bold; margin-bottom: 5px; color: #0b3a75; border-left: 3px solid #0b3a75; padding-left: 6px; text-transform: uppercase;">
             {{ $kategori }} - {{ $categoryLabels[$kategori] ?? 'Kategori ' . $kategori }}
         </h3>
         <table class="tabel-angket" style="margin-bottom: 0;">
             <thead>
                 <tr>
-                    <th style="width: 5%; text-align: center;">No</th>
+                    <th style="width: 6%; text-align: center;">No</th>
                     <th>Item Evaluasi Penyelenggaraan</th>
                     <th style="width: 30%; text-align: center;">Tanggapan / Jawaban</th>
                 </tr>
@@ -356,7 +318,7 @@
                     ];
                     $jawabLabel = $mapLabel[$jawabCode] ?? 'Belum Mengisi';
                     
-                    // Warna kontras dan modern
+                    // Warna kontras
                     $colorJawab = $jawabCode === 'A' ? '#10B981' : ($jawabCode === 'B' ? '#059669' : ($jawabCode === 'C' ? '#D97706' : '#EF4444'));
                 @endphp
                 <tr>
@@ -371,7 +333,7 @@
     @endforeach
 
     <!-- KOTAK KOMENTAR & MASKOT (Berdampingan agar menghemat ruang halaman) -->
-    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: avoid;">
         <tr>
             <td style="width: 78%; vertical-align: top; padding-right: 15px;">
                 <div class="komentar-box">
@@ -381,28 +343,54 @@
                     </div>
                 </div>
             </td>
-            <td style="width: 22%; vertical-align: middle; padding-left: 15px;">
-                <img src="{{ public_path('images/arka/arka_analisis.png') }}" style="height: 75px; width: auto; object-fit: contain;" alt="Arqa Mascot" onerror="this.style.display='none'">
+            <td style="width: 22%; vertical-align: middle; padding-left: 15px; text-align: center;">
+                <img src="{{ public_path('images/arka/arka_analisis.png') }}" style="height: 70px; width: auto; object-fit: contain;" alt="Arqa Mascot" onerror="this.style.display='none'">
             </td>
         </tr>
     </table>
 
-    <!-- FOOTER PREMIUM -->
+    {{-- Footer Accent at the very bottom --}}
     <div class="footer-fixed">
-        <div class="footer-line"></div>
-        <table class="footer-table">
+        <table class="footer-social-table">
             <tr>
-                <td class="footer-text">
-                    Laporan Angket Per-Peserta &bull; Dicetak otomatis melalui sistem <strong>ArqamApp</strong>.
+                <td>
+                    <!-- Globe Web Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </span>
+                    lp3a.ums.ac.id
                 </td>
-                <td class="footer-nomor">
-                    {{ $event->nama_event }}
+                <td>
+                    <!-- Instagram Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </span>
+                    @lp3aums
+                </td>
+                <td>
+                    <!-- Email Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </span>
+                    lp3a@ums.ac.id
                 </td>
             </tr>
         </table>
+        <div class="footer-yellow-bar"></div>
     </div>
-
 </div>
+
 @empty
 <div style="padding: 80px 20px; text-align: center;">
     <p style="font-family: Georgia, serif; font-size: 18pt; color: #1e293b; margin-bottom: 8px;">Belum Ada Data Angket</p>
