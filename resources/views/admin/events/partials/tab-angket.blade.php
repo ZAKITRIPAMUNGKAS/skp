@@ -3,14 +3,11 @@
     $angketItems = \App\Models\AngketItem::where('event_id', $event->id)->orderBy('kategori')->orderBy('urutan')->get()->groupBy('kategori');
     $categoryLabels = [
         'A' => 'Materi & Narasumber',
-        'B' => 'Relevansi & Metode',
-        'C' => 'Fasilitas & Kebersihan',
-        'D' => 'Konsumsi (Makanan/Minuman)',
-        'E' => 'Layanan Instruktur & Waktu',
-        'F' => 'Sarana Prasarana Belajar',
-        'G' => 'Dampak & Manfaat Kegiatan',
-        'H' => 'Kejelasan Informasi & Panduan',
-        'I' => 'Kepuasan Umum & Voting'
+        'B' => 'Fasilitator',
+        'C' => 'Panitia',
+        'D' => 'Lokasi Baitul Arqam',
+        'E' => 'Konsumsi',
+        'F' => 'Kepuasan Pengguna',
     ];
 @endphp
 
@@ -18,7 +15,7 @@
     <div class="flex items-center justify-between mb-6">
         <div>
             <h3 class="text-sm font-semibold text-gray-800">Angket Penyelenggaraan</h3>
-            <p class="text-xs text-gray-500 mt-0.5">9 kategori pertanyaan</p>
+            <p class="text-xs text-gray-500 mt-0.5">6 kategori pertanyaan</p>
         </div>
         <button @click="showForm = true; editingItem = null; form = {kategori:'A', teks_item:'', tipe:'skala'}"
             class="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-sm rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
@@ -28,7 +25,8 @@
     </div>
 
     {{-- Category Groups --}}
-    @foreach(['A','B','C','D','E','F','G','H','I'] as $kat)
+    
+    @foreach(['A','B','C','D','E','F'] as $kat)
         <div class="mb-4" x-show="itemsByKategori('{{ $kat }}').length > 0">
             <div class="flex items-center gap-2 mb-2">
                 <span class="px-2 py-0.5 bg-primary/10 text-primary text-xs font-bold rounded">{{ $kat }}</span>

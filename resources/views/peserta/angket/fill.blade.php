@@ -3,6 +3,19 @@
 @section('title', 'Kuisioner')
 
 @section('content')
+@php
+    $categoryLabels = [
+        'A' => 'Materi & Narasumber',
+        'B' => 'Relevansi & Metode',
+        'C' => 'Fasilitas & Kebersihan',
+        'D' => 'Konsumsi (Makanan/Minuman)',
+        'E' => 'Layanan Instruktur & Waktu',
+        'F' => 'Sarana Prasarana Belajar',
+        'G' => 'Dampak & Manfaat Kegiatan',
+        'H' => 'Kejelasan Informasi & Panduan',
+        'I' => 'Kepuasan Umum & Voting',
+    ];
+@endphp
 <div class="max-w-3xl mx-auto py-8 px-4" x-data="angketFill()">
 
     <div class="mb-6">
@@ -21,7 +34,8 @@
         <div class="mb-6">
             <div class="flex items-center gap-2 mb-3">
                 <span class="px-2.5 py-1 bg-primary/10 text-primary text-xs font-bold rounded-lg">{{ $kategori }}</span>
-                <span class="text-xs text-gray-400">{{ $categoryItems->count() }} pertanyaan</span>
+                <span class="text-xs font-semibold text-gray-700">{{ $categoryLabels[$kategori] ?? '' }}</span>
+                <span class="text-xs text-gray-400">({{ $categoryItems->count() }} pertanyaan)</span>
             </div>
 
             <div class="space-y-3">
