@@ -95,11 +95,20 @@ class TesService
         $correct = 0;
         $total = count($soalIds);
 
+        // Ambil semua pilihan jawaban yang benar untuk soal-soal ini dalam satu query (Optimasi N+1)
+        $correctOptions = \App\Models\PilihanJawaban::whereIn('soal_id', $soalIds)
+            ->where('is_correct', true)
+            ->pluck('id', 'soal_id')
+            ->toArray();
+
         // Hapus semua jawaban yang ada terlebih dahulu untuk lingkup materi ini
         JawabanPeserta::where('event_id', $event->id)
             ->where('peserta_id', $peserta->id)
             ->whereIn('soal_id', $soalIds)
             ->delete();
+
+        $insertData = [];
+        $now = now();
 
         foreach ($answers as $answer) {
             $soalId   = (int) $answer['soal_id'];
@@ -107,20 +116,24 @@ class TesService
 
             if (!in_array($soalId, $soalIds)) continue;
 
-            $isCorrect = \App\Models\PilihanJawaban::where('id', $pilihanId)
-                ->where('soal_id', $soalId)
-                ->where('is_correct', true)
-                ->exists();
+            $isCorrect = isset($correctOptions[$soalId]) && (int)$correctOptions[$soalId] === $pilihanId;
 
-            JawabanPeserta::create([
+            $insertData[] = [
                 'event_id'   => $event->id,
                 'peserta_id' => $peserta->id,
                 'soal_id'    => $soalId,
                 'pilihan_id' => $pilihanId,
                 'is_correct' => $isCorrect,
-            ]);
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
 
             if ($isCorrect) $correct++;
+        }
+
+        // Simpan jawaban sekaligus dalam satu query (Optimasi Bulk Insert)
+        if (!empty($insertData)) {
+            JawabanPeserta::insert($insertData);
         }
 
         $score = $total > 0 ? round(($correct / $total) * 100, 2) : 0;
