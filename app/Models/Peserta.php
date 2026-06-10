@@ -377,4 +377,9 @@ class Peserta extends Model
     {
         return $this->hasMany(PenilaianAkhir::class);
     }
+
+    public function rtl()
+    {
+        return $this->hasMany(Rtl::class);
+    }
 }

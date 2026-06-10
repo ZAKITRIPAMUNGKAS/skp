@@ -69,7 +69,7 @@
 
         /* ── Lokasi & Tanggal ── */
         .lbl-place {
-            font-size: 8pt;
+            font-size: 5pt;
             font-weight: 700;
             color: #1a5276;
             text-transform: uppercase;

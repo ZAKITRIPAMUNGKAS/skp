@@ -95,11 +95,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         </p>
                         
                         @if(!str_contains($scores->status_kelulusan, 'Tidak Lulus') && !empty($scores->status_kelulusan))
-                            <a href="{{ route('peserta.sertifikat.download', $activeEvent) }}" target="_blank"
-                               class="inline-flex items-center gap-3 px-8 py-4 bg-accent text-gray-900 rounded-2xl font-bold hover:bg-accent-300 transition-all shadow-xl shadow-accent/25 active:scale-95">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                Unduh Sertifikat Resmi
-                            </a>
+                            @if($hasRtl)
+                                <a href="{{ route('peserta.sertifikat.download', $activeEvent) }}" target="_blank"
+                                   class="inline-flex items-center gap-3 px-8 py-4 bg-accent text-gray-900 rounded-2xl font-bold hover:bg-accent-300 transition-all shadow-xl shadow-accent/25 active:scale-95">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    Unduh Sertifikat Resmi
+                                </a>
+                            @else
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-amber-500/10 border border-amber-500/20 text-amber-200 rounded-2xl text-xs max-w-md">
+                                        <strong>Pemberitahuan:</strong> Anda wajib mengisi Rencana Tindak Lanjut (RTL) terlebih dahulu untuk mengunduh sertifikat resmi.
+                                    </div>
+                                    <a href="{{ route('peserta.rtl.index', $activeEvent) }}"
+                                       class="inline-flex items-center gap-2.5 px-6 py-3 bg-amber-500 text-gray-900 rounded-2xl font-bold hover:bg-amber-400 transition-all shadow-lg active:scale-95 text-sm">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                                        Isi Rencana Tindak Lanjut (RTL)
+                                    </a>
+                                </div>
+                            @endif
                         @endif
                     </div>
                     

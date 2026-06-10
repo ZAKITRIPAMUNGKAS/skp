@@ -173,7 +173,15 @@ class DashboardController extends Controller
             }
         }
 
-        return view('peserta.dashboard', compact('peserta', 'activeEvent', 'eventPeserta', 'progress', 'scores', 'sesiStatus', 'chartData', 'materials', 'attendedSessionIds'));
+        $hasRtl = false;
+        if ($activeEvent) {
+            $hasRtl = \App\Models\Rtl::where('event_id', $activeEvent->id)
+                ->where('peserta_id', $peserta->id)
+                ->where('status', 'submitted')
+                ->exists();
+        }
+
+        return view('peserta.dashboard', compact('peserta', 'activeEvent', 'eventPeserta', 'progress', 'scores', 'sesiStatus', 'chartData', 'materials', 'attendedSessionIds', 'hasRtl'));
     }
 
     public function downloadSertifikat(Event $event)
@@ -185,6 +193,16 @@ class DashboardController extends Controller
         
         if (!$skor || empty($skor->status_kelulusan) || str_contains($skor->status_kelulusan, 'Tidak Lulus')) {
             abort(403, 'Sertifikat belum tersedia atau Anda tidak lulus evaluasi.');
+        }
+
+        // Check if RTL is submitted
+        $hasRtl = \App\Models\Rtl::where('event_id', $event->id)
+            ->where('peserta_id', $peserta->id)
+            ->where('status', 'submitted')
+            ->exists();
+
+        if (!$hasRtl) {
+            return redirect()->route('peserta.rtl.index', $event)->with('error', 'Anda wajib mengisi Rencana Tindak Lanjut (RTL) terlebih dahulu untuk mengunduh sertifikat.');
         }
 
         if (empty($skor->verification_hash)) {
@@ -297,14 +315,20 @@ class DashboardController extends Controller
 
         $activeEvent = $eventPeserta ? $eventPeserta->event : null;
         $scores = null;
+        $hasRtl = false;
 
         if ($activeEvent) {
             $scores = PenilaianAkhir::where('event_id', $activeEvent->id)
                 ->where('peserta_id', $peserta->id)
                 ->first();
+            
+            $hasRtl = \App\Models\Rtl::where('event_id', $activeEvent->id)
+                ->where('peserta_id', $peserta->id)
+                ->where('status', 'submitted')
+                ->exists();
         }
 
-        return view('peserta.hasil.index', compact('peserta', 'activeEvent', 'scores'));
+        return view('peserta.hasil.index', compact('peserta', 'activeEvent', 'scores', 'hasRtl'));
     }
 
     /**
@@ -351,5 +375,74 @@ class DashboardController extends Controller
         }
 
         return view('peserta.jadwal.index', compact('peserta', 'activeEvent', 'sessions'));
+    }
+
+    public function rtlPage(Event $event)
+    {
+        $peserta = auth()->user()->peserta;
+        if (!$peserta) abort(403);
+
+        $eventPeserta = EventPeserta::where('event_id', $event->id)
+            ->where('peserta_id', $peserta->id)
+            ->firstOrFail();
+
+        $skor = PenilaianAkhir::where('event_id', $event->id)->where('peserta_id', $peserta->id)->first();
+        if (!$skor || empty($skor->status_kelulusan) || str_contains($skor->status_kelulusan, 'Tidak Lulus')) {
+            return redirect()->route('peserta.hasil')->with('error', 'RTL hanya dapat diakses setelah Anda dinyatakan lulus evaluasi.');
+        }
+
+        $rtl = \App\Models\Rtl::where('event_id', $event->id)
+            ->where('peserta_id', $peserta->id)
+            ->first();
+
+        return view('peserta.rtl.index', compact('peserta', 'event', 'rtl'));
+    }
+
+    public function submitRtl(Request $request, Event $event)
+    {
+        $peserta = auth()->user()->peserta;
+        if (!$peserta) abort(403);
+
+        $request->validate([
+            'judul_kegiatan' => 'required|string|max:255',
+            'kategori_rtl'   => 'required|string|max:100',
+            'tujuan'         => 'required|string',
+            'sasaran'        => 'required|string',
+            'indikator_keberhasilan' => 'required|string',
+            'waktu_pelaksanaan' => 'required|string|max:100',
+            'pihak_terlibat' => 'required|string',
+            'steps'          => 'required|array|min:1',
+            'steps.*.deskripsi'      => 'required|string|max:255',
+            'steps.*.target_tanggal' => 'required|string|max:100',
+        ]);
+
+        $steps = [];
+        foreach ($request->input('steps') as $index => $step) {
+            $steps[] = [
+                'step' => $index + 1,
+                'deskripsi' => $step['deskripsi'],
+                'target_tanggal' => $step['target_tanggal']
+            ];
+        }
+
+        \App\Models\Rtl::updateOrCreate(
+            [
+                'event_id' => $event->id,
+                'peserta_id' => $peserta->id,
+            ],
+            [
+                'judul_kegiatan' => $request->judul_kegiatan,
+                'kategori_rtl'   => $request->kategori_rtl,
+                'tujuan'         => $request->tujuan,
+                'sasaran'        => $request->sasaran,
+                'indikator_keberhasilan' => $request->indikator_keberhasilan,
+                'waktu_pelaksanaan' => $request->waktu_pelaksanaan,
+                'pihak_terlibat' => $request->pihak_terlibat,
+                'langkah_langkah' => $steps,
+                'status'         => 'submitted',
+            ]
+        );
+
+        return redirect()->route('peserta.hasil')->with('success', 'Rencana Tindak Lanjut (RTL) berhasil disimpan! Anda sekarang dapat mengunduh sertifikat.');
     }
 }

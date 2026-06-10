@@ -299,6 +299,10 @@ Route::middleware(['auth', 'peserta', 'profile_completed', 'event_started'])->pr
     Route::get('/sertifikat/{event}', [\App\Http\Controllers\Peserta\DashboardController::class, 'downloadSertifikat'])->name('sertifikat.download');
     Route::get('/idcard/{event}', [\App\Http\Controllers\Peserta\DashboardController::class, 'downloadIdCard'])->name('idcard.download');
 
+    // RTL (Rencana Tindak Lanjut)
+    Route::get('/rtl/{event}', [\App\Http\Controllers\Peserta\DashboardController::class, 'rtlPage'])->name('rtl.index');
+    Route::post('/rtl/{event}/submit', [\App\Http\Controllers\Peserta\DashboardController::class, 'submitRtl'])->name('rtl.submit');
+
     // Angket
     Route::get('/angket', [AngketPesertaController::class, 'indexRoot'])->name('angket.index_root');
     Route::get('/angket/{event}', [AngketPesertaController::class, 'fill'])->name('angket.fill');
