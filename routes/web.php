@@ -152,6 +152,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/participants/{peserta}/edit', [ParticipantController::class, 'edit'])->name('participants.edit');
         Route::put('/participants/{peserta}', [ParticipantController::class, 'update'])->name('participants.update');
         Route::delete('/participants/{peserta}', [ParticipantController::class, 'destroyParticipant'])->name('participants.destroyParticipant');
+        Route::get('/rtl', [\App\Http\Controllers\Admin\RtlController::class, 'index'])->name('rtl.index');
+        Route::get('/rtl/{rtl}', [\App\Http\Controllers\Admin\RtlController::class, 'show'])->name('rtl.show');
         Route::get('/soal', [SoalController::class, 'index'])->name('soal.index');
         
         // CRUD Galeri Pelatihan
