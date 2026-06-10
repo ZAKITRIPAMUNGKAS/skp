@@ -48,6 +48,36 @@ class AbsensiController extends Controller
     }
 
     /**
+     * Ambil 10 data scan terakhir dan jumlah kehadiran untuk polling real-time.
+     */
+    public function recentScans(Event $event, EventSesi $sesi)
+    {
+        $totalPeserta = EventPeserta::where('event_id', $event->id)->where('status_aktif', true)->count();
+        $hadirCount   = Absensi::where('event_id', $event->id)
+            ->where('sesi_id', $sesi->id)
+            ->count();
+
+        $recentScans = Absensi::where('event_id', $event->id)
+            ->where('sesi_id', $sesi->id)
+            ->with('peserta')
+            ->orderBy('waktu_scan', 'desc')
+            ->take(10)
+            ->get()
+            ->map(fn($a) => [
+                'nama'       => $a->peserta->nama_lengkap,
+                'unit_kerja' => $a->peserta->unit_kerja,
+                'foto'       => $a->peserta->foto_url,
+                'waktu_scan' => $a->waktu_scan->format('H:i:s'),
+            ]);
+
+        return response()->json([
+            'hadir_count'   => $hadirCount,
+            'total_peserta' => $totalPeserta,
+            'recent_scans'  => $recentScans,
+        ]);
+    }
+
+    /**
      * Proses pemindaian QR melalui AJAX.
      */
     public function scan(Request $request)

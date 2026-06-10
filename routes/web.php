@@ -213,6 +213,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
         // Pemindaian kehadiran
         Route::get('/events/{event}/absensi/{sesi}/scan', [AbsensiController::class, 'scanPage'])->name('absensi.scan');
+        Route::get('/events/{event}/absensi/{sesi}/recent', [AbsensiController::class, 'recentScans'])->name('absensi.recent');
 
         // Manajemen soal (pretest/posttest)
         Route::post('/events/{event}/soal', [SoalController::class, 'store'])->name('soal.store');

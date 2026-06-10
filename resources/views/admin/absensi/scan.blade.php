@@ -299,6 +299,32 @@
                         this.$refs.scanInput?.focus();
                     }
                 });
+
+                // Polling data terbaru secara berkala setiap 5 detik
+                setInterval(() => {
+                    this.fetchRecentScans();
+                }, 5000);
+            },
+
+            async fetchRecentScans() {
+                if (this.isOffline || this.scanState === 'processing') return;
+
+                try {
+                    const res = await fetch('{{ route("admin.absensi.recent", [$event, $sesi]) }}', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        this.hadirCount = data.hadir_count;
+                        this.history = data.recent_scans;
+                    }
+                } catch (e) {
+                    console.error('Gagal mengambil data terbaru:', e);
+                }
             },
 
             async handleScan() {
