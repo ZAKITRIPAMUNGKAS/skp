@@ -455,4 +455,62 @@ class ParticipantController extends Controller
             return back()->with('error', 'Gagal menghapus peserta: ' . $e->getMessage());
         }
     }
+
+    public function batchCropPage()
+    {
+        $participantsCollection = Peserta::whereNotNull('foto')->get();
+        Peserta::prefetchRemotePhotos($participantsCollection);
+
+        $participants = $participantsCollection->map(function($p) {
+            return (object) [
+                'id' => $p->id,
+                'nama_lengkap' => $p->nama_lengkap,
+                'foto' => $p->foto,
+                'foto_url' => $p->foto_base64 ?: $p->foto_url
+            ];
+        });
+
+        return view('admin.participants.batch-crop', compact('participants'));
+    }
+
+    public function updateCroppedPhoto(Request $request, Peserta $peserta)
+    {
+        try {
+            $image = $request->input('cropped_foto');
+            if (empty($image)) {
+                return response()->json(['success' => false, 'message' => 'Foto kosong.'], 400);
+            }
+
+            if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+                $image = substr($image, strpos($image, ',') + 1);
+                $type = strtolower($type[1]);
+
+                if (in_array($type, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $image = base64_decode($image);
+
+                    if ($image !== false) {
+                        if ($peserta->foto && !str_starts_with($peserta->foto, 'http://') && !str_starts_with($peserta->foto, 'https://')) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($peserta->foto);
+                        }
+
+                        $fileName = 'peserta/foto/' . Str::random(40) . '.' . $type;
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $image);
+                        
+                        $peserta->update([
+                            'foto' => $fileName
+                        ]);
+
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Foto berhasil dipotong dan diperbarui.',
+                            'new_url' => asset('storage/' . $fileName)
+                        ]);
+                    }
+                }
+            }
+            return response()->json(['success' => false, 'message' => 'Format gambar tidak valid.'], 400);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }

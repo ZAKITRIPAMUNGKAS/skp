@@ -146,6 +146,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('logs.index');
         Route::get('/participants', [ParticipantController::class, 'index'])->name('participants.index');
+        Route::get('/participants/batch-crop', [ParticipantController::class, 'batchCropPage'])->name('participants.batchCropPage');
+        Route::post('/participants/{peserta}/update-cropped', [ParticipantController::class, 'updateCroppedPhoto'])->name('participants.updateCroppedPhoto');
         Route::get('/participants/{peserta}', [ParticipantController::class, 'show'])->name('participants.show');
         Route::get('/participants/{peserta}/edit', [ParticipantController::class, 'edit'])->name('participants.edit');
         Route::put('/participants/{peserta}', [ParticipantController::class, 'update'])->name('participants.update');

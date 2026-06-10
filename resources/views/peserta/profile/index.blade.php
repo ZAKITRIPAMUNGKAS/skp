@@ -56,7 +56,7 @@
                 @csrf @method('PUT')
 
                 <div class="flex flex-col sm:flex-row gap-6 items-start">
-                    <div class="shrink-0 flex flex-col items-center"
+                    <div class="shrink-0 flex flex-col items-center" id="profilePhotoSection"
                          x-data="{ preview: '{{ $peserta->foto_url }}' }">
                         <div class="w-24 h-24 rounded-full bg-gray-100 overflow-hidden mb-3 border-2 border-primary/20">
                             <template x-if="preview">
@@ -70,9 +70,10 @@
                         </div>
                         <label class="px-3 py-1.5 bg-gray-50 text-xs font-semibold text-gray-600 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
                             Ganti Foto
-                            <input type="file" name="foto" class="hidden" accept="image/*"
-                                @change="const f=$event.target.files[0]; if(f && f.size<=2097152){preview=URL.createObjectURL(f)} else if(f){alert('Foto maksimal 2MB!'); $event.target.value=''}">
+                            <input type="file" id="fotoInput" name="foto" class="hidden" accept="image/*"
+                                @change="handleProfilePhotoChange($event)">
                         </label>
+                        <input type="hidden" name="cropped_foto" id="croppedFotoInput">
                         @error('foto') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
                     </div>
 
@@ -398,5 +399,189 @@
         </div>
     </div>
 
+    {{-- Modal Crop Foto --}}
+    <div id="cropModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeCropModal()"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-6 py-6 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-gray-800" id="modal-title">Sesuaikan & Potong Foto</h3>
+                    <button type="button" onclick="closeCropModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div id="faceDetectStatus" class="mb-4 text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center gap-2 bg-blue-50 text-blue-700 border border-blue-100">
+                        <svg class="animate-spin h-4 w-4 text-blue-700" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span id="faceDetectText">Mendeteksi wajah otomatis...</span>
+                    </div>
+
+                    <div class="relative w-full max-h-[350px] bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center">
+                        <img id="imageToCrop" src="" class="max-w-full max-h-[350px] block">
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 rounded-b-3xl">
+                    <button type="button" onclick="applyCrop()" class="px-5 py-2.5 bg-primary hover:bg-primary-600 text-white rounded-xl text-sm font-bold shadow-md transition-all active:scale-95">
+                        Potong & Simpan
+                    </button>
+                    <button type="button" onclick="closeCropModal()" class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl text-sm font-bold transition-all">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+@push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+@endpush
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.js"></script>
+<script>
+    let cropperInstance = null;
+    let faceapiLoaded = false;
+    let faceapiModelsLoaded = false;
+    
+    async function initFaceApi() {
+        if (faceapiLoaded) return;
+        try {
+            await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model');
+            faceapiLoaded = true;
+            faceapiModelsLoaded = true;
+        } catch (e) {
+            console.error("Gagal memuat model deteksi wajah:", e);
+        }
+    }
+
+    async function handleProfilePhotoChange(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Foto maksimal 2MB!');
+            event.target.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            openCropModal(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function openCropModal(imageSrc) {
+        const modal = document.getElementById('cropModal');
+        const imageToCrop = document.getElementById('imageToCrop');
+        const faceDetectStatus = document.getElementById('faceDetectStatus');
+        const faceDetectText = document.getElementById('faceDetectText');
+
+        imageToCrop.src = imageSrc;
+        modal.classList.remove('hidden');
+
+        faceDetectStatus.className = "mb-4 text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center gap-2 bg-blue-50 text-blue-700 border border-blue-100";
+        faceDetectText.innerText = "Mendeteksi wajah otomatis...";
+
+        if (cropperInstance) {
+            cropperInstance.destroy();
+        }
+
+        cropperInstance = new Cropper(imageToCrop, {
+            aspectRatio: 3/4,
+            viewMode: 1,
+            autoCropArea: 0.85,
+            responsive: true,
+            background: false,
+            ready() {
+                setTimeout(async () => {
+                    try {
+                        await initFaceApi();
+                        const detections = await faceapi.detectAllFaces(imageToCrop, new faceapi.TinyFaceDetectorOptions());
+
+                        if (detections && detections.length > 0) {
+                            const face = detections[0].box;
+                            const imageData = cropperInstance.getImageData();
+                            const scaleX = imageData.width / imageData.naturalWidth;
+                            const scaleY = imageData.height / imageData.naturalHeight;
+
+                            const faceWidth = face.width * scaleX;
+                            const faceHeight = face.height * scaleY;
+                            const faceX = face.x * scaleX + imageData.left;
+                            const faceY = face.y * scaleY + imageData.top;
+
+                            const targetWidth = Math.max(faceWidth, faceHeight * 0.75) * 2.4;
+                            const targetHeight = targetWidth * (4/3);
+
+                            const left = faceX + (faceWidth / 2) - (targetWidth / 2);
+                            const top = faceY + (faceHeight / 2) - (targetHeight * 0.42);
+
+                            cropperInstance.setCropBoxData({
+                                left: left,
+                                top: top,
+                                width: targetWidth,
+                                height: targetHeight
+                            });
+
+                            faceDetectStatus.className = "mb-4 text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-100";
+                            faceDetectText.innerText = "Wajah berhasil dideteksi dan diposisikan di tengah!";
+                        } else {
+                            faceDetectStatus.className = "mb-4 text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center gap-2 bg-amber-50 text-amber-700 border border-amber-100";
+                            faceDetectText.innerText = "Wajah tidak terdeteksi. Silakan posisikan crop box secara manual.";
+                        }
+                    } catch (err) {
+                        console.error("Deteksi wajah gagal:", err);
+                        faceDetectStatus.className = "mb-4 text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center gap-2 bg-red-50 text-red-700 border border-red-100";
+                        faceDetectText.innerText = "Gagal memproses deteksi wajah otomatis.";
+                    }
+                }, 400);
+            }
+        });
+    }
+
+    function closeCropModal() {
+        document.getElementById('cropModal').classList.add('hidden');
+        document.getElementById('fotoInput').value = '';
+        if (cropperInstance) {
+            cropperInstance.destroy();
+            cropperInstance = null;
+        }
+    }
+
+    function applyCrop() {
+        if (!cropperInstance) return;
+        const canvas = cropperInstance.getCroppedCanvas({
+            width: 300,
+            height: 400
+        });
+
+        const base64Data = canvas.toDataURL('image/jpeg', 0.95);
+        document.getElementById('croppedFotoInput').value = base64Data;
+        
+        const el = document.getElementById('profilePhotoSection');
+        if (el && el.__x) {
+            el.__x.$data.preview = base64Data;
+        } else {
+            const els = document.querySelectorAll('[x-data]');
+            for (let item of els) {
+                if (item.__x && item.__x.$data && item.__x.$data.preview !== undefined) {
+                    item.__x.$data.preview = base64Data;
+                }
+            }
+        }
+        document.getElementById('cropModal').classList.add('hidden');
+    }
+</script>
+@endpush
+
 @endsection

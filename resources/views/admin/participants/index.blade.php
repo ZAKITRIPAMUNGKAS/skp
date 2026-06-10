@@ -5,6 +5,16 @@
 @section('content')
     <x-page-header title="Kelola Peserta" subtitle="Daftar seluruh peserta yang terdaftar di sistem." />
 
+    <div class="mb-6 flex justify-end">
+        <a href="{{ route('admin.participants.batchCropPage') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-accent hover:bg-accent-600 active:scale-95 text-white text-sm font-bold rounded-xl shadow-sm transition-all">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Auto-Crop Pas Foto Lama (Deteksi Wajah)
+        </a>
+    </div>
+
     {{-- Filters Panel --}}
     <div class="mb-6 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
         <form method="GET" action="{{ route('admin.participants.index') }}" class="flex flex-wrap items-center gap-3">

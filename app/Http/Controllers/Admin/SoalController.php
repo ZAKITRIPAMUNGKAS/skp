@@ -192,32 +192,55 @@ class SoalController extends Controller
     public function copyFromEvent(Request $request, Event $event)
     {
         $request->validate([
-            'source_event_id' => 'required|exists:events,id',
-            'tipe'            => 'required|in:pretest,posttest'
+            'source_event_id'      => 'required|exists:events,id',
+            'source_event_sesi_id' => 'required|exists:event_sesi,id',
+            'event_sesi_id'        => 'required|exists:event_sesi,id',
+            'tipe'                 => 'required|in:pretest,posttest'
         ]);
 
         if ($request->source_event_id == $event->id) {
             return back()->with('error', 'Tidak dapat menyalin dari event yang sama.');
         }
 
+        // Verify source session belongs to source event
+        $sourceSesi = \App\Models\EventSesi::where('id', $request->source_event_sesi_id)
+            ->where('event_id', $request->source_event_id)
+            ->first();
+        if (!$sourceSesi) {
+            return back()->with('error', 'Sesi sumber tidak valid untuk event sumber yang dipilih.');
+        }
+
+        // Verify target session belongs to current event
+        $targetSesi = \App\Models\EventSesi::where('id', $request->event_sesi_id)
+            ->where('event_id', $event->id)
+            ->first();
+        if (!$targetSesi) {
+            return back()->with('error', 'Sesi target tidak valid untuk event saat ini.');
+        }
+
         $sourceSoals = Soal::where('event_id', $request->source_event_id)
+            ->where('event_sesi_id', $request->source_event_sesi_id)
             ->where('tipe', $request->tipe)
             ->with('pilihanJawaban')
             ->get();
 
         if ($sourceSoals->isEmpty()) {
-            return back()->with('error', 'Event sumber tidak memiliki soal ' . ucfirst($request->tipe));
+            return back()->with('error', 'Sesi sumber tidak memiliki soal ' . ucfirst($request->tipe));
         }
 
-        $latestUrutan = Soal::where('event_id', $event->id)->where('tipe', $request->tipe)->max('urutan') ?? 0;
+        $latestUrutan = Soal::where('event_id', $event->id)
+            ->where('event_sesi_id', $request->event_sesi_id)
+            ->where('tipe', $request->tipe)
+            ->max('urutan') ?? 0;
 
         foreach ($sourceSoals as $s) {
             $latestUrutan++;
             $newSoal = Soal::create([
-                'event_id'  => $event->id,
-                'tipe'      => $request->tipe,
-                'teks_soal' => $s->teks_soal,
-                'urutan'    => $latestUrutan,
+                'event_id'      => $event->id,
+                'event_sesi_id' => $request->event_sesi_id,
+                'tipe'          => $request->tipe,
+                'teks_soal'     => $s->teks_soal,
+                'urutan'        => $latestUrutan,
             ]);
 
             foreach ($s->pilihanJawaban as $p) {
@@ -230,7 +253,7 @@ class SoalController extends Controller
             }
         }
 
-        return back()->with('success', count($sourceSoals) . ' Soal ' . ucfirst($request->tipe) . ' berhasil disalin.');
+        return back()->with('success', count($sourceSoals) . ' Soal ' . ucfirst($request->tipe) . ' berhasil disalin ke sesi ' . $targetSesi->nama_sesi . '.');
     }
 
     /**

@@ -47,10 +47,30 @@ class ProfileController extends Controller
             'bahasa_dikuasai.*' => 'string|max:100',
             'hafalan_quran_1' => 'required|string|max:255',
             'foto'           => 'nullable|image|max:2048',
+            'cropped_foto'   => 'nullable|string',
             'password'       => 'nullable|min:6|confirmed'
         ]);
 
-        if ($request->hasFile('foto')) {
+        if ($request->filled('cropped_foto')) {
+            $base64Image = $request->input('cropped_foto');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+                $image = substr($base64Image, strpos($base64Image, ',') + 1);
+                $type = strtolower($type[1]);
+
+                if (in_array($type, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                    $image = base64_decode($image);
+
+                    if ($image !== false) {
+                        if ($peserta->foto) {
+                            Storage::disk('public')->delete($peserta->foto);
+                        }
+                        $fileName = 'peserta/foto/' . \Illuminate\Support\Str::random(40) . '.' . $type;
+                        Storage::disk('public')->put($fileName, $image);
+                        $peserta->foto = $fileName;
+                    }
+                }
+            }
+        } elseif ($request->hasFile('foto')) {
             if ($peserta->foto) {
                 Storage::disk('public')->delete($peserta->foto);
             }

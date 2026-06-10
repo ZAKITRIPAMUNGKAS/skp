@@ -32,8 +32,8 @@ class EventRegistrationController extends Controller
             'nama_lengkap' => 'required|string|max:255',
             'email'        => 'nullable|email|max:255',
             'no_hp'        => 'required|string|max:20',
-            'unit_kerja'   => 'nullable|string|max:255',
             'foto'         => 'nullable|image|max:2048',
+            'cropped_foto' => 'nullable|string',
             
             // Kolom baru
             'alamat_rumah'     => 'nullable|string',
@@ -96,7 +96,29 @@ class EventRegistrationController extends Controller
         $peserta = Peserta::where('user_id', $user->id)->first();
         
         $fotoPath = null;
-        if ($request->hasFile('foto')) {
+        if ($request->filled('cropped_foto')) {
+            $base64Image = $request->input('cropped_foto');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+                $image = substr($base64Image, strpos($base64Image, ',') + 1);
+                $type = strtolower($type[1]);
+
+                if (in_array($type, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                    $image = base64_decode($image);
+
+                    if ($image !== false) {
+                        $fileName = 'peserta/' . \Illuminate\Support\Str::random(40) . '.' . $type;
+                        if ($peserta && $peserta->foto) {
+                            Storage::disk('public')->delete($peserta->foto);
+                        }
+                        Storage::disk('public')->put($fileName, $image);
+                        $fotoPath = $fileName;
+                    }
+                }
+            }
+        } elseif ($request->hasFile('foto')) {
+            if ($peserta && $peserta->foto) {
+                Storage::disk('public')->delete($peserta->foto);
+            }
             $fotoPath = $request->file('foto')->store('peserta', 'public');
         }
 

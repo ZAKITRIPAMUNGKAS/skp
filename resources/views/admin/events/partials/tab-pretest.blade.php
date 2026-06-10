@@ -272,17 +272,43 @@
             <form action="{{ route('admin.soal.copyFrom', $event) }}" method="POST" class="p-6">
                 @csrf
                 <input type="hidden" name="tipe" :value="subTab">
-                <p class="text-sm text-gray-500 mb-4">Pilih event sebelumnya untuk menyalin seluruh soal <span x-text="subTab" class="font-bold capitalize text-primary"></span> ke event ini.</p>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Event Sumber</label>
-                <select name="source_event_id" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 mb-6 cursor-pointer">
-                    <option value="">-- Pilih Event --</option>
-                    @foreach(\App\Models\Event::where('id', '!=', $event->id)->orderByDesc('tanggal_mulai')->get() as $e)
-                        <option value="{{ $e->id }}">{{ $e->nama_event }}</option>
-                    @endforeach
-                </select>
+                <p class="text-sm text-gray-500 mb-4">Pilih event dan sesi sebelumnya untuk menyalin soal <span x-text="subTab" class="font-bold capitalize text-primary"></span> ke event ini.</p>
+                
+                <!-- Event Sumber -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Event Sumber</label>
+                    <select name="source_event_id" x-model="selectedSourceEventId" @change="selectedSourceSesiId = ''" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
+                        <option value="">-- Pilih Event --</option>
+                        <template x-for="e in otherEvents" :key="e.id">
+                            <option :value="e.id" x-text="e.nama_event"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Sesi Sumber -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sesi Sumber</label>
+                    <select name="source_event_sesi_id" x-model="selectedSourceSesiId" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer" :disabled="!selectedSourceEventId">
+                        <option value="">-- Pilih Sesi --</option>
+                        <template x-for="s in (otherEvents.find(e => e.id == selectedSourceEventId)?.sesi || [])" :key="s.id">
+                            <option :value="s.id" x-text="'Sesi ' + s.urutan + ': ' + s.nama_sesi"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Sesi Target -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sesi Target (Event Saat Ini)</label>
+                    <select name="event_sesi_id" x-model="selectedSesiId" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
+                        @foreach($eventSesis as $sesi)
+                            <option value="{{ $sesi->id }}">Sesi {{ $sesi->urutan }}: {{ $sesi->nama_sesi }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <div class="flex justify-end gap-3">
                     <button type="button" @click="showCopyForm = false" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-xl transition-colors font-medium">Batal</button>
-                    <button type="submit" class="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
+                    <button type="submit" class="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors shadow-sm" :disabled="!selectedSourceEventId || !selectedSourceSesiId">
                         Salin Sekarang
                     </button>
                 </div>
@@ -315,6 +341,9 @@ function soalManager() {
         preTarget: 0,
         postTarget: 0,
         selectedSesiId: {{ $firstSesi?->id ?? 0 }},
+        otherEvents: @json(\App\Models\Event::where('id', '!=', $event->id)->with(['sesi' => function($q) { $q->orderBy('urutan'); }])->orderByDesc('tanggal_mulai')->get()),
+        selectedSourceEventId: '',
+        selectedSourceSesiId: '',
 
         get currentSoalList() { return this.subTab === 'pretest' ? this.pretestSoal : this.posttestSoal; },
         get currentSesiStatus() { return this.subTab === 'pretest' ? this.pretestSesiStatus : this.posttestSesiStatus; },
