@@ -28,7 +28,6 @@
         .page {
             page-break-after: always;
             position: relative;
-            height: 260mm;
         }
 
         .page:last-child {
@@ -231,10 +230,7 @@
            FOOTER
            ======================================================== */
         .footer-fixed {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            margin-top: 30px;
             width: 100%;
         }
 
@@ -315,42 +311,64 @@
         <p><strong>UNIT KERJA</strong>: {{ $p->unit_kerja ?: '—' }}</p>
     </div>
 
-    <!-- TABEL JAWABAN ANGKET -->
-    <table class="tabel-angket">
-        <thead>
-            <tr>
-                <th style="width: 5%; text-align: center;">No</th>
-                <th>Item Evaluasi Penyelenggaraan</th>
-                <th style="width: 30%; text-align: center;">Tanggapan / Jawaban</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($angketItems as $i => $item)
-            @php
-                // Dapatkan jawaban peserta ini untuk item angket saat ini
-                $jawabObj = $jawabanAngket->where('peserta_id', $p->id)->where('item_id', $item->id)->first();
-                $jawabCode = $jawabObj ? $jawabObj->jawaban : '—';
-                
-                // Konversi kode jawaban ke teks keterangan yang mudah dipahami
-                $mapLabel = [
-                    'A' => 'Sangat Baik (A)',
-                    'B' => 'Baik (B)',
-                    'C' => 'Cukup (C)',
-                    'D' => 'Kurang (D)'
-                ];
-                $jawabLabel = $mapLabel[$jawabCode] ?? 'Belum Mengisi';
-                
-                // Warna kontras dan modern
-                $colorJawab = $jawabCode === 'A' ? '#10B981' : ($jawabCode === 'B' ? '#059669' : ($jawabCode === 'C' ? '#D97706' : '#EF4444'));
-            @endphp
-            <tr>
-                <td class="no">{{ $i + 1 }}</td>
-                <td class="item">{{ $item->teks_item }}</td>
-                <td class="jawaban" style="color: {{ $colorJawab }};">{{ $jawabLabel }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    @php
+        $categoryLabels = [
+            'A' => 'Materi & Narasumber',
+            'B' => 'Fasilitator',
+            'C' => 'Panitia',
+            'D' => 'Lokasi Baitul Arqam',
+            'E' => 'Konsumsi',
+            'F' => 'Kepuasan Pengguna',
+            'G' => 'Dampak & Manfaat Kegiatan',
+            'H' => 'Kejelasan Informasi & Panduan',
+            'I' => 'Kepuasan Umum & Voting',
+        ];
+        $groupedItems = $angketItems->groupBy('kategori');
+    @endphp
+
+    <!-- TABEL JAWABAN ANGKET PER KATEGORI -->
+    @foreach($groupedItems as $kategori => $itemsInGroup)
+    <div style="margin-bottom: 15px; page-break-inside: avoid;">
+        <h3 style="font-size: 10px; font-weight: bold; margin-bottom: 6px; color: #1E293B; border-left: 3px solid #1A56DB; padding-left: 8px; text-transform: uppercase;">
+            {{ $kategori }} - {{ $categoryLabels[$kategori] ?? 'Kategori ' . $kategori }}
+        </h3>
+        <table class="tabel-angket" style="margin-bottom: 0;">
+            <thead>
+                <tr>
+                    <th style="width: 5%; text-align: center;">No</th>
+                    <th>Item Evaluasi Penyelenggaraan</th>
+                    <th style="width: 30%; text-align: center;">Tanggapan / Jawaban</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($itemsInGroup as $i => $item)
+                @php
+                    // Dapatkan jawaban peserta ini untuk item angket saat ini
+                    $jawabObj = $jawabanAngket->where('peserta_id', $p->id)->where('item_id', $item->id)->first();
+                    $jawabCode = $jawabObj ? $jawabObj->jawaban : '—';
+                    
+                    // Konversi kode jawaban ke teks keterangan yang mudah dipahami
+                    $mapLabel = [
+                        'A' => 'Sangat Baik (A)',
+                        'B' => 'Baik (B)',
+                        'C' => 'Cukup (C)',
+                        'D' => 'Kurang (D)'
+                    ];
+                    $jawabLabel = $mapLabel[$jawabCode] ?? 'Belum Mengisi';
+                    
+                    // Warna kontras dan modern
+                    $colorJawab = $jawabCode === 'A' ? '#10B981' : ($jawabCode === 'B' ? '#059669' : ($jawabCode === 'C' ? '#D97706' : '#EF4444'));
+                @endphp
+                <tr>
+                    <td class="no">{{ $loop->iteration }}</td>
+                    <td class="item">{{ $item->teks_item }}</td>
+                    <td class="jawaban" style="color: {{ $colorJawab }};">{{ $jawabLabel }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endforeach
 
     <!-- KOTAK KOMENTAR & MASKOT (Berdampingan agar menghemat ruang halaman) -->
     <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
