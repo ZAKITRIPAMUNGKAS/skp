@@ -28,7 +28,7 @@
     {{-- Main Layout grid --}}
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {{-- Navigation sidebar --}}
-        <div class="lg:col-span-1 space-y-4">
+        <div class="lg:col-span-1 lg:sticky lg:top-8 self-start space-y-4">
             <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-6">
                 <div>
                     <h3 class="font-bold text-gray-400 font-heading text-[10px] uppercase tracking-wider">Daftar Dokumentasi</h3>
