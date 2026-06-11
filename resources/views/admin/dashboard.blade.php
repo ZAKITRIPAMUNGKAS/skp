@@ -74,9 +74,9 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
-                    <div class="w-10 h-10 rounded-xl bg-white/10 text-slate-300 flex items-center justify-center font-bold">2</div>
+                    <div class="w-10 h-10 rounded-xl bg-cyan-400/20 text-cyan-400 flex items-center justify-center font-bold">2</div>
                     <div>
-                        <h4 class="text-sm font-bold text-slate-300">Tab Laporan</h4>
+                        <h4 class="text-sm font-bold text-white">Tab Laporan</h4>
                         <p class="text-[11px] text-slate-400">Lihat visualisasi data, chart kognitif, & ranking SAW.</p>
                     </div>
                 </div>
