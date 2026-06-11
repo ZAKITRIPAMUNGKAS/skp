@@ -218,24 +218,21 @@
                                     <span class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">C3</span>
                                     <h4 class="font-bold text-gray-800 text-sm">Psikomotorik (Kemampuan Praktik Ibadah)</h4>
                                 </div>
-                                <p class="text-xs text-gray-500 leading-relaxed">Dinilai oleh Penguji Ibadah menggunakan skala 0-100 berdasarkan rubrik uji kemampuan motorik:</p>
-                                <ul class="list-disc pl-5 text-xs text-slate-500 space-y-1">
-                                    <li>Kemampuan Membaca Al-Qur'an (Tajwid, kelancaran membaca, kefasihan huruf).</li>
-                                    <li>Praktik Shalat & Thaharah (Gerakan wudhu, tayamum, dan kebenaran bacaan shalat sesuai HPT Muhammadiyah).</li>
-                                </ul>
+                                <p class="text-xs text-gray-500 leading-relaxed">Dinilai oleh **Fasilitator/Penguji** (bukan oleh peserta) menggunakan skala skor 1-4 untuk aspek ibadah (sholat, tayamum, wudhu, mengaji) dan outbound (kerjasama, disiplin, semangat), yang kemudian dikonversikan otomatis ke skala 0-100:</p>
+                                <div class="p-3 bg-white border border-gray-100 rounded-xl font-mono text-[11px] text-center">
+                                    Nilai C3 = (Total Skor yang Diperoleh / Total Skor Maksimal Template) * 100
+                                </div>
                             </div>
 
                             <div class="p-5 border border-gray-100 rounded-3xl space-y-2">
                                 <div class="flex items-center gap-3">
                                     <span class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">C4</span>
-                                    <h4 class="font-bold text-gray-800 text-sm">Afektif (Penilaian Karakter & Sikap)</h4>
+                                    <h4 class="font-bold text-gray-800 text-sm">Afektif (Evaluasi Karakter & Sikap Mandiri)</h4>
                                 </div>
-                                <p class="text-xs text-gray-500 leading-relaxed">Dinilai oleh Fasilitator pendamping kelompok menggunakan skala 0-100 berdasarkan aspek perilaku utama:</p>
-                                <ul class="list-disc pl-5 text-xs text-slate-500 space-y-1">
-                                    <li>Kedisiplinan Shalat Jamaah (Kehadiran tepat waktu di masjid).</li>
-                                    <li>Etika & Sopan Santun (Akhlak komunikasi sehari-hari selama pelatihan).</li>
-                                    <li>Keaktifan Forum (Partisipasi aktif dalam Focus Group Discussion / FGD).</li>
-                                </ul>
+                                <p class="text-xs text-gray-500 leading-relaxed">Penilaian ini **diisi sendiri oleh Peserta secara mandiri (Self-Assessment)** melalui pengisian kuesioner skala Likert (Sangat Setuju - SS, Setuju - S, Tidak Setuju - TS, Sangat Tidak Setuju - STS) di panel peserta masing-masing. Sistem secara otomatis menghitung akumulasi jawaban positif & negatif peserta lalu mengonversikannya ke skala 0-100:</p>
+                                <div class="p-3 bg-white border border-gray-100 rounded-xl font-mono text-[11px] text-center">
+                                    Nilai C4 = (Total Skor Jawaban Likert / Skor Maksimal Butir) * 100
+                                </div>
                             </div>
 
                             <div class="p-5 border border-gray-100 rounded-3xl space-y-2">
@@ -547,25 +544,34 @@
                             {{-- Step 5 --}}
                             <div class="relative">
                                 <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white shadow"></span>
-                                <h4 class="font-bold text-gray-800 text-sm">Langkah 5: Penginputan Evaluasi Praktik & Afektif (Penilaian C3 & C4)</h4>
+                                <h4 class="font-bold text-gray-800 text-sm">Langkah 5: Penginputan Evaluasi Praktik Psikomotorik (Penilaian C3)</h4>
                                 <p class="text-xs text-gray-500 mt-1">
-                                    Penguji membuka panel penguji pada event untuk menginput nilai praktik ibadah (C3) dan Fasilitator kelompok mengisi nilai sikap perilaku (C4) ke dalam borang digital. Nilai disimpan langsung ke kolom <code>nilai_psikomotor</code> dan <code>nilai_afektif</code>.
+                                    **Penguji Ibadah / Fasilitator** membuka panel penginputan psikomotorik pada detail event, dan memberikan nilai (skor 1 s/d 4) untuk aspek-aspek praktik ibadah (wudhu, sholat, tayamum, mengaji) dan outbound. Nilai dikonversi otomatis oleh sistem ke skala 0-100 ke kolom <code>nilai_psikomotor</code>.
                                 </p>
                             </div>
 
                             {{-- Step 6 --}}
                             <div class="relative">
                                 <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white shadow"></span>
-                                <h4 class="font-bold text-gray-800 text-sm">Langkah 6: Ujian Akhir Posttest (Penilaian C2)</h4>
+                                <h4 class="font-bold text-gray-800 text-sm">Langkah 6: Pengisian Kuesioner Afektif Mandiri (Penilaian C4)</h4>
                                 <p class="text-xs text-gray-500 mt-1">
-                                    Di akhir pelatihan, operator membuka sesi Posttest. Hasil pengerjaan soal pilihan ganda oleh peserta secara otomatis disimpan ke kolom <code>nilai_posttest</code> (kriteria C2).
+                                    **Peserta mengisi sendiri secara mandiri** kuisioner pernyataan sikap/karakter (skala Likert) pada halaman akun peserta masing-masing. Hasil isian peserta secara otomatis dikonversi oleh sistem ke skala 0-100 dan disimpan pada kolom <code>nilai_afektif</code>.
                                 </p>
                             </div>
 
                             {{-- Step 7 --}}
                             <div class="relative">
                                 <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white shadow"></span>
-                                <h4 class="font-bold text-gray-800 text-sm">Langkah 7: Sinkronisasi AHP-SAW (Peringkat Akhir)</h4>
+                                <h4 class="font-bold text-gray-800 text-sm">Langkah 7: Ujian Akhir Posttest (Penilaian C2)</h4>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    Di akhir pelatihan, operator membuka sesi Posttest. Hasil pengerjaan soal pilihan ganda oleh peserta secara otomatis disimpan ke kolom <code>nilai_posttest</code> (kriteria C2).
+                                </p>
+                            </div>
+
+                            {{-- Step 8 --}}
+                            <div class="relative">
+                                <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white shadow"></span>
+                                <h4 class="font-bold text-gray-800 text-sm">Langkah 8: Sinkronisasi AHP-SAW (Peringkat Akhir)</h4>
                                 <p class="text-xs text-gray-500 mt-1">
                                     Operator menyimpan konfigurasi bobot AHP. Saat operator menekan tombol <strong>Recalculate / Hitung Ranking SAW</strong>, sistem memproses normalisasi SAW untuk C1-C5 dari seluruh peserta, menghitung nilai preferensi akhir, menentukan status kelulusan, dan menetapkan urutan peringkat di database.
                                 </p>
