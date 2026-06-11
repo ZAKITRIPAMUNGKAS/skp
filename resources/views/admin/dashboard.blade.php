@@ -62,24 +62,58 @@
         <div class="bg-gradient-to-br from-gray-900 to-slate-800 rounded-3xl p-8 text-white shadow-sm flex flex-col justify-between">
             <div>
                 <h3 class="font-bold text-lg font-heading text-yellow-400 mb-2">Panduan Pengguna</h3>
-                <p class="text-xs text-slate-300 leading-relaxed mb-6">Untuk melihat laporan hasil evaluasi, grafik peningkatan nilai, dan statistik ranking peserta, silakan masuk ke menu kelola event masing-masing lalu buka tab <strong>Laporan</strong>.</p>
+                <p class="text-xs text-slate-300 leading-relaxed mb-6">Akses panduan lengkap penggunaan ArqamApp untuk membantu Anda mengelola sistem secara maksimal.</p>
             </div>
             
-            <div class="space-y-4">
-                <div class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
-                    <div class="w-10 h-10 rounded-xl bg-yellow-400/20 text-yellow-400 flex items-center justify-center font-bold">1</div>
-                    <div>
-                        <h4 class="text-sm font-bold text-white">Menu Event</h4>
-                        <p class="text-[11px] text-slate-400">Pilih salah satu event yang ingin dikelola.</p>
+            <div class="space-y-3">
+                {{-- Manual Book v1 --}}
+                <a href="#" target="_blank" class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 hover:border-white/20 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-yellow-400/20 text-yellow-400 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
                     </div>
-                </div>
-                <div class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-400/20 text-cyan-400 flex items-center justify-center font-bold">2</div>
-                    <div>
-                        <h4 class="text-sm font-bold text-white">Tab Laporan</h4>
-                        <p class="text-[11px] text-slate-400">Lihat visualisasi data, chart kognitif, & ranking SAW.</p>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold text-white group-hover:text-yellow-300 transition-colors">Manual Book v1</h4>
+                        <p class="text-[11px] text-slate-400">Unduh buku panduan penggunaan format PDF.</p>
                     </div>
-                </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                </a>
+
+                {{-- Video Tutorial --}}
+                <a href="#" target="_blank" class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 hover:border-white/20 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-400/20 text-cyan-400 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">Video Tutorial</h4>
+                        <p class="text-[11px] text-slate-400">Tonton video panduan langkah demi langkah.</p>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
+
+                {{-- Documentation Sistem --}}
+                <a href="#" target="_blank" class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 hover:border-white/20 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-400/20 text-emerald-400 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">Documentation Sistem</h4>
+                        <p class="text-[11px] text-slate-400">Pelajari dokumentasi teknis & arsitektur sistem.</p>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
             </div>
         </div>
     </div>
