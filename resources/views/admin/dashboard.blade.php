@@ -59,7 +59,7 @@
         <div class="bg-gradient-to-br from-gray-900 to-slate-800 rounded-3xl p-8 text-white shadow-sm flex flex-col justify-between">
             <div>
                 <h3 class="font-bold text-lg font-heading text-yellow-400 mb-2">Panduan Pengguna</h3>
-                <p class="text-xs text-slate-300 leading-relaxed mb-6">Untuk melihat laporan hasil evaluasi, grafik peningkatan nilai, dan statistik ranking peserta, silakan masuk ke menu kelola event masing-masing lalu buka tab **Laporan**.</p>
+                <p class="text-xs text-slate-300 leading-relaxed mb-6">Untuk melihat laporan hasil evaluasi, grafik peningkatan nilai, dan statistik ranking peserta, silakan masuk ke menu kelola event masing-masing lalu buka tab <strong>Laporan</strong>.</p>
             </div>
             
             <div class="space-y-4">
