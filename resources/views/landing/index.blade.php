@@ -167,7 +167,7 @@
                 <div class="relative animate-floating-slow hidden lg:block perspective-1000">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary-900 to-transparent rounded-3xl transform rotate-3 scale-105 opacity-40 blur-xl"></div>
                     <div class="bg-gray-900 rounded-[2.5rem] border-[12px] border-gray-800 shadow-2xl overflow-hidden relative z-10 aspect-[4/3] group transform hover:rotate-0 transition-transform duration-700">
-                        <img src="{{ asset('hero.JPG') }}" alt="ARQAM Training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="{{ asset('hero.webp') }}" alt="ARQAM Training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
                             <p class="text-white text-sm font-medium">Baitul Arqam Dosen UMS</p>
                         </div>
@@ -176,7 +176,7 @@
                     {{-- Mascot Arka Floating --}}
                     <div class="absolute -top-20 -left-20 w-48 h-48 z-30 animate-floating-fast">
                         <div class="w-full h-full bg-white rounded-full border-8 border-white shadow-2xl overflow-hidden p-3 flex items-center justify-center">
-                            <img src="{{ asset('images/arka/arka_pemandu.png') }}" alt="Arka" class="w-full h-full object-contain">
+                            <img src="{{ asset('images/arka/arka_pemandu.webp') }}" alt="Arka" class="w-full h-full object-contain">
                         </div>
                     </div>
                     
@@ -255,7 +255,7 @@
                 <div class="relative" data-aos="fade-right">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary/15 to-accent/15 rounded-[2rem] transform rotate-3 scale-105 filter blur-lg"></div>
                     <div class="relative z-10 bg-white rounded-[2rem] border border-slate-100 shadow-soft overflow-hidden aspect-[4/3] group">
-                        <img src="{{ asset('kegiatan.JPG') }}" alt="Baitul Arqam LP3A UMS" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="{{ asset('kegiatan.webp') }}" alt="Baitul Arqam LP3A UMS" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-6">
                             <p class="text-white text-sm font-semibold font-heading">Kegiatan Baitul Arqam LP3A UMS</p>
                         </div>
@@ -316,18 +316,18 @@
                 <div class="relative z-10 flex flex-col items-center text-center group" data-aos="fade-up" data-aos-delay="0">
                     <div class="w-32 h-32 bg-white rounded-3xl shadow-soft border border-gray-100 flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-300 relative z-10 p-4">
                         <div class="absolute inset-0 bg-primary/5 rounded-3xl transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        <img src="{{ asset('images/arka/arka_pemandu.png') }}" alt="Step 1" class="w-full h-full object-contain relative z-10">
+                        <img src="{{ asset('images/arka/arka_pemandu.webp') }}" alt="Step 1" class="w-full h-full object-contain relative z-10">
                         <div class="absolute -top-3 -right-3 w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold border-4 border-surface shadow-sm">1</div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Registrasi & Profil</h3>
-                    <p class="text-sm text-gray-500 leading-relaxed">Peserta mendaftar dan melengkapi data identitas serta instansi asal.</p>
+                    <p class="text-sm text-gray-500 leading-relaxed">Peserta mendaftar and melengkapi data identitas serta instansi asal.</p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="relative z-10 flex flex-col items-center text-center group" data-aos="fade-up" data-aos-delay="100">
                     <div class="w-32 h-32 bg-white rounded-3xl shadow-soft border border-gray-100 flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-300 relative z-10 p-4">
                         <div class="absolute inset-0 bg-primary/5 rounded-3xl transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        <img src="{{ asset('images/arka/arka_scan.png') }}" alt="Step 2" class="w-full h-full object-contain relative z-10">
+                        <img src="{{ asset('images/arka/arka_scan.webp') }}" alt="Step 2" class="w-full h-full object-contain relative z-10">
                         <div class="absolute -top-3 -right-3 w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold border-4 border-surface shadow-sm">2</div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Pelaksanaan Event</h3>
@@ -338,7 +338,7 @@
                 <div class="relative z-10 flex flex-col items-center text-center group" data-aos="fade-up" data-aos-delay="200">
                     <div class="w-32 h-32 bg-white rounded-3xl shadow-soft border border-gray-100 flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-300 relative z-10 p-4">
                         <div class="absolute inset-0 bg-primary/5 rounded-3xl transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        <img src="{{ asset('images/arka/arka_fokus.png') }}" alt="Step 3" class="w-full h-full object-contain relative z-10">
+                        <img src="{{ asset('images/arka/arka_fokus.webp') }}" alt="Step 3" class="w-full h-full object-contain relative z-10">
                         <div class="absolute -top-3 -right-3 w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold border-4 border-surface shadow-sm">3</div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Evaluasi Perilaku</h3>
@@ -348,7 +348,7 @@
                 <!-- Step 4 -->
                 <div class="relative z-10 flex flex-col items-center text-center group" data-aos="fade-up" data-aos-delay="300">
                     <div class="w-32 h-32 bg-primary rounded-3xl shadow-glow-primary flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-300 relative z-10 p-4">
-                        <img src="{{ asset('images/arka/arka_selebrasi.png') }}" alt="Step 4" class="w-full h-full object-contain relative z-10">
+                        <img src="{{ asset('images/arka/arka_selebrasi.webp') }}" alt="Step 4" class="w-full h-full object-contain relative z-10">
                         <div class="absolute -top-3 -right-3 w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold border-4 border-surface shadow-sm">4</div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Hasil & Sertifikat</h3>
@@ -530,14 +530,14 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="space-y-4">
                         <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in">
-                            <img src="{{ asset('images/gallery/gallery_discussion.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="{{ asset('images/gallery/gallery_discussion.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Sesi Diskusi</p>
                                 <p class="text-xs">Baitul Arqam PDM</p>
                             </div>
                         </div>
                         <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="100">
-                            <img src="{{ asset('images/gallery/gallery_lecture.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="{{ asset('images/gallery/gallery_lecture.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Materi Ideologi</p>
                                 <p class="text-xs">Aula Utama</p>
@@ -546,14 +546,14 @@
                     </div>
                     <div class="space-y-4 pt-8">
                         <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="200">
-                            <img src="{{ asset('images/gallery/gallery_opening.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="{{ asset('images/gallery/gallery_opening.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Opening Ceremony</p>
                                 <p class="text-xs">Muhammadiyah Center</p>
                             </div>
                         </div>
                         <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="300">
-                            <img src="{{ asset('images/gallery/gallery_focus_group.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="{{ asset('images/gallery/gallery_focus_group.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Focus Group</p>
                                 <p class="text-xs">Rapat Komisi</p>
@@ -562,14 +562,14 @@
                     </div>
                     <div class="space-y-4">
                         <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="400">
-                            <img src="{{ asset('images/gallery/gallery_outbound.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="{{ asset('images/gallery/gallery_outbound.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Outbound Session</p>
                                 <p class="text-xs">Training Ground</p>
                             </div>
                         </div>
                         <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="500">
-                            <img src="{{ asset('images/gallery/gallery_closing.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="{{ asset('images/gallery/gallery_closing.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Sesi Selebrasi</p>
                                 <p class="text-xs">Penutupan</p>
@@ -578,14 +578,14 @@
                     </div>
                     <div class="space-y-4 pt-12">
                         <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="600">
-                            <img src="{{ asset('images/gallery/gallery_discussion.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="{{ asset('images/gallery/gallery_discussion.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Penutupan</p>
                                 <p class="text-xs">Sesi Selebrasi</p>
                             </div>
                         </div>
                         <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="700">
-                            <img src="{{ asset('images/gallery/gallery_lecture.png') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="{{ asset('images/gallery/gallery_lecture.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Ramah Tamah</p>
                                 <p class="text-xs">Kebersamaan</p>
@@ -639,7 +639,7 @@
                     @endforeach
                 @else
                     <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="0">
-                        <img src="{{ asset('images/testimonials/testimonial_1.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <img src="{{ asset('images/testimonials/testimonial_1.webp') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
                         
                         <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
@@ -660,7 +660,7 @@
                     </div>
 
                     <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="100">
-                        <img src="{{ asset('images/testimonials/testimonial_2.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <img src="{{ asset('images/testimonials/testimonial_2.webp') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
                         
                         <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
@@ -681,7 +681,7 @@
                     </div>
 
                     <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="200">
-                        <img src="{{ asset('images/testimonials/testimonial_3.png') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <img src="{{ asset('images/testimonials/testimonial_3.webp') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
                         
                         <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
