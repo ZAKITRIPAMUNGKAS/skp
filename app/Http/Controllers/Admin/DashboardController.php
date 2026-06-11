@@ -28,4 +28,14 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', compact('greeting', 'latestEvent'));
     }
+
+    public function video()
+    {
+        return view('admin.video_tutorial');
+    }
+
+    public function documentation()
+    {
+        return view('admin.documentation');
+    }
 }

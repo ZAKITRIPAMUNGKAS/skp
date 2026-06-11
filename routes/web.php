@@ -144,6 +144,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Rute Global Admin Only (Hanya bisa diakses oleh Admin Utama, bukan Fasilitator)
     Route::middleware('admin_only')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/video', [\App\Http\Controllers\Admin\DashboardController::class, 'video'])->name('dashboard.video');
+        Route::get('/dashboard/documentation', [\App\Http\Controllers\Admin\DashboardController::class, 'documentation'])->name('dashboard.documentation');
         Route::get('/logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('logs.index');
         Route::post('/logs/clear-soal', [\App\Http\Controllers\Admin\ActivityLogController::class, 'clearSoal'])->name('logs.clearSoal');
         Route::post('/logs/clear-peserta', [\App\Http\Controllers\Admin\ActivityLogController::class, 'clearPeserta'])->name('logs.clearPeserta');
