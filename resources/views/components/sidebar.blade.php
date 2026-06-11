@@ -11,7 +11,7 @@
        :class="sidebarCollapsed ? 'w-20' : 'w-64'">
 
     {{-- Logo --}}
-    <div class="flex items-center h-16 px-4 border-b border-white/10">
+    <div class="flex items-center h-16 px-4 border-b border-gray-150 bg-white">
         <div class="flex items-center gap-3 overflow-hidden w-full justify-center">
             <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-12 object-contain transition-all duration-300" :class="sidebarCollapsed ? 'w-10 h-10' : 'w-auto max-w-[150px]'">
         </div>
@@ -95,12 +95,12 @@
        :class="mobileMenu ? 'translate-x-0' : '-translate-x-full'">
 
     {{-- Mobile Logo --}}
-    <div class="flex items-center justify-between h-16 px-4 border-b border-white/10">
+    <div class="flex items-center justify-between h-16 px-4 border-b border-gray-150 bg-white text-gray-800">
         <div class="flex items-center justify-center w-full">
             <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-12 object-contain">
         </div>
-        <button @click="mobileMenu = false" class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button @click="mobileMenu = false" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors">
+            <svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
