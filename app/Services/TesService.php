@@ -101,17 +101,11 @@ class TesService
             ->pluck('id', 'soal_id')
             ->toArray();
 
-        // Hapus semua jawaban yang ada terlebih dahulu untuk lingkup materi ini
-        JawabanPeserta::where('event_id', $event->id)
-            ->where('peserta_id', $peserta->id)
-            ->whereIn('soal_id', $soalIds)
-            ->delete();
-
         $insertData = [];
         $now = now();
 
         foreach ($answers as $answer) {
-            $soalId   = (int) $answer['soal_id'];
+            $soalId    = (int) $answer['soal_id'];
             $pilihanId = (int) $answer['pilihan_id'];
 
             if (!in_array($soalId, $soalIds)) continue;
@@ -131,38 +125,49 @@ class TesService
             if ($isCorrect) $correct++;
         }
 
-        // Simpan jawaban sekaligus dalam satu query (Optimasi Bulk Insert)
-        if (!empty($insertData)) {
-            JawabanPeserta::insert($insertData);
-        }
+        // Bungkus delete + insert dalam satu transaction agar tidak terjadi data partial
+        $overallScore = \Illuminate\Support\Facades\DB::transaction(function () use ($event, $peserta, $tipe, $soalIds, $insertData) {
+            // Hapus semua jawaban yang ada terlebih dahulu untuk lingkup materi ini
+            JawabanPeserta::where('event_id', $event->id)
+                ->where('peserta_id', $peserta->id)
+                ->whereIn('soal_id', $soalIds)
+                ->delete();
+
+            // Simpan jawaban sekaligus dalam satu query (Optimasi Bulk Insert)
+            if (!empty($insertData)) {
+                JawabanPeserta::insert($insertData);
+            }
+
+            // Hitung total skor keseluruhan untuk pretest/posttest di penilaian_akhir
+            $allSoals = Soal::where('event_id', $event->id)->where('tipe', $tipe)->pluck('id');
+            $allTotal = count($allSoals);
+            if ($allTotal > 0) {
+                $allCorrect = JawabanPeserta::where('event_id', $event->id)
+                    ->where('peserta_id', $peserta->id)
+                    ->whereIn('soal_id', $allSoals)
+                    ->where('is_correct', true)
+                    ->count();
+                $score = round(($allCorrect / $allTotal) * 100, 2);
+            } else {
+                $score = 0;
+            }
+
+            $field = $tipe === 'pretest' ? 'nilai_pretest' : 'nilai_posttest';
+            PenilaianAkhir::updateOrCreate(
+                ['event_id' => $event->id, 'peserta_id' => $peserta->id],
+                [$field => $score]
+            );
+
+            return $score;
+        });
 
         $score = $total > 0 ? round(($correct / $total) * 100, 2) : 0;
 
-        // Hitung total skor keseluruhan untuk pretest/posttest di penilaian_akhir
-        $allSoals = Soal::where('event_id', $event->id)->where('tipe', $tipe)->pluck('id');
-        $allTotal = count($allSoals);
-        if ($allTotal > 0) {
-            $allCorrect = JawabanPeserta::where('event_id', $event->id)
-                ->where('peserta_id', $peserta->id)
-                ->whereIn('soal_id', $allSoals)
-                ->where('is_correct', true)
-                ->count();
-            $overallScore = round(($allCorrect / $allTotal) * 100, 2);
-        } else {
-            $overallScore = 0;
-        }
-
-        $field = $tipe === 'pretest' ? 'nilai_pretest' : 'nilai_posttest';
-        PenilaianAkhir::updateOrCreate(
-            ['event_id' => $event->id, 'peserta_id' => $peserta->id],
-            [$field => $overallScore]
-        );
-
         return [
-            'score'      => $score,
-            'correct'    => $correct,
-            'incorrect'  => $total - $correct,
-            'total'      => $total,
+            'score'     => $score,
+            'correct'   => $correct,
+            'incorrect' => $total - $correct,
+            'total'     => $total,
         ];
     }
 

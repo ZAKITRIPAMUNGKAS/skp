@@ -102,17 +102,20 @@ class SawService
         $rows = self::calculate($eventId);
         if (empty($rows)) return;
 
-        // Menyimpan nilai skor_saw, ranking baru (1 s/d selesai), predikat, dan kelulusan ke tabel penilaian_akhirs
-        foreach ($rows as $rank => $row) {
-            PenilaianAkhir::where('event_id', $eventId)
-                ->where('peserta_id', $row['peserta_id'])
-                ->update([
-                    'skor_saw' => $row['skor_saw'],
-                    'ranking'  => $rank + 1, // Peringkat dimulai dari 1
-                    'predikat' => $row['predikat'],
-                    'status_kelulusan' => $row['status_kelulusan'],
-                    'verification_hash' => hash('sha256', $eventId . $row['peserta_id'] . config('app.key')), // Hash verifikasi keaslian data
-                ]);
-        }
+        // Bungkus seluruh update perankingan dalam satu transaction agar data tidak partial
+        // (misalnya: ranking peserta 1-50 ter-save tapi 51-100 gagal akibat timeout)
+        \Illuminate\Support\Facades\DB::transaction(function () use ($eventId, $rows) {
+            foreach ($rows as $rank => $row) {
+                PenilaianAkhir::where('event_id', $eventId)
+                    ->where('peserta_id', $row['peserta_id'])
+                    ->update([
+                        'skor_saw'          => $row['skor_saw'],
+                        'ranking'           => $rank + 1, // Peringkat dimulai dari 1
+                        'predikat'          => $row['predikat'],
+                        'status_kelulusan'  => $row['status_kelulusan'],
+                        'verification_hash' => hash('sha256', $eventId . $row['peserta_id'] . config('app.key')),
+                    ]);
+            }
+        });
     }
 }

@@ -434,21 +434,29 @@ class DashboardController extends Controller
 
         $rtlSoal = \App\Models\RtlSoal::where('event_id', $event->id)->orderBy('urutan')->get();
         if ($rtlSoal->isEmpty()) {
-            $defaultQuestions = [
-                'Tujuan Rencana Aksi',
-                'Sasaran Utama Penerima Dampak',
-                'Indikator Keberhasilan',
-                'Waktu Pelaksanaan',
-                'Mitra & Pihak Terlibat'
-            ];
-            foreach ($defaultQuestions as $index => $qText) {
-                \App\Models\RtlSoal::create([
-                    'event_id' => $event->id,
-                    'pertanyaan' => $qText,
-                    'tipe' => 'essay',
-                    'urutan' => $index + 1,
-                ]);
-            }
+            // Gunakan DB transaction untuk menghindari race condition ketika banyak
+            // peserta membuka halaman RTL bersamaan saat soal belum tersedia
+            \Illuminate\Support\Facades\DB::transaction(function () use ($event) {
+                // Cek ulang di dalam transaction agar thread lain tidak insert ganda
+                $existing = \App\Models\RtlSoal::where('event_id', $event->id)->exists();
+                if (!$existing) {
+                    $defaultQuestions = [
+                        'Tujuan Rencana Aksi',
+                        'Sasaran Utama Penerima Dampak',
+                        'Indikator Keberhasilan',
+                        'Waktu Pelaksanaan',
+                        'Mitra & Pihak Terlibat'
+                    ];
+                    foreach ($defaultQuestions as $index => $qText) {
+                        \App\Models\RtlSoal::create([
+                            'event_id'   => $event->id,
+                            'pertanyaan' => $qText,
+                            'tipe'       => 'essay',
+                            'urutan'     => $index + 1,
+                        ]);
+                    }
+                }
+            });
             $rtlSoal = \App\Models\RtlSoal::where('event_id', $event->id)->orderBy('urutan')->get();
         }
 
@@ -485,71 +493,98 @@ class DashboardController extends Controller
 
         $request->validate($rules);
 
+        // Proses upload file di luar transaction (I/O tidak boleh dalam transaction)
+        $uploadedFiles = [];
+        foreach ($rtlSoals as $soal) {
+            if ($soal->tipe === 'upload' && $request->hasFile("answers.{$soal->id}")) {
+                $file = $request->file("answers.{$soal->id}");
+                $filename = time() . '_' . $peserta->id . '_' . $soal->id . '.' . $file->getClientOriginalExtension();
+                $uploadPath = public_path('uploads/rtl');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $file->move($uploadPath, $filename);
+                $uploadedFiles[$soal->id] = 'uploads/rtl/' . $filename;
+            }
+        }
+
         $steps = [];
         foreach ($request->input('steps') as $index => $step) {
             $steps[] = [
-                'step' => $index + 1,
-                'deskripsi' => $step['deskripsi'],
+                'step'           => $index + 1,
+                'deskripsi'      => $step['deskripsi'],
                 'target_tanggal' => $step['target_tanggal']
             ];
         }
 
-        $rtl = \App\Models\Rtl::updateOrCreate(
-            [
-                'event_id' => $event->id,
-                'peserta_id' => $peserta->id,
-            ],
-            [
-                'judul_kegiatan' => $request->judul_kegiatan,
-                'kategori_rtl'   => $request->kategori_rtl,
-                'langkah_langkah' => $steps,
-                'status'         => 'submitted',
-            ]
-        );
+        // Bungkus semua operasi database dalam satu transaction untuk mencegah data partial
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($request, $event, $peserta, $rtlSoals, $steps, $uploadedFiles) {
+                $rtl = \App\Models\Rtl::updateOrCreate(
+                    [
+                        'event_id'   => $event->id,
+                        'peserta_id' => $peserta->id,
+                    ],
+                    [
+                        'judul_kegiatan'  => $request->judul_kegiatan,
+                        'kategori_rtl'    => $request->kategori_rtl,
+                        'langkah_langkah' => $steps,
+                        'status'          => 'submitted',
+                    ]
+                );
 
-        // Save new answers or preserve old uploads if no new file is uploaded
-        foreach ($rtlSoals as $soal) {
-            if ($soal->tipe === 'deskripsi') {
-                continue;
-            }
-
-            $jawabanText = '';
-
-            if ($soal->tipe === 'essay') {
-                $jawabanText = $request->input("answers.{$soal->id}");
-            } elseif ($soal->tipe === 'upload') {
-                if ($request->hasFile("answers.{$soal->id}")) {
-                    $file = $request->file("answers.{$soal->id}");
-                    $filename = time() . '_' . $peserta->id . '_' . $soal->id . '.' . $file->getClientOriginalExtension();
-                    
-                    $uploadPath = public_path('uploads/rtl');
-                    if (!file_exists($uploadPath)) {
-                        mkdir($uploadPath, 0755, true);
+                // Save answers
+                foreach ($rtlSoals as $soal) {
+                    if ($soal->tipe === 'deskripsi') {
+                        continue;
                     }
-                    
-                    $file->move($uploadPath, $filename);
-                    $jawabanText = 'uploads/rtl/' . $filename;
-                } else {
-                    $oldJawaban = \App\Models\RtlJawaban::where('rtl_id', $rtl->id)
-                        ->where('rtl_soal_id', $soal->id)
-                        ->first();
-                    if ($oldJawaban) {
-                        $jawabanText = $oldJawaban->jawaban;
-                    } else {
-                        return back()->withInput()->withErrors(["answers.{$soal->id}" => "Unggah bukti gambar wajib diisi."]);
+
+                    $jawabanText = '';
+
+                    if ($soal->tipe === 'essay') {
+                        $jawabanText = $request->input("answers.{$soal->id}");
+                    } elseif ($soal->tipe === 'upload') {
+                        if (isset($uploadedFiles[$soal->id])) {
+                            $jawabanText = $uploadedFiles[$soal->id];
+                        } else {
+                            // Pertahankan file lama jika tidak ada file baru
+                            $oldJawaban = \App\Models\RtlJawaban::where('rtl_id', $rtl->id)
+                                ->where('rtl_soal_id', $soal->id)
+                                ->first();
+                            if ($oldJawaban) {
+                                $jawabanText = $oldJawaban->jawaban;
+                            } else {
+                                throw new \Exception("upload_required:{$soal->id}");
+                            }
+                        }
                     }
+
+                    \App\Models\RtlJawaban::updateOrCreate(
+                        [
+                            'rtl_id'      => $rtl->id,
+                            'rtl_soal_id' => $soal->id,
+                        ],
+                        [
+                            'jawaban' => $jawabanText,
+                        ]
+                    );
+                }
+            });
+        } catch (\Exception $e) {
+            // Hapus file yang sudah ter-upload jika transaction gagal
+            foreach ($uploadedFiles as $filePath) {
+                $fullPath = public_path($filePath);
+                if (file_exists($fullPath)) {
+                    @unlink($fullPath);
                 }
             }
 
-            \App\Models\RtlJawaban::updateOrCreate(
-                [
-                    'rtl_id' => $rtl->id,
-                    'rtl_soal_id' => $soal->id,
-                ],
-                [
-                    'jawaban' => $jawabanText,
-                ]
-            );
+            if (str_starts_with($e->getMessage(), 'upload_required:')) {
+                $soalId = str_replace('upload_required:', '', $e->getMessage());
+                return back()->withInput()->withErrors(["answers.{$soalId}" => "Unggah bukti gambar wajib diisi."]);
+            }
+
+            return back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan RTL. Silakan coba lagi.');
         }
 
         return redirect()->route('peserta.hasil')->with('success', 'Rencana Tindak Lanjut (RTL) berhasil disimpan! Anda sekarang dapat mengunduh sertifikat.');
