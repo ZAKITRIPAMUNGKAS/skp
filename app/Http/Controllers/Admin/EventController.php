@@ -213,6 +213,62 @@ class EventController extends Controller
         ));
     }
 
+    public function statistics(Event $event)
+    {
+        $event->loadCount('eventPesertaAktif');
+        $totalPeserta = $event->event_peserta_aktif_count;
+
+        $penilaian = PenilaianAkhir::where('event_id', $event->id)
+            ->whereHas('peserta.eventPeserta', function ($q) use ($event) {
+                $q->where('event_id', $event->id)->where('status_aktif', true);
+            })
+            ->get();
+
+        // Predikat distribution data
+        $predikatData = [
+            'Amat Baik' => $penilaian->where('predikat', 'Amat Baik')->count(),
+            'Baik' => $penilaian->where('predikat', 'Baik')->count(),
+            'Cukup' => $penilaian->where('predikat', 'Cukup')->count(),
+            'Kurang' => $penilaian->where('predikat', 'Kurang')->count(),
+        ];
+
+        // Kelulusan distribution data
+        $kelulusanData = [
+            'Lulus Sangat Memuaskan' => $penilaian->where('status_kelulusan', 'Lulus Sangat Memuaskan')->count(),
+            'Lulus Memuaskan' => $penilaian->where('status_kelulusan', 'Lulus Memuaskan')->count(),
+            'Lulus' => $penilaian->where('status_kelulusan', 'Lulus')->count(),
+            'Tidak Lulus' => $penilaian->where('status_kelulusan', 'Tidak Lulus')->count(),
+        ];
+
+        // N-Gain Category distribution
+        $nGainData = [
+            'Tinggi (> 0.7)' => $penilaian->filter(fn($p) => $p->n_gain_score > 0.7)->count(),
+            'Sedang (0.3 - 0.7)' => $penilaian->filter(fn($p) => $p->n_gain_score >= 0.3 && $p->n_gain_score <= 0.7)->count(),
+            'Rendah (< 0.3)' => $penilaian->filter(fn($p) => $p->n_gain_score < 0.3)->count(),
+        ];
+
+        // Pretest vs Posttest average values
+        $avgPretest = round($penilaian->avg('nilai_pretest') ?? 0, 2);
+        $avgPosttest = round($penilaian->avg('nilai_posttest') ?? 0, 2);
+        $avgAfektif = round($penilaian->avg('nilai_afektif') ?? 0, 2);
+        $avgPsikomotor = round($penilaian->avg('nilai_psikomotor') ?? 0, 2);
+        $avgKehadiran = round($penilaian->avg('nilai_kehadiran') ?? 0, 2);
+
+        return view('admin.events.statistics', compact(
+            'event',
+            'totalPeserta',
+            'penilaian',
+            'predikatData',
+            'kelulusanData',
+            'nGainData',
+            'avgPretest',
+            'avgPosttest',
+            'avgAfektif',
+            'avgPsikomotor',
+            'avgKehadiran'
+        ));
+    }
+
     public function edit(Event $event)
     {
         if (auth()->user()->isFasilitator()) {

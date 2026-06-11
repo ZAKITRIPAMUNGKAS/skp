@@ -96,6 +96,13 @@
                     </svg>
                     Download ID Cards
                 </a>
+                <a href="{{ route('admin.events.statistics', $event) }}" class="h-10 inline-flex items-center justify-center gap-2 px-5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+                    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+                    </svg>
+                    Analisis Grafik
+                </a>
             </div>
         </div>
     </div>

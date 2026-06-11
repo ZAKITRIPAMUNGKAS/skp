@@ -160,12 +160,36 @@
                                     @php
                                         $userRtl = $rtls->firstWhere('peserta_id', $ep->peserta_id);
                                     @endphp
-                                    @if($userRtl)
-                                        <a href="{{ route('admin.events.rtl.show', [$event, $userRtl]) }}"
-                                           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-primary hover:text-white text-gray-700 text-xs font-bold rounded-lg transition-all active:scale-95">
-                                            Detail RTL
-                                        </a>
-                                    @endif
+                                    <div class="flex items-center justify-end gap-2">
+                                        @if($lulus)
+                                            @php
+                                                $phone = $ep->peserta->no_hp;
+                                                if ($phone) {
+                                                    $phone = preg_replace('/[^0-9]/', '', $phone);
+                                                    if (str_starts_with($phone, '0')) {
+                                                        $phone = '62' . substr($phone, 1);
+                                                    }
+                                                }
+                                                $message = "Assalamu'alaikum Wr. Wb. Halo *" . $ep->peserta->nama_lengkap . "*, selamat! Rencana Tindak Lanjut (RTL) Anda telah selesai diverifikasi dan Sertifikat Baitul Arqam Anda untuk kegiatan *" . $event->nama_event . "* telah terbit. Silakan login ke sistem ArqamApp untuk mengunduh sertifikat digital Anda.";
+                                                $waUrl = $phone ? "https://wa.me/" . $phone . "?text=" . urlencode($message) : "#";
+                                            @endphp
+                                            @if($phone)
+                                                <a href="{{ $waUrl }}" target="_blank" title="Kirim WA Sertifikat Terbit"
+                                                   class="inline-flex items-center justify-center w-8 h-8 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200 rounded-lg transition-all active:scale-95">
+                                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.488 1.459 5.407 1.46h.007c5.68 0 10.3-4.62 10.303-10.3.001-2.754-1.074-5.343-3.027-7.298-1.953-1.955-4.55-3.03-7.302-3.03C6.358 1.01 1.74 5.63 1.737 11.31c-.001 1.832.484 3.626 1.408 5.203l-1.037 3.79 3.882-1.02a10.27 10.27 0 005.022 1.309h.035zm11.75-7.433c-.328-.164-1.94-.959-2.242-1.07-.301-.109-.52-.164-.739.164-.219.329-.848 1.07-1.039 1.29-.192.218-.383.245-.71.082-.328-.164-1.386-.51-2.64-1.627-.975-.87-1.633-1.946-1.824-2.274-.192-.329-.02-.507.144-.67.147-.146.328-.383.493-.574.164-.192.219-.328.328-.547.11-.219.055-.411-.027-.574-.082-.164-.739-1.78-.1-2.677-.35-.845-.71-.845-.989-.845h-.709c-.218 0-.575.082-.876.411-.301.328-1.15 1.123-1.15 2.738 0 1.616 1.177 3.177 1.341 3.396.164.22 2.316 3.537 5.612 4.962.784.339 1.396.541 1.874.693.788.251 1.505.215 2.072.13.632-.094 1.94-.794 2.214-1.56.274-.767.274-1.424.192-1.56-.082-.137-.301-.219-.629-.383z"/>
+                                                    </svg>
+                                                </a>
+                                            @endif
+                                        @endif
+
+                                        @if($userRtl)
+                                            <a href="{{ route('admin.events.rtl.show', [$event, $userRtl]) }}"
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-primary hover:text-white text-gray-700 text-xs font-bold rounded-lg transition-all active:scale-95">
+                                                Detail RTL
+                                            </a>
+                                        @endif
+                                    </div>
                                 @else
                                     <span class="text-xs text-gray-400 font-medium">-</span>
                                 @endif

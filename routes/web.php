@@ -194,6 +194,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/events/{event}/export-excel', [EventController::class, 'exportExcel'])->name('events.exportExcel');
         Route::get('/events/{event}/facilitators/pdf', [EventController::class, 'downloadSuratTugas'])->name('events.facilitatorsPdf');
         Route::get('/events/{event}/presentasi', [\App\Http\Controllers\Admin\PresentasiController::class, 'show'])->name('events.presentasi');
+        Route::get('/events/{event}/statistics', [EventController::class, 'statistics'])->name('events.statistics');
         // Manajemen soal (pretest/posttest) - Boleh diakses Fasilitator
         Route::post('/events/{event}/soal', [SoalController::class, 'store'])->name('soal.store');
         Route::put('/events/{event}/soal/{soal}', [SoalController::class, 'update'])->name('soal.update');
