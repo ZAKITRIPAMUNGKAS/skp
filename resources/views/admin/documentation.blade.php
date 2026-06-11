@@ -121,7 +121,7 @@
 
         {{-- Page content rendering --}}
         <div class="lg:col-span-3">
-            <div class="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm min-h-[550px] text-gray-600 leading-relaxed">
+            <div class="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm min-h-[550px] text-gray-600 leading-relaxed font-sans">
                 
                 {{-- Page 1: Spesifikasi Sistem --}}
                 <div x-show="activePage === 'spesifikasi'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6">
@@ -193,7 +193,7 @@
                     <hr class="border-gray-100">
                     <div class="space-y-4 text-sm text-gray-600">
                         <p>
-                            Evaluasi Baitul Arqam dirumuskan berdasarkan 5 parameter kriteria berjenis <strong>Benefit</strong> (semakin besar nilainya semakin baik) untuk dihitung dalam sistem:
+                            Evaluasi Baitul Arqam dirumuskan berdasarkan 5 parameter kriteria berjenis <strong>Benefit</strong> (semakin besar nilainya semakin baik) dengan urutan pemetaan variabel riil sistem sebagai berikut:
                         </p>
 
                         <div class="space-y-4 mt-4">
@@ -216,25 +216,25 @@
                             <div class="p-5 border border-gray-100 rounded-3xl space-y-2">
                                 <div class="flex items-center gap-3">
                                     <span class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">C3</span>
-                                    <h4 class="font-bold text-gray-800 text-sm">Afektif (Penilaian Sikap & Karakter)</h4>
+                                    <h4 class="font-bold text-gray-800 text-sm">Psikomotorik (Kemampuan Praktik Ibadah)</h4>
                                 </div>
-                                <p class="text-xs text-gray-500 leading-relaxed">Dinilai oleh Fasilitator pendamping kelompok menggunakan skala 0-100 berdasarkan 3 aspek perilaku utama:</p>
+                                <p class="text-xs text-gray-500 leading-relaxed">Dinilai oleh Penguji Ibadah menggunakan skala 0-100 berdasarkan rubrik uji kemampuan motorik:</p>
                                 <ul class="list-disc pl-5 text-xs text-slate-500 space-y-1">
-                                    <li>Kedisiplinan Shalat Jamaah (Bobot 40%): Menilai kehadiran tepat waktu saat shalat wajib berjamaah.</li>
-                                    <li>Etika & Sopan Santun (Bobot 30%): Menilai akhlak komunikasi peserta selama berinteraksi.</li>
-                                    <li>Keaktifan Forum (Bobot 30%): Keaktifan dalam sesi diskusi kelompok (FGD) dan tanya jawab materi.</li>
+                                    <li>Kemampuan Membaca Al-Qur'an (Tajwid, kelancaran membaca, kefasihan huruf).</li>
+                                    <li>Praktik Shalat & Thaharah (Gerakan wudhu, tayamum, dan kebenaran bacaan shalat sesuai HPT Muhammadiyah).</li>
                                 </ul>
                             </div>
 
                             <div class="p-5 border border-gray-100 rounded-3xl space-y-2">
                                 <div class="flex items-center gap-3">
                                     <span class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">C4</span>
-                                    <h4 class="font-bold text-gray-800 text-sm">Psikomotorik (Kemampuan Praktik Ibadah)</h4>
+                                    <h4 class="font-bold text-gray-800 text-sm">Afektif (Penilaian Karakter & Sikap)</h4>
                                 </div>
-                                <p class="text-xs text-gray-500 leading-relaxed">Dinilai oleh Penguji Ibadah menggunakan skala 0-100 berdasarkan rubrik uji kemampuan motorik:</p>
+                                <p class="text-xs text-gray-500 leading-relaxed">Dinilai oleh Fasilitator pendamping kelompok menggunakan skala 0-100 berdasarkan aspek perilaku utama:</p>
                                 <ul class="list-disc pl-5 text-xs text-slate-500 space-y-1">
-                                    <li>Kemampuan Membaca Al-Qur'an (Maks 100): Kelancaran, tajwid, dan kefasihan makhorijul huruf.</li>
-                                    <li>Praktik Shalat & Thaharah (Maks 100): Kebenaran gerakan wudhu, tayamum, dan bacaan shalat sesuai HPT (Himpunan Putusan Tarjih).</li>
+                                    <li>Kedisiplinan Shalat Jamaah (Kehadiran tepat waktu di masjid).</li>
+                                    <li>Etika & Sopan Santun (Akhlak komunikasi sehari-hari selama pelatihan).</li>
+                                    <li>Keaktifan Forum (Partisipasi aktif dalam Focus Group Discussion / FGD).</li>
                                 </ul>
                             </div>
 
@@ -504,7 +504,7 @@
                     <hr class="border-gray-100">
                     <div class="space-y-6 text-sm text-gray-600">
                         <p>
-                            Untuk melakukan evaluasi pelatihan Baitul Arqam dari awal hingga akhir, operator wajib memahami alur operasional sekaligus mekanisme penginputan nilainya:
+                            Untuk melakukan evaluasi pelatihan Baitul Arqam dari awal hingga akhir, operator wajib mengikuti alur kerja dan mekanisme input nilai di bawah ini:
                         </p>
 
                         <div class="relative pl-6 border-l-2 border-primary/20 space-y-8">
@@ -522,7 +522,7 @@
                                 <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white shadow"></span>
                                 <h4 class="font-bold text-gray-800 text-sm">Langkah 2: Registrasi / Import Peserta (Pengisian Data Profil)</h4>
                                 <p class="text-xs text-gray-500 mt-1">
-                                    Operator mengisi berkas Excel berisi profil peserta. Sistem memproses Excel dan memetakan identitas unik (ID Peserta) yang berelasi dengan tabel <code>penilaian_akhirs</code> yang bernilai mula-mula 0.
+                                    Operator mengisi berkas Excel berisi profil peserta. Sistem memproses Excel dan memetakan identitas unik (ID Peserta) yang berelasi dengan tabel <code>penilaian_akhir</code> yang bernilai mula-mula 0.
                                 </p>
                             </div>
 
@@ -549,7 +549,7 @@
                                 <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white shadow"></span>
                                 <h4 class="font-bold text-gray-800 text-sm">Langkah 5: Penginputan Evaluasi Praktik & Afektif (Penilaian C3 & C4)</h4>
                                 <p class="text-xs text-gray-500 mt-1">
-                                    Penguji membuka panel penguji pada event untuk menginput nilai praktik ibadah (C4) dan Fasilitator kelompok mengisi nilai sikap perilaku (C3) ke dalam borang digital. Nilai disimpan langsung ke kolom <code>nilai_psikomotor</code> dan <code>nilai_afektif</code>.
+                                    Penguji membuka panel penguji pada event untuk menginput nilai praktik ibadah (C3) dan Fasilitator kelompok mengisi nilai sikap perilaku (C4) ke dalam borang digital. Nilai disimpan langsung ke kolom <code>nilai_psikomotor</code> dan <code>nilai_afektif</code>.
                                 </p>
                             </div>
 
@@ -579,15 +579,15 @@
                     <div class="space-y-1">
                         <span class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-1 rounded-md">Simulasi Riil</span>
                         <h2 class="text-xl font-bold text-gray-800 font-heading mt-2">8. Simulasi Kasus Perhitungan Sistem</h2>
-                        <p class="text-xs text-gray-400">Contoh perhitungan numerik dari nilai mentah peserta hingga hasil pemeringkatan akhir SAW.</p>
+                        <p class="text-xs text-gray-400">Contoh perhitungan numerik dari nilai mentah peserta hingga hasil pemeringkatan akhir SAW sesuai dengan alur variabel data riil sistem.</p>
                     </div>
                     <hr class="border-gray-100">
-                    <div class="space-y-6 text-sm text-gray-600 leading-relaxed">
+                    <div class="space-y-6 text-sm text-gray-600 leading-relaxed font-sans">
                         
                         {{-- Data Mentah --}}
                         <div class="space-y-2">
-                            <h3 class="font-bold text-gray-850 text-sm">Tahap 1: Data Mentah Nilai Peserta (Contoh Kasus 3 Alternatif)</h3>
-                            <p class="text-xs">Berikut adalah contoh nilai mentah dari 3 orang peserta yang akan dievaluasi:</p>
+                            <h3 class="font-bold text-gray-800 text-sm">Tahap 1: Data Mentah Nilai Peserta (Contoh Kasus 3 Alternatif)</h3>
+                            <p class="text-xs">Berikut adalah contoh nilai mentah dari 3 orang peserta yang terdaftar:</p>
                             <div class="overflow-x-auto border border-gray-100 rounded-2xl">
                                 <table class="w-full text-left text-xs border-collapse">
                                     <thead>
@@ -595,8 +595,8 @@
                                             <th class="p-3">Nama Peserta (Alternatif)</th>
                                             <th class="p-3">C1 (Pretest)</th>
                                             <th class="p-3">C2 (Posttest)</th>
-                                            <th class="p-3">C3 (Afektif)</th>
-                                            <th class="p-3">C4 (Psikomotor)</th>
+                                            <th class="p-3">C3 (Psikomotor)</th>
+                                            <th class="p-3">C4 (Afektif)</th>
                                             <th class="p-3">C5 (Kehadiran)</th>
                                         </tr>
                                     </thead>
@@ -605,32 +605,32 @@
                                             <td class="p-3 font-semibold text-gray-800">Peserta A (A<sub>1</sub>)</td>
                                             <td class="p-3 font-mono">80.00</td>
                                             <td class="p-3 font-mono">85.00</td>
-                                            <td class="p-3 font-mono">90.00</td>
                                             <td class="p-3 font-mono">75.00</td>
+                                            <td class="p-3 font-mono">90.00</td>
                                             <td class="p-3 font-mono">100.00</td>
                                         </tr>
                                         <tr class="border-b border-gray-50">
                                             <td class="p-3 font-semibold text-gray-800">Peserta B (A<sub>2</sub>)</td>
                                             <td class="p-3 font-mono">70.00</td>
                                             <td class="p-3 font-mono">95.00</td>
-                                            <td class="p-3 font-mono">80.00</td>
                                             <td class="p-3 font-mono">90.00</td>
+                                            <td class="p-3 font-mono">80.00</td>
                                             <td class="p-3 font-mono">90.00</td>
                                         </tr>
                                         <tr class="border-b border-gray-50">
                                             <td class="p-3 font-semibold text-gray-800">Peserta C (A<sub>3</sub>)</td>
                                             <td class="p-3 font-mono">90.00</td>
                                             <td class="p-3 font-mono">80.00</td>
-                                            <td class="p-3 font-mono">95.00</td>
                                             <td class="p-3 font-mono">85.00</td>
+                                            <td class="p-3 font-mono">95.00</td>
                                             <td class="p-3 font-mono">100.00</td>
                                         </tr>
                                         <tr class="bg-gray-50/50 font-bold">
                                             <td class="p-3 text-primary text-xs">Nilai Maksimum Kolom (Max)</td>
                                             <td class="p-3 font-mono text-primary">90.00</td>
                                             <td class="p-3 font-mono text-primary">95.00</td>
-                                            <td class="p-3 font-mono text-primary">95.00</td>
                                             <td class="p-3 font-mono text-primary">90.00</td>
+                                            <td class="p-3 font-mono text-primary">95.00</td>
                                             <td class="p-3 font-mono text-primary">100.00</td>
                                         </tr>
                                     </tbody>
@@ -640,36 +640,36 @@
 
                         {{-- Bobot AHP --}}
                         <div class="space-y-2">
-                            <h3 class="font-bold text-gray-850 text-sm">Tahap 2: Bobot Kriteria AHP yang Diperoleh (Contoh W)</h3>
-                            <p class="text-xs">Misalkan bobot prioritas hasil perhitungan matriks AHP yang konsisten adalah:</p>
+                            <h3 class="font-bold text-gray-800 text-sm">Tahap 2: Bobot Kriteria AHP yang Diperoleh (Contoh W)</h3>
+                            <p class="text-xs">Diperoleh vektor bobot prioritas konsisten dari AHP untuk masing-masing kriteria:</p>
                             <div class="p-4 bg-gray-50 border border-gray-100 rounded-2xl font-mono text-xs text-center flex flex-wrap gap-4 justify-center">
-                                <span>W<sub>C1</sub> = <strong>0.10</strong></span>
-                                <span>W<sub>C2</sub> = <strong>0.25</strong></span>
-                                <span>W<sub>C3</sub> = <strong>0.30</strong></span>
-                                <span>W<sub>C4</sub> = <strong>0.25</strong></span>
-                                <span>W<sub>C5</sub> = <strong>0.10</strong></span>
+                                <span>W<sub>C1</sub> (Pretest) = <strong>0.10</strong></span>
+                                <span>W<sub>C2</sub> (Posttest) = <strong>0.25</strong></span>
+                                <span>W<sub>C3</sub> (Psikomotor) = <strong>0.30</strong></span>
+                                <span>W<sub>C4</sub> (Afektif) = <strong>0.25</strong></span>
+                                <span>W<sub>C5</sub> (Kehadiran) = <strong>0.10</strong></span>
                             </div>
                         </div>
 
                         {{-- Normalisasi SAW --}}
                         <div class="space-y-2">
-                            <h3 class="font-bold text-gray-850 text-sm">Tahap 3: Normalisasi Matriks SAW (Nilai r<sub>ij</sub>)</h3>
-                            <p class="text-xs">Menggunakan pembagi nilai tertinggi per kriteria (Max):</p>
+                            <h3 class="font-bold text-gray-800 text-sm">Tahap 3: Normalisasi Matriks SAW (Nilai r<sub>ij</sub>)</h3>
+                            <p class="text-xs">Melakukan normalisasi dengan pembagi nilai maksimum kriteria (Benefit):</p>
                             <ul class="list-disc pl-5 text-xs text-slate-500 space-y-1">
                                 <li>r<sub>11</sub> (Peserta A, C1) = 80.00 / 90.00 = <strong>0.8889</strong></li>
                                 <li>r<sub>22</sub> (Peserta B, C2) = 95.00 / 95.00 = <strong>1.0000</strong></li>
-                                <li>r<sub>34</sub> (Peserta C, C4) = 85.00 / 90.00 = <strong>0.9444</strong></li>
+                                <li>r<sub>33</sub> (Peserta C, C3) = 85.00 / 90.00 = <strong>0.9444</strong></li>
                             </ul>
                             <div class="overflow-x-auto border border-gray-100 rounded-2xl mt-2">
                                 <table class="w-full text-left text-xs border-collapse">
                                     <thead>
                                         <tr class="bg-gray-50 border-b border-gray-100 text-gray-800 font-bold">
                                             <th class="p-3">Alternatif</th>
-                                            <th class="p-3">r<sub>i1</sub></th>
-                                            <th class="p-3">r<sub>i2</sub></th>
-                                            <th class="p-3">r<sub>i3</sub></th>
-                                            <th class="p-3">r<sub>i4</sub></th>
-                                            <th class="p-3">r<sub>i5</sub></th>
+                                            <th class="p-3">r<sub>i1</sub> (Pretest)</th>
+                                            <th class="p-3">r<sub>i2</sub> (Posttest)</th>
+                                            <th class="p-3">r<sub>i3</sub> (Psikomotor)</th>
+                                            <th class="p-3">r<sub>i4</sub> (Afektif)</th>
+                                            <th class="p-3">r<sub>i5</sub> (Kehadiran)</th>
                                         </tr>
                                     </thead>
                                     <tbody class="font-mono">
@@ -677,24 +677,24 @@
                                             <td class="p-3 font-semibold text-gray-800 font-sans">Peserta A (A<sub>1</sub>)</td>
                                             <td class="p-3">0.8889</td>
                                             <td class="p-3">0.8947</td>
-                                            <td class="p-3">0.9474</td>
                                             <td class="p-3">0.8333</td>
+                                            <td class="p-3">0.9474</td>
                                             <td class="p-3">1.0000</td>
                                         </tr>
                                         <tr class="border-b border-gray-50">
                                             <td class="p-3 font-semibold text-gray-800 font-sans">Peserta B (A<sub>2</sub>)</td>
                                             <td class="p-3">0.7778</td>
                                             <td class="p-3">1.0000</td>
-                                            <td class="p-3">0.8421</td>
                                             <td class="p-3">1.0000</td>
+                                            <td class="p-3">0.8421</td>
                                             <td class="p-3">0.9000</td>
                                         </tr>
                                         <tr class="border-b border-gray-50">
                                             <td class="p-3 font-semibold text-gray-800 font-sans">Peserta C (A<sub>3</sub>)</td>
                                             <td class="p-3">1.0000</td>
                                             <td class="p-3">0.8421</td>
-                                            <td class="p-3">1.0000</td>
                                             <td class="p-3">0.9444</td>
+                                            <td class="p-3">1.0000</td>
                                             <td class="p-3">1.0000</td>
                                         </tr>
                                     </tbody>
@@ -704,16 +704,16 @@
 
                         {{-- Skor Preferensi & Ranking --}}
                         <div class="space-y-2">
-                            <h3 class="font-bold text-gray-850 text-sm">Tahap 4: Hasil Skor Preferensi (V<sub>i</sub>) & Peringkat Akhir</h3>
+                            <h3 class="font-bold text-gray-800 text-sm">Tahap 4: Hasil Skor Preferensi (V<sub>i</sub>) & Peringkat Akhir</h3>
                             <p class="text-xs">Menghitung penjumlahan terbobot <code>V<sub>i</sub> = &Sigma; (W<sub>j</sub> * r<sub>ij</sub>)</code>:</p>
                             
                             <div class="p-4 bg-gray-50 border border-gray-100 rounded-2xl space-y-1.5 text-xs font-mono">
-                                <div>V<sub>A</sub> = (0.10 * 0.8889) + (0.25 * 0.8947) + (0.30 * 0.9474) + (0.25 * 0.8333) + (0.10 * 1.0000) = <strong>0.9051</strong></div>
-                                <div>V<sub>B</sub> = (0.10 * 0.7778) + (0.25 * 1.0000) + (0.30 * 0.8421) + (0.25 * 1.0000) + (0.10 * 0.9000) = <strong>0.9204</strong></div>
-                                <div>V<sub>C</sub> = (0.10 * 1.0000) + (0.25 * 0.8421) + (0.30 * 1.0000) + (0.25 * 0.9444) + (0.10 * 1.0000) = <strong>0.9466</strong></div>
+                                <div>V<sub>A</sub> = (0.10 * 0.8889) + (0.25 * 0.8947) + (0.30 * 0.8333) + (0.25 * 0.9474) + (0.10 * 1.0000) = <strong>0.8994</strong></div>
+                                <div>V<sub>B</sub> = (0.10 * 0.7778) + (0.25 * 1.0000) + (0.30 * 1.0000) + (0.25 * 0.8421) + (0.10 * 0.9000) = <strong>0.9283</strong></div>
+                                <div>V<sub>C</sub> = (0.10 * 1.0000) + (0.25 * 0.8421) + (0.30 * 0.9444) + (0.25 * 1.0000) + (0.10 * 1.0000) = <strong>0.9438</strong></div>
                             </div>
 
-                            <p class="text-xs mt-3">Hasil akhir pemeringkatan yang akan disimpan oleh database beserta predikat kelulusannya adalah:</p>
+                            <p class="text-xs mt-3">Hasil akhir pemeringkatan yang disimpan ke tabel database:</p>
                             <div class="overflow-x-auto border border-gray-100 rounded-2xl">
                                 <table class="w-full text-left text-xs border-collapse">
                                     <thead>
@@ -729,21 +729,21 @@
                                         <tr class="border-b border-gray-50 bg-emerald-50/25">
                                             <td class="p-3 font-bold text-center">1</td>
                                             <td class="p-3 font-semibold">Peserta C</td>
-                                            <td class="p-3 font-mono font-bold text-primary">0.9466</td>
+                                            <td class="p-3 font-mono font-bold text-primary">0.9438</td>
                                             <td class="p-3 text-emerald-600 font-bold">Amat Baik</td>
                                             <td class="p-3 text-emerald-600 font-semibold">Lulus Sangat Memuaskan</td>
                                         </tr>
                                         <tr class="border-b border-gray-50">
                                             <td class="p-3 font-bold text-center">2</td>
                                             <td class="p-3 font-semibold">Peserta B</td>
-                                            <td class="p-3 font-mono font-bold text-primary">0.9204</td>
+                                            <td class="p-3 font-mono font-bold text-primary">0.9283</td>
                                             <td class="p-3 text-emerald-600 font-bold">Amat Baik</td>
                                             <td class="p-3 text-emerald-600 font-semibold">Lulus Sangat Memuaskan</td>
                                         </tr>
                                         <tr class="border-b border-gray-50">
                                             <td class="p-3 font-bold text-center">3</td>
                                             <td class="p-3 font-semibold">Peserta A</td>
-                                            <td class="p-3 font-mono font-bold text-primary">0.9051</td>
+                                            <td class="p-3 font-mono font-bold text-primary">0.8994</td>
                                             <td class="p-3 text-emerald-600 font-bold">Amat Baik</td>
                                             <td class="p-3 text-emerald-600 font-semibold">Lulus Sangat Memuaskan</td>
                                         </tr>
