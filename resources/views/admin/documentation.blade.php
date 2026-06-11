@@ -451,21 +451,36 @@
                         <hr class="border-gray-100 my-6">
 
                         {{-- N-Gain --}}
-                        <div class="space-y-3">
+                        <div class="space-y-4">
                             <h3 class="text-base font-bold text-gray-800 font-heading">Kalkulasi Keefektifan Pembelajaran (Normalized Gain - N-Gain)</h3>
                             <p class="text-sm">
-                                Sistem ini juga mengimplementasikan rumus **N-Gain Score (oleh Hake)** untuk mengevaluasi keefektifan pelatihan kognitif dengan membandingkan nilai Pretest dan Posttest peserta.
+                                Sistem ini juga mengimplementasikan rumus **N-Gain Score (oleh Richard Hake)** untuk mengevaluasi seberapa efektif metode pembelajaran/materi yang disampaikan selama pelatihan dengan membandingkan nilai Pretest dan Posttest peserta.
                             </p>
                             <div class="p-4 bg-gray-50 border border-gray-100 rounded-2xl text-center font-mono text-xs">
                                 N-Gain Score = (Posttest - Pretest) / (100 - Pretest)
                             </div>
-                            <p class="text-xs text-gray-500">
-                                Hasil pembagian dikelompokkan menjadi tiga kategori efektivitas pembelajaran:
+                            
+                            <h4 class="font-bold text-gray-800 text-xs uppercase tracking-wider mt-4">Mengapa Menggunakan N-Gain? (Menghindari Bias Akademik):</h4>
+                            <p class="text-xs leading-relaxed text-gray-500">
+                                Jika sistem hanya menghitung selisih nilai biasa (<code>Posttest - Pretest</code>), maka akan terjadi bias yang tidak adil bagi peserta. Sebagai contoh:
+                                <br>&bull; <strong>Peserta X</strong>: Pretest = 20, Posttest = 60. Selisih peningkatan = <strong>40 poin</strong>.
+                                <br>&bull; <strong>Peserta Y</strong>: Pretest = 90, Posttest = 100. Selisih peningkatan = <strong>10 poin</strong>.
+                                <br>Secara selisih biasa, Peserta X terkesan menyerap materi jauh lebih baik daripada Peserta Y. Namun secara akademis, Peserta Y berhasil memaksimalkan potensinya hingga sempurna (100% dari potensi yang tersisa), sementara Peserta X hanya menyerap 50% dari potensi yang tersisa.
+                                <br><br>
+                                Dengan rumus N-Gain Hake, bias ini dinormalisasi:
+                                <br>&bull; N-Gain Peserta X = <code>(60 - 20) / (100 - 20) = 40 / 80 = 0.50</code> (Kategori: <strong>Sedang</strong>)
+                                <br>&bull; N-Gain Peserta Y = <code>(100 - 90) / (100 - 90) = 10 / 10 = 1.00</code> (Kategori: <strong>Tinggi</strong>)
+                                <br>Hal ini memberikan penilaian efektivitas belajar yang jauh lebih adil dan akurat secara ilmiah.
+                            </p>
+
+                            <h4 class="font-bold text-gray-800 text-xs uppercase tracking-wider mt-4">Fungsi Hasil Analisis N-Gain bagi Penyelenggara:</h4>
+                            <p class="text-xs leading-relaxed text-gray-500">
+                                Pengelompokan kategori N-Gain rata-rata kelas/angkatan membantu penyelenggara melakukan evaluasi kurikulum:
                             </p>
                             <ul class="list-disc pl-5 text-xs text-slate-500 space-y-1">
-                                <li><strong>Tinggi</strong>: N-Gain > 0.70</li>
-                                <li><strong>Sedang</strong>: 0.30 &le; N-Gain &le; 0.70</li>
-                                <li><strong>Rendah</strong>: N-Gain &lt; 0.30</li>
+                                <li><strong>Tinggi (N-Gain > 0.70)</strong>: Pembelajaran sangat efektif. Peserta menyerap materi pelatihan kognitif secara optimal.</li>
+                                <li><strong>Sedang (0.30 &le; N-Gain &le; 0.70)</strong>: Pembelajaran cukup efektif. Peningkatan pengetahuan peserta berada di level rata-rata.</li>
+                                <li><strong>Rendah (N-Gain &lt; 0.30)</strong>: Pembelajaran kurang efektif. Penyelenggara perlu mengevaluasi kurikulum, metode penyampaian fasilitator, atau kualitas materi yang diajarkan karena daya serap kognitif peserta sangat minim.</li>
                             </ul>
                         </div>
                     </div>
