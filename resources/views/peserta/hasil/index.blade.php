@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <img src="{{ asset('images/arka/arka_fokus.png') }}" alt="No Event" class="w-full h-full object-contain opacity-50 grayscale">
             </div>
             <h2 class="text-3xl font-heading font-bold text-gray-800 mb-2">Belum Ada Acara Aktif</h2>
-            <p class="text-gray-500 max-w-md mx-auto">Saat ini Anda belum terdaftar dalam Baitul Arqam yang sedang aktif. Silakan hubungi admin MPKSDI jika terjadi kesalahan.</p>
+            <p class="text-gray-500 max-w-md mx-auto">Saat ini Anda belum terdaftar dalam Baitul Arqam yang sedang aktif. Silakan hubungi admin LP3A UMS jika terjadi kesalahan.</p>
         </div>
     @endif
 </div>

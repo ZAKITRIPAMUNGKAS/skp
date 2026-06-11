@@ -309,7 +309,7 @@
         <h2 class="text-2xl font-heading font-bold text-gray-800 mb-2">Belum Ada Jadwal Aktif</h2>
         <p class="text-gray-500 max-w-sm mx-auto text-sm leading-relaxed">
             Saat ini Anda belum terdaftar dalam Baitul Arqam yang sedang aktif.<br>
-            Silakan hubungi admin MPKSDI jika terjadi kesalahan.
+            Silakan hubungi admin LP3A UMS jika terjadi kesalahan.
         </p>
         <a href="{{ route('peserta.dashboard') }}" class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-600 transition-colors shadow-md shadow-primary/20">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -744,7 +744,7 @@
                     </button>
                     <div x-show="active === 2" x-collapse x-cloak>
                         <div class="px-8 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
-                            Ya, sertifikat digital yang diterbitkan sistem ini dilengkapi dengan kode verifikasi unik (hash) dan QR Code yang dapat divalidasi langsung ke server MPKSDI Muhammadiyah.
+                            Ya, sertifikat digital yang diterbitkan sistem ini dilengkapi dengan kode verifikasi unik (hash) dan QR Code yang dapat divalidasi langsung ke server LP3A UMS.
                         </div>
                     </div>
                 </div>

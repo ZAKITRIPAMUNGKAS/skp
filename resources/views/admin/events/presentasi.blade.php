@@ -365,9 +365,8 @@
         </div>
     </div>
     
-    <div class="p-6 border-t border-white/10 bg-navy-950/50 text-center">
-        <img src="{{ asset('logo.webp') }}" class="h-10 mx-auto opacity-70 mb-2" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
-        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">&copy; ArqamApp MPKSDI</p>
+        <img src="{{ asset('logo.webp') }}" class="h-10 mx-auto opacity-70 mb-2" alt="Logo LP3A UMS" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
+        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">&copy; ArqamApp LP3A UMS</p>
     </div>
 </div>
 

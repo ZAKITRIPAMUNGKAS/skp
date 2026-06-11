@@ -114,7 +114,7 @@
 
     <!-- Footer Copyright Sederhana -->
     <div class="absolute bottom-6 left-0 w-full text-center animate-fade-up delay-300 pointer-events-none">
-        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">© 2026 gemala.dev x MPKSDI Karanganyar</p>
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">© 2026 gemala.dev x LP3A UMS</p>
     </div>
 
 </div>
