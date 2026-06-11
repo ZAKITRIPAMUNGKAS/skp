@@ -280,7 +280,7 @@
                     <select name="source_event_id" x-model="selectedSourceEventId" @change="selectedSourceSesiId = ''" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
                         <option value="">-- Pilih Event --</option>
                         <template x-for="e in otherEvents" :key="e.id">
-                            <option :value="e.id" x-text="e.nama_event"></option>
+                            <option :value="e.id" x-text="e.nama_event + ' (' + (e.lokasi || 'Tidak Diketahui') + ')'"></option>
                         </template>
                     </select>
                 </div>
