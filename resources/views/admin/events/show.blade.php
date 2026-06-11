@@ -14,67 +14,88 @@
 <div x-data="{ activeTab: new URLSearchParams(window.location.search).get('tab') || 'peserta' }">
 
     {{-- Event Header --}}
-    <div class="bg-white rounded-2xl shadow-card border border-gray-100 p-6 mb-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-2xl font-bold font-heading text-gray-800">{{ $event->nama_event }}</h1>
-                    <x-badge :type="$event->status">{{ ucfirst($event->status) }}</x-badge>
+    <div class="bg-white rounded-3xl border border-gray-150 p-6 md:p-8 mb-6 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div class="space-y-3">
+                <div class="flex flex-wrap items-center gap-3">
+                    <h1 class="text-2xl font-bold font-heading text-gray-800 leading-tight">{{ $event->nama_event }}</h1>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider
+                        {{ $event->status === 'persiapan' ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/10' : '' }}
+                        {{ $event->status === 'berlangsung' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10' : '' }}
+                        {{ $event->status === 'selesai' ? 'bg-slate-50 text-slate-700 ring-1 ring-slate-600/10' : '' }}
+                    ">
+                        {{ $event->status }}
+                    </span>
                 </div>
-                <div class="flex items-center gap-4 text-sm text-gray-500">
-                    <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-medium text-gray-500">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
                         {{ $event->tanggal_mulai->format('d M Y') }} — {{ $event->tanggal_selesai->format('d M Y') }}
                     </span>
                     @if($event->lokasi)
-                    <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
                         {{ $event->lokasi }}
                     </span>
                     @endif
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2 sm:mt-0 mt-3">
+            <div class="flex flex-wrap items-center gap-3">
                 @if($event->status === 'persiapan')
                     <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline-block">
                         @csrf
                         <input type="hidden" name="status" value="berlangsung">
-                        <x-button type="submit" variant="primary" size="sm" class="flex items-center gap-1 bg-gradient-to-r from-primary to-[#155C84]">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
+                        <button type="submit" class="h-10 inline-flex items-center justify-center gap-2 px-5 bg-primary hover:bg-primary-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+                            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                            </svg>
                             Mulai Event
-                        </x-button>
+                        </button>
                     </form>
                 @elseif($event->status === 'berlangsung')
                     <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan event ini? Status yang sudah diselesaikan tidak dapat diubah kembali.');">
                         @csrf
                         <input type="hidden" name="status" value="selesai">
-                        <x-button type="submit" variant="danger" size="sm" class="flex items-center gap-1 bg-red-600 hover:bg-red-700">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0"/></svg>
+                        <button type="submit" class="h-10 inline-flex items-center justify-center gap-2 px-5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+                            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0"/>
+                            </svg>
                             Selesaikan Event
-                        </x-button>
+                        </button>
                     </form>
                 @endif
                 
                 @if(auth()->user()->isAdmin())
-                    <x-button variant="ghost" size="sm" href="{{ route('admin.events.edit', $event) }}" class="flex items-center gap-1 border border-gray-200">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    <a href="{{ route('admin.events.edit', $event) }}" class="h-10 inline-flex items-center justify-center gap-2 px-5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all shadow-xs">
+                        <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
                         Edit
-                    </x-button>
+                    </a>
                     
                     {{-- Tombol Reset Event --}}
                     <form method="POST" action="{{ route('admin.events.reset', $event) }}" class="inline-block" onsubmit="return confirm('PERINGATAN: Apakah Anda yakin ingin MERESET event ini?\nTindakan ini akan menghapus SELURUH data absensi, jawaban ujian, angket evaluasi, afektif, psikomotor, dan RTL peserta.\n\nData peserta terdaftar, materi, dan soal ujian TETAP AMAN.');">
                         @csrf
-                        <x-button type="submit" variant="danger" size="sm" class="flex items-center gap-1 bg-red-500 hover:bg-red-600 border border-red-500">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"/></svg>
-                            Reset Data Event
-                        </x-button>
+                        <button type="submit" class="h-10 inline-flex items-center justify-center gap-2 px-5 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-bold rounded-xl transition-all shadow-xs">
+                            <svg class="w-4 h-4 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"/>
+                            </svg>
+                            Reset Data
+                        </button>
                     </form>
                 @endif
                 
-                <x-button variant="accent" size="sm" href="{{ route('admin.participants.idCards', $event) }}" target="_blank" class="flex items-center gap-1 bg-amber-500 hover:bg-amber-600">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <a href="{{ route('admin.participants.idCards', $event) }}" target="_blank" class="h-10 inline-flex items-center justify-center gap-2 px-5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+                    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
                     Download ID Cards
-                </x-button>
+                </a>
             </div>
         </div>
     </div>
