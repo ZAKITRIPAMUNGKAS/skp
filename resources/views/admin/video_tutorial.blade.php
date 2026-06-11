@@ -3,7 +3,56 @@
 @section('title', 'Video Tutorial - ArqamApp')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-6" x-data="{
+    activeVideo: {
+        id: 'u-G7pv-PXi0',
+        title: 'Pengenalan & Dashboard Utama ArqamApp',
+        description: 'Membahas pengenalan antarmuka (interface) aplikasi, gambaran umum fitur-fitur, dan statistik dashboard administrator.',
+        duration: '02:15',
+        index: 0
+    },
+    videos: [
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Pengenalan & Dashboard Utama ArqamApp',
+            description: 'Membahas pengenalan antarmuka (interface) aplikasi, gambaran umum fitur-fitur, dan statistik dashboard administrator.',
+            duration: '02:15'
+        },
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Manajemen Event & Import Data Peserta via Excel',
+            description: 'Panduan lengkap membuat event Baitul Arqam baru, mengunduh format template Excel, mengimpor data peserta massal, dan plotting fasilitator.',
+            duration: '03:40'
+        },
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Pengaturan Sesi Jadwal & Kelola Bank Soal',
+            description: 'Langkah-langkah menyusun sesi jadwal pelatihan keagamaan, mengelola butir-butir soal ujian kognitif pretest dan posttest.',
+            duration: '04:10'
+        },
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Presensi QR-Code & Input Evaluasi Psikomotorik / Afektif',
+            description: 'Cara memindai QR-Code peserta untuk presensi kehadiran, cara fasilitator mengisi form nilai afektif dan praktik keagamaan psikomotorik.',
+            duration: '03:05'
+        },
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Kalkulasi SPK AHP-SAW & Ekspor Laporan Akhir',
+            description: 'Proses pembobotan kriteria menggunakan matriks AHP, normalisasi nilai SAW, penentuan predikat kelulusan otomatis, dan pencetakan berkas laporan PDF/Excel.',
+            duration: '04:50'
+        }
+    ],
+    selectVideo(video, idx) {
+        this.activeVideo = {
+            id: video.id,
+            title: video.title,
+            description: video.description,
+            duration: video.duration,
+            index: idx
+        };
+    }
+}">
     {{-- Header --}}
     <div class="flex items-center gap-4">
         <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
@@ -13,7 +62,7 @@
         </a>
         <div>
             <h1 class="text-2xl font-bold text-gray-800 font-heading">Video Tutorial Penggunaan</h1>
-            <p class="text-sm text-gray-500 mt-1">Panduan visual untuk mengoperasikan fitur-fitur utama di ArqamApp.</p>
+            <p class="text-sm text-gray-500 mt-1">Panduan visual untuk mengoperasikan fitur-fitur utama di ArqamApp secara bertahap.</p>
         </div>
     </div>
 
@@ -21,36 +70,36 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {{-- Video Player Card --}}
         <div class="lg:col-span-2 bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-4">
-            <div class="aspect-video w-full rounded-2xl bg-slate-900 overflow-hidden relative border border-slate-800 flex items-center justify-center group">
-                {{-- Placeholder/Poster --}}
-                <div class="absolute inset-0 bg-cover bg-center opacity-60 filter blur-sm" style="background-image: url('{{ asset('images/dashboard_mockup.png') }}')"></div>
-                <div class="absolute inset-0 bg-slate-950/80"></div>
-                
-                {{-- Play button overlay (Interactive mock or standard HTML5 video) --}}
-                <div class="relative z-10 flex flex-col items-center justify-center text-center p-6 space-y-4">
-                    <div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300 cursor-pointer">
-                        <svg class="w-8 h-8 fill-current ml-1" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-bold text-lg">Video Panduan Utama ArqamApp</h4>
-                        <p class="text-slate-400 text-sm mt-1">Durasi: 12 menit • Format MP4</p>
-                    </div>
-                </div>
+            <div class="aspect-video w-full rounded-2xl bg-slate-900 overflow-hidden relative border border-slate-800">
+                <iframe 
+                    class="w-full h-full"
+                    :src="'https://www.youtube.com/embed/' + activeVideo.id" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
             </div>
 
-            <div class="flex items-center justify-between pt-2">
-                <div>
-                    <h3 class="text-lg font-bold text-gray-800">Panduan Lengkap Pengelolaan Baitul Arqam</h3>
-                    <p class="text-xs text-gray-500 mt-1">Diunggah pada Juni 2026 • Oleh Tim Pengembang</p>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-2">
+                <div class="space-y-1">
+                    <span class="text-[10px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-md uppercase tracking-widest">
+                        Materi Bagian <span x-text="activeVideo.index + 1"></span>
+                    </span>
+                    <h3 class="text-lg font-bold text-gray-800 mt-2" x-text="activeVideo.title"></h3>
+                    <p class="text-xs text-gray-500" x-text="activeVideo.description"></p>
                 </div>
-                <a href="#" class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold rounded-xl transition-colors">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    Download Video
-                </a>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
+                        Durasi: <span x-text="activeVideo.duration"></span>
+                    </span>
+                    <a :href="'https://www.youtube.com/watch?v=' + activeVideo.id" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+                        Tonton di YT
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -58,49 +107,30 @@
         <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-6">
             <div>
                 <h3 class="font-bold text-gray-800 font-heading text-lg">Daftar Materi Video</h3>
-                <p class="text-xs text-gray-500 mt-1">Pilih bagian panduan yang ingin dipelajari.</p>
+                <p class="text-xs text-gray-500 mt-1">Pilih materi panduan di bawah ini:</p>
             </div>
 
             <div class="space-y-3">
-                <div class="flex items-start gap-3 p-3 bg-primary/5 border border-primary/10 rounded-2xl cursor-pointer">
-                    <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">1</div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-gray-800 truncate">Pengenalan & Dashboard Utama</h4>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Durasi: 02:15</p>
+                <template x-for="(video, index) in videos" :key="index">
+                    <div 
+                        @click="selectVideo(video, index)"
+                        :class="activeVideo.index === index ? 'bg-primary/5 border-primary/20 text-primary' : 'hover:bg-gray-50 border-transparent hover:border-gray-100'"
+                        class="flex items-start gap-3 p-3 border rounded-2xl cursor-pointer transition-all duration-200"
+                    >
+                        <div 
+                            :class="activeVideo.index === index ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600'"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0" 
+                            x-text="index + 1"
+                        ></div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-gray-800" x-text="video.title"></h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[9px] text-gray-400 font-medium" x-text="'Durasi: ' + video.duration"></span>
+                                <span class="text-[9px] text-primary font-semibold" x-show="activeVideo.index === index">Sedang Diputar</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div class="flex items-start gap-3 p-3 hover:bg-gray-50 border border-transparent hover:border-gray-100 rounded-2xl cursor-pointer transition-all">
-                    <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs shrink-0">2</div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-gray-800 truncate">Import Data Peserta via Excel</h4>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Durasi: 03:40</p>
-                    </div>
-                </div>
-
-                <div class="flex items-start gap-3 p-3 hover:bg-gray-50 border border-transparent hover:border-gray-100 rounded-2xl cursor-pointer transition-all">
-                    <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs shrink-0">3</div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-gray-800 truncate">Pengaturan Ujian & Bank Soal</h4>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Durasi: 04:10</p>
-                    </div>
-                </div>
-
-                <div class="flex items-start gap-3 p-3 hover:bg-gray-50 border border-transparent hover:border-gray-100 rounded-2xl cursor-pointer transition-all">
-                    <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs shrink-0">4</div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-gray-800 truncate">Penilaian Afektif & Psikomotor</h4>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Durasi: 03:05</p>
-                    </div>
-                </div>
-
-                <div class="flex items-start gap-3 p-3 hover:bg-gray-50 border border-transparent hover:border-gray-100 rounded-2xl cursor-pointer transition-all">
-                    <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs shrink-0">5</div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-gray-800 truncate">Perhitungan AHP-SAW & Cetak Laporan</h4>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Durasi: 04:50</p>
-                    </div>
-                </div>
+                </template>
             </div>
         </div>
     </div>
