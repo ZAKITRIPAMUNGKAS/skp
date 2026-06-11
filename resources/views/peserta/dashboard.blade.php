@@ -156,13 +156,13 @@
                     {{-- QR Body --}}
                     <div class="p-8 flex flex-col items-center">
                         {{-- Foto Profil Peserta --}}
-                        <div class="w-24 h-24 rounded-full border-4 border-slate-50 overflow-hidden mb-6 shadow-md flex-shrink-0">
+                        <div class="w-24 h-24 rounded-full border-4 border-slate-50 overflow-hidden mb-6 shadow-md flex-shrink-0 bg-primary/10 flex items-center justify-center">
                             @if($peserta->foto)
-                                <img src="{{ $peserta->foto_url }}" class="w-full h-full object-cover" alt="Foto">
+                                <img src="{{ $peserta->foto_url }}" referrerpolicy="no-referrer" class="w-full h-full object-cover" alt="Foto">
                             @else
-                                <div class="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-2xl text-primary font-heading">
-                                    {{ strtoupper(substr($peserta->nama_lengkap, 0, 2)) }}
-                                </div>
+                                <svg class="w-12 h-12 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
                             @endif
                         </div>
 

@@ -265,9 +265,12 @@ class DashboardController extends Controller
             $eventPeserta->update(['qr_code' => $qrData]);
         }
 
+        // Pre-fetch remote photo before rendering PDF
+        \App\Models\Peserta::prefetchRemotePhotos([$peserta]);
+
         $pdf = Pdf::loadView('peserta.idcard-pdf', compact('event', 'peserta', 'qrData'))
             ->setPaper([0, 0, 243.7, 388.3]) // Ukuran ID Card dalam poin (sekitar 86mm x 137mm atau sejenisnya)
-            ->setOption('isRemoteEnabled', true);
+            ->setOption('isRemoteEnabled', false);
 
         return $pdf->download('ID_Card_' . str_replace(' ', '_', $peserta->nama_lengkap) . '.pdf');
     }

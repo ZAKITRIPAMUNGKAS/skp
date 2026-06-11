@@ -74,11 +74,21 @@ class EventRegistrationController extends Controller
 
         // 1. Tangani pembuatan User (jika email disediakan) atau cari yang sudah ada
         $email = $request->email;
-        $username = $this->generateUsername($request->nama_lengkap, $email);
+        $nameForUsername = !empty($request->nama_panggilan) ? $request->nama_panggilan : explode(' ', trim($request->nama_lengkap))[0];
+        $username = $this->generateUsername($nameForUsername, $email);
         if (empty($email)) {
             $email = $username . '@arqam.test';
         }
+        
         $password = config('app.default_participant_password', 'peserta123');
+        if (!empty($request->nik)) {
+            $cleanedNik = preg_replace('/[^0-9]/', '', $request->nik);
+            if (strlen($cleanedNik) >= 4) {
+                $password = substr($cleanedNik, -4);
+            } elseif (strlen($cleanedNik) > 0) {
+                $password = $cleanedNik;
+            }
+        }
 
         $user = User::where('email', $email)->orWhere('username', $username)->first();
 

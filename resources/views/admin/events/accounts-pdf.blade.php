@@ -4,98 +4,153 @@
     <meta charset="utf-8">
     <title>Daftar Akun Peserta - {{ $event->nama_event }}</title>
     <style>
-        @page { margin: 0; }
-        body { 
-            font-family: 'Helvetica', 'Arial', sans-serif; 
-            font-size: 11px; 
+        @page {
+            margin: 0;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10px;
             color: #333;
+            line-height: 1.4;
             margin: 0;
             padding: 0;
-        }
-        .sidebar {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 15px;
-            background-color: #1A6D9B; /* Arqam Blue */
+            background-color: #ffffff;
         }
         .container {
-            margin-left: 35px;
-            margin-right: 35px;
-            padding-top: 40px;
-            padding-bottom: 40px;
-        }
-        .header {
+            padding: 30px 45px 50px 45px;
             position: relative;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 20px;
         }
-        .header-content {
-            margin-right: 120px;
-        }
-        .header h1 {
-            color: #1A6D9B;
-            font-size: 24px;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .header h2 {
-            font-size: 14px;
-            color: #4b5563;
-            margin: 5px 0 0 0;
-            font-weight: normal;
-        }
-        .mascot {
+        /* Top Left Yellow Accent Bar */
+        .top-left-bar {
             position: absolute;
-            top: -10px;
-            right: 0;
-            width: 90px;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 105px;
+            background-color: #ffd000;
         }
+        /* Kop Surat */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
+        }
+        .kop-table td {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+        }
+        .kop-logo-container {
+            width: 45%;
+            vertical-align: middle;
+            text-align: left;
+            padding-left: 10px;
+        }
+        .kop-info-container {
+            width: 55%;
+            vertical-align: middle;
+            text-align: right;
+            line-height: 1.3;
+        }
+        .kop-dept-title {
+            font-size: 9.5pt;
+            font-weight: bold;
+            color: #0b3a75;
+            margin: 0;
+        }
+        .kop-dept-subtitle {
+            font-size: 8.5pt;
+            font-weight: bold;
+            color: #444444;
+            margin: 2px 0 0 0;
+        }
+        .kop-address {
+            font-size: 6.8pt;
+            color: #666666;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        .header-line {
+            border-bottom: 2px solid #0b3a75;
+            margin-bottom: 20px;
+            margin-top: 5px;
+        }
+        
+        /* Judul Halaman */
+        .title-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .title-text {
+            font-size: 13pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+            color: #0b3a75;
+            letter-spacing: 0.5px;
+        }
+        .title-meta {
+            font-size: 9.5pt;
+            margin-top: 4px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Info Kredensial */
         .info-box {
-            background-color: #f9fafb;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 25px;
-            border: 1px solid #e5e7eb;
+            background-color: #f2f5fa;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #d0daf0;
         }
         .info-box p {
-            margin: 0 0 8px 0;
-            line-height: 1.5;
+            margin: 0 0 6px 0;
+            line-height: 1.4;
+            font-size: 9.5pt;
         }
         .password-highlight {
             display: inline-block;
             background-color: #fef2f2;
             color: #dc2626;
-            padding: 4px 10px;
+            padding: 2px 8px;
             border-radius: 4px;
             font-weight: bold;
             border: 1px dashed #f87171;
+            font-size: 9pt;
         }
-        table {
+
+        /* Table Data */
+        table.table-data {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            page-break-inside: auto;
         }
-        th {
-            background-color: #1A6D9B;
-            color: white;
-            text-align: left;
-            padding: 10px 12px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #e5e7eb;
+        table.table-data th, table.table-data td {
+            border: 1px solid #cccccc;
+            padding: 7px 9px;
+            font-size: 9pt;
             vertical-align: middle;
         }
-        tr:nth-child(even) {
-            background-color: #f9fafb;
+        table.table-data th {
+            background-color: #0b3a75;
+            color: white;
+            font-weight: bold;
+            text-align: left;
+            text-transform: uppercase;
         }
+        table.table-data tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        table.table-data thead {
+            display: table-header-group;
+        }
+        table.table-data tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        
         .username-badge {
             background-color: #e0f2fe;
             color: #0369a1;
@@ -104,70 +159,164 @@
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
         }
-        .footer {
-            margin-top: 40px;
-            padding-top: 15px;
-            border-top: 1px solid #e5e7eb;
-            font-size: 9px;
-            color: #9ca3af;
+
+        /* Footer fixed position at the page bottom */
+        .footer-fixed {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
             text-align: center;
         }
-        .event-meta {
-            color: #6b7280;
-            font-size: 10px;
-            margin-top: 5px;
+        .footer-social-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 6px;
+        }
+        .footer-social-table td {
+            text-align: center;
+            font-size: 8pt;
+            color: #0b3a75;
+            font-weight: bold;
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            vertical-align: middle;
+        }
+        .footer-yellow-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ffd000;
         }
     </style>
 </head>
 <body>
-    <div class="sidebar"></div>
+    <!-- Top Left Accent Bar -->
+    <div class="top-left-bar"></div>
+
     <div class="container">
-        <div class="header">
-            <div class="header-content">
-                <h1>Daftar Akun Login</h1>
-                <h2>Sistem Evaluasi Perkaderan ARQAM</h2>
-                <div class="event-meta">
-                    <strong>Event:</strong> {{ $event->nama_event }}<br>
-                    <strong>Lokasi:</strong> {{ $event->lokasi }} | 
-                    <strong>Waktu:</strong> {{ $event->tanggal_mulai->format('d M Y') }}
-                </div>
-            </div>
-            <img src="{{ public_path('images/arka/arka_greeting.png') }}" class="mascot">
+        {{-- Kop Surat --}}
+        <table class="kop-table">
+            <tr>
+                <td class="kop-logo-container">
+                    <table style="border: none; border-collapse: collapse;">
+                        <tr style="vertical-align: middle; padding: 0; border: none; background: transparent;">
+                            <img src="{{ public_path('logo.png') }}" style="width: 200px; height: auto;" alt="Logo UMS">
+                        </tr>
+                    </table>
+                </td>
+                <td class="kop-info-container">
+                    <h1 class="kop-dept-title">Lembaga Pengembangan Pembinaan Al-Islam & Kemuhammadiyahan (LP3A)</h1>
+                    <div class="kop-dept-subtitle">Universitas Muhammadiyah Surakarta</div>
+                    <div class="kop-address">
+                        Gedung Induk Siti Walidah Lantai 3 Sayap Selatan, Jl. A. Yani No.157, Pabelan, Kartasura, Sukoharjo 57162, Jawa Tengah<br>
+                        Telp. +62 271-717417 | E-mail: lp3a@ums.ac.id | Website: https://lp3a.ums.ac.id
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        {{-- Divider Line --}}
+        <div class="header-line"></div>
+
+        {{-- Judul --}}
+        <div class="title-header">
+            <h2 class="title-text">DAFTAR AKUN PESERTA</h2>
+            <div class="title-meta">Event: {{ $event->nama_event }}</div>
         </div>
 
         <div class="info-box">
-            <p>Berikut adalah kredensial login untuk masing-masing peserta. Gunakan <strong>Username</strong> di bawah ini untuk masuk ke aplikasi.</p>
-            <p>
-                <span class="password-highlight">Password Default: {{ $defaultPassword }}</span>
-                <span style="font-size: 9px; color: #6b7280; margin-left: 10px;">*Peserta disarankan segera mengubah password setelah login pertama.</span>
-            </p>
+            <p style="margin-bottom: 8px;">Berikut adalah kredensial login untuk masing-masing peserta. Gunakan <strong>Username</strong> di bawah ini untuk masuk ke aplikasi.</p>
+            <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 0;">
+                <tr style="border: none; background: transparent;">
+                    <td style="width: 215px; padding: 0; border: none; background: transparent; vertical-align: middle; white-space: nowrap;">
+                        <span class="password-highlight" style="white-space: nowrap;">Password: 4 Digit Terakhir NIK</span>
+                    </td>
+                    <td style="padding: 0; border: none; background: transparent; vertical-align: middle; padding-left: 10px; color: #666; font-size: 8.5pt;">
+                        *Jika NIK belum terisi di sistem, password default adalah <strong>{{ $defaultPassword }}</strong>.
+                    </td>
+                </tr>
+            </table>
         </div>
 
-        <table>
+        <table class="table-data">
             <thead>
                 <tr>
-                    <th style="width: 30px;">No</th>
-                    <th>Nama Lengkap</th>
-                    <th>Username (Login)</th>
-                    <th>Email</th>
+                    <th style="width: 5%; text-align: center;">No</th>
+                    <th style="width: 35%;">Nama Lengkap</th>
+                    <th style="width: 20%;">Username (Login)</th>
+                    <th style="width: 15%;">Password</th>
+                    <th style="width: 25%;">Email / NIK</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($participants as $index => $ep)
+                    @php
+                        $nik = $ep->peserta->nik;
+                        $cleanedNik = preg_replace('/[^0-9]/', '', $nik);
+                        if (strlen($cleanedNik) >= 4) {
+                            $passText = substr($cleanedNik, -4);
+                        } elseif (strlen($cleanedNik) > 0) {
+                            $passText = $cleanedNik;
+                        } else {
+                            $passText = $defaultPassword;
+                        }
+                    @endphp
                     <tr>
-                        <td style="text-align: center; color: #9ca3af;">{{ $index + 1 }}</td>
-                        <td><strong style="color: #111827;">{{ $ep->peserta->nama_lengkap }}</strong></td>
+                        <td style="text-align: center; color: #666;">{{ $index + 1 }}</td>
+                        <td><strong style="color: #111;">{{ $ep->peserta->nama_lengkap }}</strong></td>
                         <td><span class="username-badge">{{ $ep->peserta->user->username ?? '-' }}</span></td>
-                        <td style="color: #6b7280;">{{ $ep->peserta->user->email }}</td>
+                        <td><span class="username-badge" style="background-color: #fef2f2; color: #dc2626; border: 1px dashed #f87171;">{{ $passText }}</span></td>
+                        <td style="color: #555; font-size: 8.5pt;">
+                            {{ $ep->peserta->user->email }}<br>
+                            <span style="color: #777;">NIK: {{ $nik ?? '-' }}</span>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+    </div>
 
-        <div class="footer">
-            <p>Dicetak otomatis oleh Sistem ARQAM pada {{ now()->format('d/m/Y H:i') }}</p>
-            <p>&copy; {{ date('Y') }} Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni (LP3A) Universitas Muhammadiyah Surakarta</p>
-        </div>
+    {{-- Footer Accent at the very bottom --}}
+    <div class="footer-fixed">
+        <table class="footer-social-table">
+            <tr>
+                <td>
+                    <!-- Globe Web Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </span>
+                    lp3a.ums.ac.id
+                </td>
+                <td>
+                    <!-- Instagram Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </span>
+                    @lp3aums
+                </td>
+                <td>
+                    <!-- Email Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </span>
+                    lp3a@ums.ac.id
+                </td>
+            </tr>
+        </table>
+        <div class="footer-yellow-bar"></div>
     </div>
 </body>
 </html>

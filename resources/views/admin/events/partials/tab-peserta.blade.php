@@ -77,9 +77,11 @@
                             <div class="flex items-center gap-3">
                                 <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                                     @if($p->foto)
-                                        <img src="{{ $p->foto_url }}" class="w-9 h-9 rounded-full object-cover" alt="">
+                                        <img src="{{ $p->foto_url }}" referrerpolicy="no-referrer" class="w-9 h-9 rounded-full object-cover" alt="">
                                     @else
-                                        <span class="text-xs font-semibold text-primary">{{ strtoupper(substr($p->nama_lengkap, 0, 2)) }}</span>
+                                        <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                        </svg>
                                     @endif
                                 </div>
                                 <div>
@@ -345,37 +347,56 @@
                   x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                   x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                   @click.outside="showModal = false"
-                  class="relative w-full sm:max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
+                  class="relative w-full sm:max-w-lg bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100">
                   
-                  <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-red-50/50">
-                      <h3 class="text-lg font-semibold text-red-800 font-heading">Alasan Tidak Hadir</h3>
+                  {{-- Header --}}
+                  <div class="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
+                      <div class="flex items-center gap-3">
+                          <div class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center">
+                              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                              </svg>
+                          </div>
+                          <div class="text-left">
+                              <h3 class="text-base font-bold text-gray-800 font-heading">Alasan Tidak Hadir</h3>
+                              <p class="text-[11px] text-gray-400">Keterangan berhalangan menghadiri event</p>
+                          </div>
+                      </div>
                       <button @click="showModal = false"
-                              class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors text-gray-400 hover:text-gray-600">
-                          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                              class="w-8 h-8 rounded-xl hover:bg-gray-50 flex items-center justify-center transition-colors text-gray-400 hover:text-gray-600 cursor-pointer">
+                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>
                       </button>
                   </div>
                   
-                  <div class="px-6 py-5 space-y-4">
-                      <div>
-                          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Nama Peserta</label>
-                          <p class="text-sm font-semibold text-gray-800" x-text="pesertaNama"></p>
+                  {{-- Body Content --}}
+                  <div class="p-6 space-y-4.5 text-left">
+                      <div class="grid grid-cols-2 gap-4">
+                          <div class="bg-gray-50/50 border border-gray-100 rounded-2xl p-4">
+                              <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Nama Peserta</span>
+                              <p class="text-xs font-bold text-gray-800" x-text="pesertaNama"></p>
+                          </div>
+                          <div class="bg-gray-50/50 border border-gray-100 rounded-2xl p-4">
+                              <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Nama Event</span>
+                              <p class="text-xs font-bold text-gray-700" x-text="eventNama"></p>
+                          </div>
                       </div>
+                      
                       <div>
-                          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Event</label>
-                          <p class="text-sm font-medium text-gray-700" x-text="eventNama"></p>
-                      </div>
-                      <div>
-                          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Alasan Detail</label>
-                          <div class="mt-1 p-4 bg-gray-50 border border-gray-100 rounded-xl">
-                              <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap" x-text="alasan || 'Tidak ada alasan detail ditulis.'"></p>
+                          <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 ml-1">Keterangan / Alasan Detail</span>
+                          <div class="bg-red-50/20 border-l-4 border-red-500 rounded-r-2xl p-4">
+                              <p class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap font-medium" x-text="alasan || 'Tidak ada alasan detail ditulis.'"></p>
                           </div>
                       </div>
                   </div>
                   
-                  <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-end">
-                      <x-button type="button" variant="ghost" @click="showModal = false">Tutup</x-button>
+                  {{-- Footer --}}
+                  <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-50 flex items-center justify-end">
+                      <button type="button" @click="showModal = false"
+                              class="px-5 py-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all rounded-xl text-xs font-bold shadow-sm cursor-pointer active:scale-95">
+                          Tutup
+                      </button>
                   </div>
              </div>
          </div>

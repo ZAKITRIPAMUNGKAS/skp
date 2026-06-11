@@ -34,8 +34,8 @@
             align-items: center; 
             opacity: 0; 
             visibility: hidden; 
-            transform: scale(0.96) translateY(20px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s; 
+            transform: scale(0.95) translateY(30px);
+            transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.4s; 
             background: #ffffff; 
             z-index: 0; 
             padding: 100px 4rem 80px 4rem; 
@@ -57,15 +57,15 @@
         
         /* Animations */
         .anim-up, .anim-fade, .anim-right { opacity: 0; }
-        .slide.active .anim-up   { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .slide.active .anim-fade { animation: fadeIn 1s ease forwards; }
-        .slide.active .anim-right{ animation: slideRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .slide.active .anim-up   { animation: slideUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .slide.active .anim-fade { animation: fadeIn 2.0s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .slide.active .anim-right{ animation: slideRight 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
-        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideRight { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        @@keyframes slideUp { from { opacity: 0; transform: translateY(80px); } to { opacity: 1; transform: translateY(0); } }
+        @@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @@keyframes slideRight { from { opacity: 0; transform: translateX(-80px); } to { opacity: 1; transform: translateX(0); } }
         
-        .d1 { animation-delay: 0.1s; } .d2 { animation-delay: 0.2s; } .d3 { animation-delay: 0.3s; } .d4 { animation-delay: 0.4s; } .d5 { animation-delay: 0.5s; }
+        .d1 { animation-delay: 0.2s; } .d2 { animation-delay: 0.4s; } .d3 { animation-delay: 0.6s; } .d4 { animation-delay: 0.8s; } .d5 { animation-delay: 1.0s; }
         
         /* Content Styling */
         .content-box { background: white; border-radius: 6px; box-shadow: 0 10px 30px rgba(0, 33, 71, 0.08); padding: 1.5rem; border-top: 5px solid #FFD100; }
@@ -78,7 +78,7 @@
         #preloader {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at center, #002147 0%, #00122a 100%);
+            background: #ffffff;
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -93,19 +93,19 @@
         .preloader-spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255, 209, 0, 0.1);
-            border-top-color: #FFD100;
+            border: 4px solid rgba(0, 33, 71, 0.1);
+            border-top-color: #002147;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 1.5rem;
         }
-        @keyframes spin {
+        @@keyframes spin {
             to { transform: rotate(360deg); }
         }
         .pulse-logo {
             animation: pulse 2.5s infinite ease-in-out;
         }
-        @keyframes pulse {
+        @@keyframes pulse {
             0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 209, 0, 0.2)); }
             50% { transform: scale(1.06); filter: drop-shadow(0 0 25px rgba(255, 209, 0, 0.5)); }
         }
@@ -317,8 +317,8 @@
             <img src="{{ asset('logo.webp') }}" class="h-28" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
         </div>
         <div class="preloader-spinner"></div>
-        <h2 class="text-white text-xl font-bold tracking-wider uppercase">Laporan Analisis ArqamApp</h2>
-        <p class="text-yellow-400 text-sm font-semibold mt-2 tracking-widest uppercase">Sedang Menyiapkan Data & Grafik...</p>
+        <h2 class="text-navy-900 text-xl font-bold tracking-wider uppercase">Laporan Analisis ArqamApp</h2>
+        <p class="text-navy-700 text-sm font-semibold mt-2 tracking-widest uppercase">Sedang Menyiapkan Data & Grafik...</p>
     </div>
 </div>
 
@@ -379,11 +379,11 @@
     
     <div class="z-10 w-full h-full flex items-center">
         <div class="w-1/2 pl-12 pr-8 anim-right">
-            <div class="flex items-center gap-4 mb-10">
-                <img src="{{ asset('logo.webp') }}" class="h-20" alt="Logo MPKSDI" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
-                <div>
-                    <p class="text-sm font-black text-navy-900 tracking-widest uppercase">LP3A</p>
-                    <p class="text-sm font-bold text-gray-600 tracking-wide uppercase">Universitas Muhammadiyah Surakarta</p>
+            <div class="inline-flex items-center gap-4 mb-8 bg-white/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-gray-200/40 shadow-sm">
+                <img src="{{ asset('logo.webp') }}" class="h-12 w-auto object-contain" alt="Logo UMS" onerror="this.src='https://upload.wikimedia.org/wikipedia/id/thumb/6/6f/Logo_Muhammadiyah.svg/1024px-Logo_Muhammadiyah.svg.png'">
+                <div class="text-left">
+                    <p class="text-xs font-black text-navy-900 tracking-widest uppercase leading-none mb-1">LP3A</p>
+                    <p class="text-[10px] font-bold text-gray-500 tracking-wide uppercase leading-tight">Universitas Muhammadiyah Surakarta</p>
                 </div>
             </div>
             
@@ -393,23 +393,23 @@
             <div class="w-32 h-3 bg-yellow-400 mb-8"></div>
             
             <p class="text-lg text-gray-700 font-semibold mb-2 flex items-center gap-3">
-                <svg class="w-3 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <svg class="w-3 h-6 text-navy-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 {{ $event->lokasi }}
             </p>
             <p class="text-lg text-gray-700 font-semibold flex items-center gap-3">
-                <svg class="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <svg class="w-6 h-6 text-navy-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 {{ \Carbon\Carbon::parse($event->tanggal_mulai)->translatedFormat('d F Y') }} – {{ \Carbon\Carbon::parse($event->tanggal_selesai)->translatedFormat('d F Y') }}
             </p>
         </div>
         
         <div class="w-1/2 flex flex-col justify-center items-end pr-20 anim-up d3">
-            <div class="bg-white p-8 rounded-xl shadow-2xl mb-6 border-l-8 border-yellow-400 w-80 text-center transform hover:scale-105 transition-transform">
+            <div class="bg-white/95 backdrop-blur p-6 rounded-2xl shadow-xl mb-6 border-l-8 border-yellow-400 w-80 text-center transform hover:scale-105 transition-transform border border-gray-150">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Total Peserta</span>
                 <h3 class="text-6xl font-black text-navy-900">{{ $total }}</h3>
-                <p class="text-gray-500 font-bold uppercase tracking-widest mt-2">Total Peserta</p>
             </div>
-            <div class="bg-yellow-400 p-8 rounded-xl shadow-2xl w-80 text-center transform hover:scale-105 transition-transform">
-                <h3 class="text-4xl font-black text-navy-900 uppercase">{{ $event->status }}</h3>
-                <p class="text-navy-800 font-bold uppercase tracking-widest mt-2">Status Acara</p>
+            <div class="bg-white/95 backdrop-blur p-6 rounded-2xl shadow-xl border-l-8 border-navy-900 w-80 text-center transform hover:scale-105 transition-transform border border-gray-150">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Status Acara</span>
+                <h3 class="text-2xl font-black text-navy-900 uppercase tracking-wider py-2">{{ $event->status }}</h3>
             </div>
         </div>
     </div>
@@ -749,7 +749,7 @@
         </div>
 
         {{-- Juara 1 --}}
-        <div class="bg-yellow-400 rounded-t-2xl shadow-2xl border-4 border-b-0 border-navy-900 p-8 text-center anim-up d1 relative h-full flex flex-col justify-start pt-20 z-20 transform scale-105">
+        <div class="bg-yellow-400 rounded-t-2xl shadow-2xl border-4 border-b-0 border-navy-900 p-8 text-center anim-up d5 relative h-full flex flex-col justify-start pt-20 z-20" style="transform-origin: bottom center; scale: 1.05;">
             <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-white text-yellow-500 font-black text-5xl rounded-full flex items-center justify-center shadow-2xl border-4 border-navy-900">1</div>
             <div class="absolute -top-16 right-4 text-5xl">👑</div>
             @if(isset($top3[0]))
@@ -765,7 +765,7 @@
         </div>
 
         {{-- Juara 3 --}}
-        <div class="bg-white rounded-t-2xl shadow-2xl border-4 border-b-0 border-navy-900 p-8 text-center anim-up d2 relative h-[70%] flex flex-col justify-start pt-14">
+        <div class="bg-white rounded-t-2xl shadow-2xl border-4 border-b-0 border-navy-900 p-8 text-center anim-up d1 relative h-[70%] flex flex-col justify-start pt-14">
             <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-orange-100 text-orange-600 font-black text-3xl rounded-full flex items-center justify-center shadow-lg border-4 border-white">3</div>
             @if(isset($top3[2]))
             <h3 class="text-lg font-bold text-navy-900 uppercase">{{ $top3[2]->peserta->nama_lengkap ?? '-' }}</h3>
@@ -839,11 +839,33 @@ function toggleSidebar(open = null) {
     }
 }
 
+// Reset animations on all animated elements inside a slide
+function resetAnimations(slide) {
+    const animElems = slide.querySelectorAll('.anim-up, .anim-fade, .anim-right');
+    animElems.forEach(el => {
+        // Force stop animation using inline style
+        el.style.animation = 'none';
+        el.style.opacity = '0';
+        el.style.transform = '';
+    });
+    // Single reflow for all elements
+    void slide.offsetWidth;
+    // Remove override so CSS animation kicks in again
+    animElems.forEach(el => {
+        el.style.animation = '';
+        el.style.opacity = '';
+    });
+}
+
 // Unified jumpTo function
 function jumpTo(index) {
     if (index < 0 || index >= slides.length) return;
     slides[cur].classList.remove('active');
     cur = index;
+    
+    // Reset animations before making slide active
+    resetAnimations(slides[cur]);
+    
     slides[cur].classList.add('active');
     
     // Update navigation UI elements
@@ -954,7 +976,22 @@ function buildCharts() {
     new Chart(document.getElementById('cHadir'), {
         type: 'bar',
         data: { labels: D.hadir.labels, datasets: [{ data: D.hadir.data, backgroundColor: '#FFD100', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend:{ display:false } }, scales: { y:{ max: D.hadir.total + 2, ticks:{ font:{family:'Montserrat'} } }, x:{ ticks:{ font:{family:'Montserrat', size:10, weight:'bold'} } } } }
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            plugins: { legend:{ display:false } }, 
+            scales: { 
+                y:{ max: D.hadir.total + 2, ticks:{ font:{family:'Montserrat'} } }, 
+                x:{ 
+                    ticks:{ 
+                        font:{family:'Montserrat', size:8, weight:'bold'},
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 45
+                    } 
+                } 
+            } 
+        } 
     });
 
     radar('cNilai', D.nilai.labels, D.nilai.data);

@@ -9,15 +9,17 @@
            ======================================================== */
         @page {
             size: A4 portrait;
-            margin: 30mm 15mm 15mm 15mm; /* Ditambah margin atas ke 30mm agar kop tidak mepet */
+            margin: 0;
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 8.2pt;
             color: #1a1a1a;
             line-height: 1.35;
             background: #ffffff;
+            margin: 0;
+            padding: 0;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -32,65 +34,105 @@
            PAGE WRAPPER
            ======================================================== */
         .page {
-            page-break-after: always;
             position: relative;
-            height: 250mm; /* Menentukan tinggi relatif halaman agar footer-fixed bisa diposisikan absolute di paling bawah */
+            height: 270mm; /* Reduced to fit A4 page printing bounds with padding */
+            padding: 30px 45px 50px 45px;
         }
 
-        /* ========================================================
-           KOP SURAT RESMI (Tabel Murni) - Lebar 98% mencegah overflow border
-           ======================================================== */
+        .page-break {
+            page-break-after: always;
+        }
+
+        /* Top Left Yellow Accent Bar */
+        .top-left-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 105px;
+            background-color: #ffd000;
+        }
+
+        /* Kop Surat Resmi */
         .kop-table {
-            width: 98%;
+            width: 100%;
             border-collapse: collapse;
-            border-bottom: 4px solid #008fe2; /* Hijau gelap */
-            margin: 0 auto 15px auto;
+            margin-bottom: 5px;
         }
 
         .kop-table td {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
             vertical-align: middle;
-            padding-bottom: 12px;
         }
 
-        .logo-img {
-            height: 48px;
-            width: auto; /* Mencegah logo digepengin di DomPDF */
-            max-width: 150px;
+        .kop-logo-container {
+            width: 45%;
+            text-align: left;
+            padding-left: 10px;
         }
 
-        .judul-instansi-td {
-            padding-left: 15px;
+        .kop-info-container {
+            width: 55%;
+            text-align: right;
+            line-height: 1.3;
         }
 
-        .judul-instansi-td h4 {
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #555;
-            margin-bottom: 2px;
-            font-weight: normal;
-        }
-
-        .judul-instansi-td h1 {
-            font-size: 22px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 1px;
-        }
-
-        .tag-event-container {
-            margin-top: 1px;
-        }
-
-        .tag-event {
-            font-size: 10px;
+        .kop-dept-title {
+            font-size: 9.5pt;
             font-weight: bold;
-            color: #008fe2;
-            background-color: #e8f5e9;
-            padding: 1px 6px;
-            border: 1px solid #008fe2;
-            display: inline-block;
+            color: #0b3a75;
+            margin: 0;
+        }
+
+        .kop-dept-subtitle {
+            font-size: 8.5pt;
+            font-weight: bold;
+            color: #444444;
+            margin: 2px 0 0 0;
+        }
+
+        .kop-address {
+            font-size: 6.8pt;
+            color: #666666;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .header-line {
+            border-bottom: 2px solid #0b3a75;
+            margin-bottom: 15px;
+            margin-top: 5px;
+        }
+
+        /* Judul Dokumen (Samping Kiri & Kanan via tabel tipis) */
+        .title-section-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+
+        .title-section-table td {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            vertical-align: middle;
+        }
+
+        .title-section-left h1 {
+            font-size: 15pt;
+            font-weight: bold;
+            color: #0b3a75;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .title-section-left .tag-event {
+            font-size: 8.5pt;
+            font-weight: bold;
+            color: #0b3a75;
+            margin-top: 2px;
         }
 
         .kontrol-dokumen-td {
@@ -99,53 +141,54 @@
         }
 
         .kontrol-dokumen {
-            border: 2px solid #1a1a1a;
-            padding: 5px 12px;
-            background-color: #f2f4f5; /* abu-kertas */
+            border: 2px solid #0b3a75;
+            padding: 4px 10px;
+            background-color: #f2f5fa;
             text-align: center;
             display: inline-block;
         }
 
         .kontrol-dokumen .nomor {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             line-height: 1;
+            color: #0b3a75;
         }
 
         .kontrol-dokumen .teks {
-            font-size: 8px;
+            font-size: 7.5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-top: 2px;
-            color: #1a1a1a;
+            color: #555;
         }
 
         /* ========================================================
            KOTAK IDENTITAS UTAMA (Tabel Murni) - Lebar 98%
            ======================================================== */
         .box-peserta-table {
-            width: 98%;
+            width: 100%;
             border-collapse: collapse;
-            border: 2px solid #1a1a1a;
-            margin: 0 auto 18px auto;
+            border: 2px solid #0b3a75;
+            margin-bottom: 15px;
             background-color: #fff;
         }
 
         .info-utama-td {
-            padding: 12px 15px;
+            padding: 10px 12px;
             vertical-align: middle;
         }
 
         .info-utama-td h2 {
-            font-size: 17px;
+            font-size: 15px;
             font-weight: bold;
             margin-bottom: 4px;
             text-transform: uppercase;
-            color: #1a1a1a;
+            color: #0b3a75;
         }
 
         .info-utama-td p {
-            font-size: 11.5px;
+            font-size: 10.5px;
             color: #333;
             margin: 1px 0;
         }
@@ -157,14 +200,14 @@
 
         .status-box-td {
             color: white;
-            padding: 0 15px;
-            font-size: 13px;
+            padding: 0 12px;
+            font-size: 11px;
             font-weight: bold;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
             text-align: center;
-            border-left: 2px solid #1a1a1a;
-            width: 140px;
+            border-left: 2px solid #0b3a75;
+            width: 130px;
             vertical-align: middle;
         }
 
@@ -172,20 +215,19 @@
            LAYOUT DUA KOLOM (Tabel Murni) - Lebar 98% dengan margin auto
            ======================================================== */
         .layout-dua-kolom-table {
-            width: 98%;
+            width: 100%;
             border-collapse: collapse;
-            margin: 0 auto;
         }
 
         /* Menggunakan proporsi lebar 48% agar terhindar dari overflow akibat padding/border */
         .kolom-kiri {
-            width: 48%;
+            width: 49%;
             padding-right: 8px;
             vertical-align: top;
         }
 
         .kolom-kanan {
-            width: 48%;
+            width: 49%;
             padding-left: 8px;
             vertical-align: top;
         }
@@ -196,41 +238,40 @@
         .tabel-form {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
-            border: 1px solid #b0bec5; /* garis-tabel */
+            margin-bottom: 12px;
+            border: 1px solid #b2c8e3; /* garis-tabel */
             table-layout: fixed; /* Memaksa ukuran sel tetap patuh */
         }
 
         /* Header Blok Warna */
         .tabel-form th.header-blok {
-            background-color: #b0bec5; /* garis-tabel */
-            color: #000;
+            background-color: #0b3a75;
+            color: #ffffff;
             text-align: left;
-            padding: 5px 8px;
-            font-size: 9.5px;
+            padding: 4px 8px;
+            font-size: 8.5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border: 1px solid #b0bec5;
-            border-bottom: 2px solid #1a1a1a;
+            border: 1px solid #0b3a75;
         }
 
         .tabel-form td {
-            border: 1px solid #b0bec5;
-            padding: 6px 8px;
-            font-size: 11px;
+            border: 1px solid #b2c8e3;
+            padding: 5px 7px;
+            font-size: 10px;
             vertical-align: middle;
-            line-height: 1.35;
+            line-height: 1.3;
             word-wrap: break-word;      /* Mencegah teks panjang melebarkan tabel */
             overflow-wrap: break-word;
         }
 
         /* Kolom Label dengan Shading */
         .tabel-form td.label {
-            background-color: #f2f4f5; /* abu-kertas */
+            background-color: #f2f5fa; /* abu-kertas biru */
             width: 38%;
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: bold;
-            color: #555;
+            color: #0b3a75;
             text-transform: uppercase;
         }
 
@@ -238,7 +279,7 @@
         .tabel-form td.isian {
             width: 62%;
             background-color: #fff;
-            color: #000;
+            color: #111;
         }
 
         .font-tebal { font-weight: bold; }
@@ -264,13 +305,13 @@
            ======================================================== */
         .mascot-container {
             text-align: center;
-            margin-top: 80px;
-            margin-bottom: 80px;
+            margin-top: 40px;
+            margin-bottom: 20px;
             width: 100%;
         }
 
         .mascot-img {
-            height: 300px;
+            height: 140px;
             width: auto; /* Memastikan rasio gambar tetap proporsional */
             max-width: 100%;
             object-fit: contain;
@@ -279,42 +320,33 @@
         /* ========================================================
            FOOTER 
            ======================================================== */
-
-        .footer-line {
-            height: 3px;
-            background: #008fe2;
-            margin-left: -15mm;
-            margin-right: -15mm;
+        .footer-fixed {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            text-align: center;
         }
-
-        .footer-table {
+        .footer-social-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 6px;
         }
-
-        .footer-text {
+        .footer-social-table td {
+            text-align: center;
             font-size: 8pt;
-            color: #555550;
-            line-height: 1.3;
-            padding-left: 15mm;
-            padding-right: 15mm;
-            padding-top: 4px;
-        }
-
-        .footer-text strong {
-            color: #008fe2;
-        }
-
-        .footer-nomor {
-            text-align: right;
-            font-size: 8pt;
+            color: #0b3a75;
             font-weight: bold;
-            color: #008fe2;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding-left: 15mm;
-            padding-right: 15mm;
-            padding-top: 4px;
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            vertical-align: middle;
+        }
+        .footer-yellow-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ffd000;
         }
     </style>
 </head>
@@ -348,21 +380,40 @@
     $alertTangga= str_contains(strtolower($p->aktivitas_tangga ?? ''), 'kesulitan');
 @endphp
 
-<div class="page">
+<div class="page @if(!$loop->last) page-break @endif">
+    <!-- Top Left Accent Bar -->
+    <div class="top-left-bar"></div>
     
-    <!-- HEADER DOKUMEN -->
+    {{-- Kop Surat --}}
     <table class="kop-table">
         <tr>
-            <td style="width: 50px;">
-                <img src="{{ public_path('logo.png') }}" class="logo-img" alt="Logo UMS">
+            <td class="kop-logo-container">
+                <table style="border: none; border-collapse: collapse;">
+                    <tr style="vertical-align: middle; padding: 0; border: none; background: transparent;">
+                        <img src="{{ public_path('logo.png') }}" style="width: 200px; height: auto;" alt="Logo UMS">
+                    </tr>
+                </table>
             </td>
-            <td class="judul-instansi-td">
-                <h4 style="margin-top: 10px; margin-bottom: 2px; font-size: 11px;">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h4>
-                <h4 style="margin-top: 0; margin-bottom: 5px; font-weight: normal; font-size: 11px; color: #555;">Universitas Muhammadiyah Surakarta</h4>
-                <h1>Formulir Biodata Peserta</h1>
-                <div class="tag-event-container">
-                    <span class="tag-event">{{ $event->nama_event }}</span>
+            <td class="kop-info-container">
+                <h1 class="kop-dept-title">Lembaga Pengembangan Pembinaan Al-Islam & Kemuhammadiyahan (LP3A)</h1>
+                <div class="kop-dept-subtitle">Universitas Muhammadiyah Surakarta</div>
+                <div class="kop-address">
+                    Gedung Induk Siti Walidah Lantai 3 Sayap Selatan, Jl. A. Yani No.157, Pabelan, Kartasura, Sukoharjo 57162, Jawa Tengah<br>
+                    Telp. +62 271-717417 | E-mail: lp3a@ums.ac.id | Website: https://lp3a.ums.ac.id
                 </div>
+            </td>
+        </tr>
+    </table>
+
+    {{-- Divider Line --}}
+    <div class="header-line"></div>
+
+    <!-- JUDUL DOKUMEN -->
+    <table class="title-section-table">
+        <tr>
+            <td class="title-section-left">
+                <h1>Formulir Biodata Peserta</h1>
+                <div class="tag-event">{{ $event->nama_event }}</div>
             </td>
             <td class="kontrol-dokumen-td">
                 <div class="kontrol-dokumen">
@@ -537,28 +588,49 @@
                 </div>
                 @endif
 
-                <!-- AREA MASKOT ARQA -->
-                <div class="mascot-container">
-                    <img src="{{ public_path('images/arka/arka_analisis.png') }}" class="mascot-img" alt="Arqa Mascot">
-                </div>
-
             </td>
         </tr>
     </table>
 
-    <!-- FOOTER PREMIUM -->
+    {{-- Footer Accent at the very bottom --}}
     <div class="footer-fixed">
-        <div class="footer-line"></div>
-        <table class="footer-table">
+        <table class="footer-social-table">
             <tr>
-                <td class="footer-text">
-                    Formulir Biodata Resmi &bull; Dicetak otomatis melalui sistem <strong>ArqamApp</strong>.
+                <td>
+                    <!-- Globe Web Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </span>
+                    lp3a.ums.ac.id
                 </td>
-                <td class="footer-nomor">
-                    {{ $event->nama_event }}
+                <td>
+                    <!-- Instagram Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </span>
+                    @lp3aums
+                </td>
+                <td>
+                    <!-- Email Icon -->
+                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </span>
+                    lp3a@ums.ac.id
                 </td>
             </tr>
         </table>
+        <div class="footer-yellow-bar"></div>
     </div>
 
 </div>

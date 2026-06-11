@@ -13,14 +13,11 @@
     {{-- AHP Panel --}}
     <div x-show="subTab==='ahp'">
         <div class="bg-white rounded-xl border border-gray-200 p-6 relative overflow-hidden">
-            <div class="absolute right-2 -top-2 w-28 h-28 opacity-90 pointer-events-none">
-                <img src="{{ asset('images/arka/arka_penilai.png') }}" alt="Arka Penilai" class="w-full h-full object-contain">
-            </div>
             <h3 class="text-sm font-semibold text-gray-800 mb-1">Matriks Perbandingan Berpasangan</h3>
             <p class="text-xs text-gray-400 mb-4">Masukkan nilai pada segitiga atas. Diagonal=1, bawah diagonal otomatis.</p>
 
             <div class="overflow-x-auto mb-4">
-                <table class="text-sm border-collapse w-full max-w-2xl">
+                <table class="text-sm border-collapse w-full">
                     <thead>
                         <tr>
                             <th class="px-3 py-2 bg-primary text-white font-semibold text-xs rounded-tl-lg"></th>

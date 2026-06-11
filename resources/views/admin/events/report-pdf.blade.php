@@ -11,32 +11,63 @@
             color: #333;
             line-height: 1.4;
         }
-        .header {
-            position: relative;
-            border-bottom: 3px double #1A6D9B;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+        /* Kop Surat */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
         }
-        .logo-section {
-            margin-right: 150px;
+        .kop-table td {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
         }
-        .header h1 {
-            margin: 0;
-            font-size: 20px;
-            color: #1A6D9B;
-            text-transform: uppercase;
+        .kop-logo-container {
+            width: 45%;
+            vertical-align: middle;
+            text-align: left;
+            padding-left: 10px;
         }
-        .header h2 {
-            margin: 5px 0;
-            font-size: 12px;
-            color: #4b5563;
+        .kop-info-container {
+            width: 55%;
+            vertical-align: middle;
+            text-align: right;
+            line-height: 1.3;
+        }
+        .kop-dept-title {
+            font-size: 9.5pt;
             font-weight: bold;
+            color: #0b3a75;
+            margin: 0;
         }
-        .mascot {
-            position: absolute;
-            top: -10px;
-            right: 0;
-            width: 100px;
+        .kop-dept-subtitle {
+            font-size: 8.5pt;
+            font-weight: bold;
+            color: #444444;
+            margin: 2px 0 0 0;
+        }
+        .kop-address {
+            font-size: 6.8pt;
+            color: #666666;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        .header-line {
+            border-bottom: 2px solid #0b3a75;
+            margin-bottom: 20px;
+            margin-top: 5px;
+        }
+        .surat-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .surat-title {
+            font-size: 13pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+            color: #111;
+            letter-spacing: 0.5px;
         }
         .event-details {
             width: 100%;
@@ -101,14 +132,33 @@
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo-section">
-            <h1>LAPORAN HASIL EVALUASI</h1>
-            <h2 style="font-size: 9px; margin-bottom: 2px;">Lembaga Agama Pengembangan Persyarikatan Pengkaderan & Alumni(LP3A)</h2>
-            <h2 style="font-size: 9px; font-weight: normal; margin-top: 0; margin-bottom: 5px; color: #555;">Universitas Muhammadiyah Surakarta</h2>
-            <p style="margin: 0; font-size: 9px; color: #6b7280;">Sistem Informasi Perkaderan ARQAM Digital</p>
-        </div>
-        <img src="{{ public_path('images/arka/arka_penilai.png') }}" class="mascot">
+    {{-- Kop Surat --}}
+    <table class="kop-table">
+        <tr>
+            <td class="kop-logo-container">
+                <table style="border: none; border-collapse: collapse;">
+                    <tr style="vertical-align: middle; padding: 0; border: none; background: transparent;">
+                            <img src="{{ public_path('logo.png') }}" style="width: 200px; height: auto;" alt="Logo UMS">
+                    </tr>
+                </table>
+            </td>
+            <td class="kop-info-container">
+                <h1 class="kop-dept-title">Lembaga Pengembangan Pembinaan Al-Islam & Kemuhammadiyahan (LP3A)</h1>
+                <div class="kop-dept-subtitle">Universitas Muhammadiyah Surakarta</div>
+                <div class="kop-address">
+                    Gedung Induk Siti Walidah Lantai 3 Sayap Selatan, Jl. A. Yani No.157, Pabelan, Kartasura, Sukoharjo 57162, Jawa Tengah<br>
+                    Telp. +62 271-717417 | E-mail: lp3a@ums.ac.id | Website: https://lp3a.ums.ac.id
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    {{-- Divider Line --}}
+    <div class="header-line"></div>
+
+    {{-- Judul Surat --}}
+    <div class="surat-header">
+        <h2 class="surat-title">LAPORAN HASIL EVALUASI</h2>
     </div>
 
     <table class="event-details">

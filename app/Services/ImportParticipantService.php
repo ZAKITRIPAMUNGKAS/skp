@@ -225,8 +225,13 @@ class ImportParticipantService
                 $defaultPassword = config('app.default_participant_password', 'peserta123');
                 $emailForUsername = !empty($email) && !str_ends_with($email, '@arqam.test') ? $email : null;
                 
-                // Username default menggunakan NIK jika ada, jika tidak generate dari nama
-                $username = !empty($nik) ? preg_replace('/[^a-zA-Z0-9._-]/', '', $nik) : $this->generateUsername($namaLengkap, $emailForUsername);
+                // Username default menggunakan nama_panggilan jika ada, jika tidak generate dari nama_lengkap
+                $nick = !empty($row['nama_panggilan']) ? trim($row['nama_panggilan']) : $namaLengkap;
+                $username = preg_replace('/[^a-zA-Z0-9]/', '', strtolower($nick));
+                if (empty($username)) {
+                    $username = 'peserta';
+                }
+                
                 $originalUsername = $username;
                 $counter = 1;
                 while (User::where('username', $username)->exists()) {
@@ -234,10 +239,15 @@ class ImportParticipantService
                     $counter++;
                 }
 
-                // Password default menggunakan tanggal lahir (ddmmyyyy) jika ada, jika tidak pakai defaultPassword
+                // Password default menggunakan 4 digit terakhir NIK jika ada, jika tidak pakai defaultPassword
                 $passwordRaw = $defaultPassword;
-                if (!empty($tanggalLahir)) {
-                    $passwordRaw = date('dmY', strtotime($tanggalLahir));
+                if (!empty($nik)) {
+                    $cleanedNik = preg_replace('/[^0-9]/', '', $nik);
+                    if (strlen($cleanedNik) >= 4) {
+                        $passwordRaw = substr($cleanedNik, -4);
+                    } elseif (strlen($cleanedNik) > 0) {
+                        $passwordRaw = $cleanedNik;
+                    }
                 }
 
                 $user = User::create([

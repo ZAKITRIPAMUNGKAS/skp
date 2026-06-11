@@ -25,7 +25,20 @@ class User extends Authenticatable
             return null;
         }
         if (str_starts_with($this->foto, 'http://') || str_starts_with($this->foto, 'https://')) {
-            return $this->foto;
+            $url = $this->foto;
+            if (str_contains($url, 'drive.google.com')) {
+                $fileId = '';
+                if (preg_match('/id=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+                    $fileId = $matches[1];
+                } elseif (preg_match('/\/file\/d\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+                    $fileId = $matches[1];
+                }
+                
+                if (!empty($fileId)) {
+                    return "https://lh3.googleusercontent.com/d/" . $fileId;
+                }
+            }
+            return $url;
         }
         return asset('storage/' . $this->foto);
     }

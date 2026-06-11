@@ -50,7 +50,7 @@
          x-transition:leave="transition-opacity duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-white/70 backdrop-blur-md z-[99999] flex flex-col items-center justify-center"
+         class="fixed inset-0 bg-white z-[99999] flex flex-col items-center justify-center"
          style="display: none;">
         <div class="flex flex-col items-center gap-4">
             <div class="relative w-12 h-12">

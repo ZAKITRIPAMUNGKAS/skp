@@ -11,7 +11,15 @@
 @endsection
 
 @section('content')
-<div x-data="{ activeTab: new URLSearchParams(window.location.search).get('tab') || 'peserta' }">
+<div x-data="{ 
+    activeTab: new URLSearchParams(window.location.search).get('tab') || 'peserta',
+    changeTab(tab) {
+        this.activeTab = tab;
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', tab);
+        window.history.pushState({}, '', url);
+    }
+}">
 
     {{-- Event Header --}}
     <div class="bg-white rounded-3xl border border-gray-150 p-6 md:p-8 mb-6 shadow-sm">
@@ -153,7 +161,7 @@
                 @endphp
 
                 @foreach($tabs as $key => $tab)
-                    <button @click="activeTab = '{{ $key }}'"
+                    <button @click="changeTab('{{ $key }}')"
                         :class="activeTab === '{{ $key }}'
                             ? 'border-primary text-primary'
                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"

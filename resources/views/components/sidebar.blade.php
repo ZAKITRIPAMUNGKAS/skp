@@ -64,9 +64,9 @@
              x-data="{ showMenu: false }" @click="showMenu = !showMenu">
             <div class="w-9 h-9 rounded-full bg-accent/30 flex items-center justify-center flex-shrink-0 ring-2 ring-accent/50 overflow-hidden">
                 @if(auth()->user()->foto)
-                    <img src="{{ auth()->user()->foto_url }}" class="w-full h-full object-cover">
+                    <img src="{{ auth()->user()->foto_url }}" referrerpolicy="no-referrer" class="w-full h-full object-cover">
                 @elseif(auth()->user()->peserta && auth()->user()->peserta->foto)
-                    <img src="{{ auth()->user()->peserta->foto_url }}" class="w-full h-full object-cover">
+                    <img src="{{ auth()->user()->peserta->foto_url }}" referrerpolicy="no-referrer" class="w-full h-full object-cover">
                 @else
                     <span class="text-sm font-semibold text-accent">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'U' }}</span>
                 @endif
@@ -138,9 +138,9 @@
         <div class="flex items-center gap-3 mb-3">
             <div class="w-10 h-10 rounded-full bg-accent/30 flex items-center justify-center ring-2 ring-accent/50 overflow-hidden">
                 @if(auth()->user()->foto)
-                    <img src="{{ auth()->user()->foto_url }}" class="w-full h-full object-cover">
+                    <img src="{{ auth()->user()->foto_url }}" referrerpolicy="no-referrer" class="w-full h-full object-cover">
                 @elseif(auth()->user()->peserta && auth()->user()->peserta->foto)
-                    <img src="{{ auth()->user()->peserta->foto_url }}" class="w-full h-full object-cover">
+                    <img src="{{ auth()->user()->peserta->foto_url }}" referrerpolicy="no-referrer" class="w-full h-full object-cover">
                 @else
                     <span class="text-sm font-semibold text-accent">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'U' }}</span>
                 @endif
