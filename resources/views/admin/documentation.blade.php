@@ -524,7 +524,7 @@
 
                             {{-- Table 3 --}}
                             <div class="border border-gray-100 rounded-3xl p-6 space-y-3 bg-gray-50/50">
-                                <h4 class="font-bold text-gray-800 font-mono text-sm">Tabel: ahp_bobots</h4>
+                                <h4 class="font-bold text-gray-800 font-mono text-sm">Tabel: ahp_bobot</h4>
                                 <ul class="list-disc pl-5 text-xs text-gray-500 space-y-1.5">
                                     <li><code>id</code> (bigint, PK, auto-increment): ID Pembobotan.</li>
                                     <li><code>event_id</code> (bigint, FK): Berelasi ke <code>events.id</code>.</li>
@@ -535,7 +535,7 @@
 
                             {{-- Table 4 --}}
                             <div class="border border-gray-100 rounded-3xl p-6 space-y-3 bg-gray-50/50">
-                                <h4 class="font-bold text-gray-800 font-mono text-sm">Tabel: penilaian_akhirs</h4>
+                                <h4 class="font-bold text-gray-800 font-mono text-sm">Tabel: penilaian_akhir</h4>
                                 <ul class="list-disc pl-5 text-xs text-gray-500 space-y-1.5">
                                     <li><code>id</code> (bigint, PK): ID Penilaian.</li>
                                     <li><code>event_id</code> (bigint, FK) & <code>peserta_id</code> (bigint, FK).</li>
