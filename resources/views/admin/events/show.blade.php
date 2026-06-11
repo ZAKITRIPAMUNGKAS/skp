@@ -110,8 +110,8 @@
     {{-- Tabs --}}
     <div class="bg-white rounded-3xl shadow-card border border-gray-100 overflow-hidden">
         {{-- Tab Navigation --}}
-        <div class="border-b border-gray-150 bg-gray-50/50 px-6 overflow-x-auto scrollbar-none">
-            <div class="flex gap-2 py-4.5 min-w-max">
+        <div class="border-b border-gray-200 px-6 overflow-x-auto scrollbar-none bg-white">
+            <div class="flex gap-6 min-w-max">
                 @php
                     $tabs = [
                         'peserta'    => ['label' => 'Peserta', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'],
@@ -133,10 +133,10 @@
                 @foreach($tabs as $key => $tab)
                     <button @click="activeTab = '{{ $key }}'"
                         :class="activeTab === '{{ $key }}'
-                            ? 'bg-primary text-white shadow-sm font-semibold'
-                            : 'bg-white hover:bg-gray-50 text-gray-600 border border-gray-200'"
-                        class="flex items-center gap-2 px-4.5 py-2 text-xs rounded-xl transition-all whitespace-nowrap shadow-xs">
-                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            ? 'border-primary text-primary font-bold'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                        class="flex items-center gap-2 px-1 py-4 text-xs font-semibold border-b-2 -mb-px transition-all whitespace-nowrap">
+                        <svg class="w-4.5 h-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $tab['icon'] }}"/>
                         </svg>
                         {{ $tab['label'] }}
