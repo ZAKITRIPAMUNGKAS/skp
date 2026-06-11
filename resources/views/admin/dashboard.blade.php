@@ -196,10 +196,99 @@
         </x-card>
 
     @else
-        <x-empty-state 
-            title="Tidak Ada Event Aktif" 
-            description="Buat event baru untuk memulai pengelolaan Baitul Arqam." 
-            icon="event" />
+        {{-- Premium Onboarding & Quick Start Guide when database is empty --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {{-- Welcome Card --}}
+            <div class="lg:col-span-2 bg-white rounded-3xl border border-gray-100 p-8 shadow-sm relative overflow-hidden flex flex-col justify-between min-h-[350px]">
+                <div class="absolute right-0 bottom-0 opacity-15 pointer-events-none translate-y-6 translate-x-6">
+                    <img src="{{ asset('images/arka/arka_fokus.png') }}" class="w-64 h-auto" alt="Mascot Arka" onerror="this.style.display='none'">
+                </div>
+                
+                <div class="relative z-10 space-y-4">
+                    <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+                        🚀 Selamat Datang di ArqamApp
+                    </span>
+                    <h2 class="text-3xl font-bold font-heading text-gray-800 leading-tight">Mulai Pengelolaan Baitul Arqam Anda</h2>
+                    <p class="text-gray-500 leading-relaxed text-sm max-w-xl">
+                        ArqamApp membantu Anda mengelola data peserta, pemindaian kehadiran presensi berbasis QR-Code, evaluasi kognitif (Pretest/Posttest), evaluasi afektif/psikomotorik, hingga analisis perankingan berbasis AHP-SAW secara otomatis dan presisi.
+                    </p>
+                </div>
+
+                <div class="relative z-10 pt-6 flex flex-wrap items-center gap-3">
+                    <a href="{{ route('admin.events.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white text-sm font-bold rounded-2xl hover:bg-primary-600 transition-all shadow-md shadow-primary/20 hover:-translate-y-0.5">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        Buat Event Sekarang
+                    </a>
+                </div>
+            </div>
+
+            {{-- Quick Stats Outline --}}
+            <div class="bg-gradient-to-br from-gray-900 to-slate-800 rounded-3xl p-8 text-white shadow-sm flex flex-col justify-between">
+                <div>
+                    <h3 class="font-bold text-lg font-heading text-yellow-400 mb-2">Panduan Sistem</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-6">Status data saat ini masih kosong. Ikuti langkah panduan di sebelah kanan untuk memulai.</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-400/20 text-yellow-400 flex items-center justify-center font-bold">1</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Buat Event</h4>
+                            <p class="text-[11px] text-slate-400">Tentukan nama, tanggal, & lokasi.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 text-slate-300 flex items-center justify-center font-bold">2</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-300">Import Peserta</h4>
+                            <p class="text-[11px] text-slate-500">Unggah file Excel daftar peserta.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Workflow Steps Cards --}}
+        <div class="mt-8">
+            <h3 class="text-lg font-bold text-gray-800 font-heading mb-6">Alur Kerja Evaluasi Baitul Arqam</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {{-- Step 1 --}}
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col justify-between min-h-[180px]">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">01</div>
+                        <h4 class="font-bold text-gray-800 text-sm">Registrasi Event & Peserta</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">Admin membuat event dan melakukan import data peserta dari berkas Excel yang tersedia.</p>
+                    </div>
+                </div>
+
+                {{-- Step 2 --}}
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col justify-between min-h-[180px]">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center font-bold text-sm">02</div>
+                        <h4 class="font-bold text-gray-800 text-sm">Kelola Sesi & Soal Ujian</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">Input jadwal sesi materi dan siapkan bank soal untuk Pretest serta Posttest.</p>
+                    </div>
+                </div>
+
+                {{-- Step 3 --}}
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col justify-between min-h-[180px]">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center font-bold text-sm">03</div>
+                        <h4 class="font-bold text-gray-800 text-sm">Evaluasi Multi-Dimensi</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">Kelola absensi kehadiran peserta, penilaian afektif, psikomotorik, & angket kepuasan.</p>
+                    </div>
+                </div>
+
+                {{-- Step 4 --}}
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col justify-between min-h-[180px]">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm">04</div>
+                        <h4 class="font-bold text-gray-800 text-sm">Kalkulasi AHP-SAW</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">Lakukan pembobotan kriteria AHP untuk perangkingan SAW otomatis serta unduh laporan akhir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
 
 </div>
