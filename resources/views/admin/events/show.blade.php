@@ -14,73 +14,67 @@
 <div x-data="{ activeTab: new URLSearchParams(window.location.search).get('tab') || 'peserta' }">
 
     {{-- Event Header --}}
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-6">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div class="space-y-3">
-                <div class="flex flex-wrap items-center gap-3">
-                    <h1 class="text-2xl font-bold font-heading text-gray-800 leading-tight">{{ $event->nama_event }}</h1>
-                    <span class="px-2.5 py-1 text-xs font-semibold rounded-full uppercase tracking-wider
-                        {{ $event->status === 'persiapan' ? 'bg-amber-100 text-amber-700' : '' }}
-                        {{ $event->status === 'berlangsung' ? 'bg-emerald-100 text-emerald-700' : '' }}
-                        {{ $event->status === 'selesai' ? 'bg-gray-100 text-gray-700' : '' }}
-                    ">
-                        {{ $event->status }}
-                    </span>
+    <div class="bg-white rounded-2xl shadow-card border border-gray-100 p-6 mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <h1 class="text-2xl font-bold font-heading text-gray-800">{{ $event->nama_event }}</h1>
+                    <x-badge :type="$event->status">{{ ucfirst($event->status) }}</x-badge>
                 </div>
-                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
-                    <span class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <div class="flex items-center gap-4 text-sm text-gray-500">
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         {{ $event->tanggal_mulai->format('d M Y') }} — {{ $event->tanggal_selesai->format('d M Y') }}
                     </span>
                     @if($event->lokasi)
-                    <span class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         {{ $event->lokasi }}
                     </span>
                     @endif
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-3">
+            <div class="flex flex-wrap items-center gap-2 sm:mt-0 mt-3">
                 @if($event->status === 'persiapan')
                     <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline-block">
                         @csrf
                         <input type="hidden" name="status" value="berlangsung">
-                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-600 text-white text-sm font-semibold rounded-2xl transition-all shadow-sm">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
+                        <x-button type="submit" variant="primary" size="sm" class="flex items-center gap-1 bg-gradient-to-r from-primary to-[#155C84]">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
                             Mulai Event
-                        </button>
+                        </x-button>
                     </form>
                 @elseif($event->status === 'berlangsung')
                     <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan event ini? Status yang sudah diselesaikan tidak dapat diubah kembali.');">
                         @csrf
                         <input type="hidden" name="status" value="selesai">
-                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-2xl transition-all shadow-sm">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0"/></svg>
+                        <x-button type="submit" variant="danger" size="sm" class="flex items-center gap-1 bg-red-600 hover:bg-red-700">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0"/></svg>
                             Selesaikan Event
-                        </button>
+                        </x-button>
                     </form>
                 @endif
                 
                 @if(auth()->user()->isAdmin())
-                    <a href="{{ route('admin.events.edit', $event) }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-sm font-semibold rounded-2xl transition-all shadow-sm">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    <x-button variant="ghost" size="sm" href="{{ route('admin.events.edit', $event) }}" class="flex items-center gap-1 border border-gray-200">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         Edit
-                    </a>
+                    </x-button>
                     
                     {{-- Tombol Reset Event --}}
                     <form method="POST" action="{{ route('admin.events.reset', $event) }}" class="inline-block" onsubmit="return confirm('PERINGATAN: Apakah Anda yakin ingin MERESET event ini?\nTindakan ini akan menghapus SELURUH data absensi, jawaban ujian, angket evaluasi, afektif, psikomotor, dan RTL peserta.\n\nData peserta terdaftar, materi, dan soal ujian TETAP AMAN.');">
                         @csrf
-                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-sm font-semibold rounded-2xl transition-all shadow-sm">
-                            <svg class="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"/></svg>
-                            Reset Data
-                        </button>
+                        <x-button type="submit" variant="danger" size="sm" class="flex items-center gap-1 bg-red-500 hover:bg-red-600 border border-red-500">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"/></svg>
+                            Reset Data Event
+                        </x-button>
                     </form>
                 @endif
                 
-                <a href="{{ route('admin.participants.idCards', $event) }}" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-2xl transition-all shadow-sm">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <x-button variant="accent" size="sm" href="{{ route('admin.participants.idCards', $event) }}" target="_blank" class="flex items-center gap-1 bg-amber-500 hover:bg-amber-600">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     Download ID Cards
-                </a>
+                </x-button>
             </div>
         </div>
     </div>
@@ -108,10 +102,10 @@
     </div>
 
     {{-- Tabs --}}
-    <div class="bg-white rounded-3xl shadow-card border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-card border border-gray-100 overflow-hidden">
         {{-- Tab Navigation --}}
-        <div class="border-b border-gray-200 px-6 overflow-x-auto scrollbar-none bg-white">
-            <div class="flex gap-6 min-w-max">
+        <div class="border-b border-gray-100 px-6 overflow-x-auto">
+            <div class="flex gap-0 min-w-max">
                 @php
                     $tabs = [
                         'peserta'    => ['label' => 'Peserta', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'],
@@ -133,10 +127,10 @@
                 @foreach($tabs as $key => $tab)
                     <button @click="activeTab = '{{ $key }}'"
                         :class="activeTab === '{{ $key }}'
-                            ? 'border-primary text-primary font-bold'
+                            ? 'border-primary text-primary'
                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                        class="flex items-center gap-2 px-1 py-4 text-xs font-semibold border-b-2 -mb-px transition-all whitespace-nowrap">
-                        <svg class="w-4.5 h-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        class="flex items-center gap-2 px-4 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $tab['icon'] }}"/>
                         </svg>
                         {{ $tab['label'] }}
@@ -144,7 +138,6 @@
                 @endforeach
             </div>
         </div>
-
 
         {{-- Tab Content --}}
         <div class="p-6">
