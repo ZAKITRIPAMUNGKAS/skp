@@ -76,14 +76,14 @@
                         <span class="truncate">4. Normalisasi SAW</span>
                     </button>
 
-                    {{-- 5. Predikat Kelulusan --}}
+                    {{-- 5. Predikat & Efektivitas N-Gain --}}
                     <button @click="activePage = 'predikat'" 
                             :class="activePage === 'predikat' ? 'bg-primary/10 text-primary font-bold' : 'text-gray-600 hover:text-primary hover:bg-gray-50'"
                             class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left text-sm transition-all group">
                         <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span class="truncate">5. Predikat Kelulusan</span>
+                        <span class="truncate">5. Predikat & N-Gain</span>
                     </button>
 
                     {{-- 6. Skema Database --}}
@@ -114,6 +114,27 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h-6a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2v-5M17 14l4-4m0 0l-4-4m4 4H7" />
                         </svg>
                         <span class="truncate">8. Simulasi Perhitungan</span>
+                    </button>
+
+                    {{-- 9. Kontrol Akses & Glosarium --}}
+                    <button @click="activePage = 'akses'" 
+                            :class="activePage === 'akses' ? 'bg-primary/10 text-primary font-bold' : 'text-gray-600 hover:text-primary hover:bg-gray-50'"
+                            class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left text-sm transition-all group">
+                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span class="truncate">9. Hak Akses & Glosarium</span>
+                    </button>
+
+                    {{-- 10. Pemeliharaan Sistem --}}
+                    <button @click="activePage = 'maintenance'" 
+                            :class="activePage === 'maintenance' ? 'bg-primary/10 text-primary font-bold' : 'text-gray-600 hover:text-primary hover:bg-gray-50'"
+                            class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left text-sm transition-all group">
+                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="truncate">10. Pemeliharaan Sistem</span>
                     </button>
                 </nav>
             </div>
@@ -350,12 +371,12 @@
                     </div>
                 </div>
 
-                {{-- Page 5: Predikat Kelulusan --}}
+                {{-- Page 5: Predikat Kelulusan & N-Gain --}}
                 <div x-show="activePage === 'predikat'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6">
                     <div class="space-y-1">
-                        <span class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-1 rounded-md">Aturan Kelulusan</span>
-                        <h2 class="text-xl font-bold text-gray-800 font-heading mt-2">5. Rubrik Predikat Nilai & Status Kelulusan</h2>
-                        <p class="text-xs text-gray-400">Penggolongan otomatis berbasis nilai preferensi preferensi SAW.</p>
+                        <span class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-1 rounded-md">Aturan Kelulusan & N-Gain</span>
+                        <h2 class="text-xl font-bold text-gray-800 font-heading mt-2">5. Rubrik Predikat Nilai & Keefektifan N-Gain</h2>
+                        <p class="text-xs text-gray-400">Penggolongan otomatis berbasis nilai preferensi preferensi SAW dan analisis efektivitas peningkatan kognitif.</p>
                     </div>
                     <hr class="border-gray-100">
                     <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
@@ -425,6 +446,27 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+
+                        <hr class="border-gray-100 my-6">
+
+                        {{-- N-Gain --}}
+                        <div class="space-y-3">
+                            <h3 class="text-base font-bold text-gray-800 font-heading">Kalkulasi Keefektifan Pembelajaran (Normalized Gain - N-Gain)</h3>
+                            <p class="text-sm">
+                                Sistem ini juga mengimplementasikan rumus **N-Gain Score (oleh Hake)** untuk mengevaluasi keefektifan pelatihan kognitif dengan membandingkan nilai Pretest dan Posttest peserta.
+                            </p>
+                            <div class="p-4 bg-gray-50 border border-gray-100 rounded-2xl text-center font-mono text-xs">
+                                N-Gain Score = (Posttest - Pretest) / (100 - Pretest)
+                            </div>
+                            <p class="text-xs text-gray-500">
+                                Hasil pembagian dikelompokkan menjadi tiga kategori efektivitas pembelajaran:
+                            </p>
+                            <ul class="list-disc pl-5 text-xs text-slate-500 space-y-1">
+                                <li><strong>Tinggi</strong>: N-Gain > 0.70</li>
+                                <li><strong>Sedang</strong>: 0.30 &le; N-Gain &le; 0.70</li>
+                                <li><strong>Rendah</strong>: N-Gain &lt; 0.30</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -758,6 +800,108 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                {{-- Page 9: Hak Akses & Glosarium --}}
+                <div x-show="activePage === 'akses'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-1 rounded-md">Hak Akses & Istilah</span>
+                        <h2 class="text-xl font-bold text-gray-800 font-heading mt-2">9. Hak Akses Pengguna & Glosarium Istilah</h2>
+                        <p class="text-xs text-gray-400">Penjelasan peran otorisasi sistem (Role-Based Access Control) dan glosarium istilah Baitul Arqam.</p>
+                    </div>
+                    <hr class="border-gray-100">
+                    <div class="space-y-6 text-sm text-gray-600">
+                        {{-- RBAC --}}
+                        <div class="space-y-3">
+                            <h3 class="font-bold text-gray-850 text-sm uppercase tracking-wider">Pembagian Peran Pengguna (User Roles):</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="p-4 rounded-2xl bg-gray-50 border border-gray-100 space-y-1">
+                                    <h4 class="font-bold text-xs text-gray-800">Administrator</h4>
+                                    <p class="text-[11px] text-gray-500">Memiliki akses penuh atas seluruh data: kelola event, import peserta, set up bobot kriteria AHP, hitung peringkat SAW, dan cetak laporan akhir.</p>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-gray-50 border border-gray-100 space-y-1">
+                                    <h4 class="font-bold text-xs text-gray-800">Fasilitator / Penguji</h4>
+                                    <p class="text-[11px] text-gray-500">Membantu melakukan penilaian psikomotorik (C3) peserta kelompoknya. Membantu pemindaian presensi scan QR Code.</p>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-gray-50 border border-gray-100 space-y-1">
+                                    <h4 class="font-bold text-xs text-gray-800">Peserta</h4>
+                                    <p class="text-[11px] text-gray-500">Mengakses jadwal sesi, mengerjakan Pretest/Posttest, melakukan self-assessment afektif (C4), serta melihat sertifikat & hasil kelulusannya sendiri.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Glossary --}}
+                        <div class="space-y-3">
+                            <h3 class="font-bold text-gray-850 text-sm uppercase tracking-wider">Glosarium Istilah:</h3>
+                            <div class="overflow-x-auto border border-gray-100 rounded-2xl">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead>
+                                        <tr class="bg-gray-50 border-b border-gray-100 text-gray-800 font-bold">
+                                            <th class="p-3">Istilah</th>
+                                            <th class="p-3">Definisi Singkat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-gray-50">
+                                            <td class="p-3 font-semibold text-gray-800">Baitul Arqam</td>
+                                            <td class="p-3 text-gray-500">Bentuk pembinaan kemuhammadiyahan untuk menyamakan visi, pemikiran, dan amalan ibadah seluruh civitas akademika.</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-50">
+                                            <td class="p-3 font-semibold text-gray-800">Consistent Ratio (CR)</td>
+                                            <td class="p-3 text-gray-500">Parameter ukur konsistensi pembuat keputusan AHP. Nilai batas toleransi ilmiah maksimal adalah 0.10.</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-50">
+                                            <td class="p-3 font-semibold text-gray-800">Benefit Criterion</td>
+                                            <td class="p-3 text-gray-500">Jenis kriteria penilaian keputusan di mana nilai yang lebih besar dianggap lebih menguntungkan (benefit) bagi alternatif.</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-50">
+                                            <td class="p-3 font-semibold text-gray-800">Alternatif</td>
+                                            <td class="p-3 text-gray-500">Istilah bagi entitas/pilihan dalam pendukung keputusan (dalam sistem ini adalah Peserta Baitul Arqam).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Page 10: Pemeliharaan Sistem --}}
+                <div x-show="activePage === 'maintenance'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-1 rounded-md">Pemeliharaan & Cache</span>
+                        <h2 class="text-xl font-bold text-gray-800 font-heading mt-2">10. Pemeliharaan & Pembersihan Cache Sistem</h2>
+                        <p class="text-xs text-gray-400">Instruksi pembersihan cache (optimisasi view, config, route) dan perbaikan symlink di web server hosting.</p>
+                    </div>
+                    <hr class="border-gray-100">
+                    <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
+                        <p>
+                            Saat melakukan pembaruan kode atau mengalami kendala tampilan asset/gambar yang tidak sinkron, Anda dapat menggunakan rute-rute pemeliharaan otomatis yang sudah disediakan sistem secara aman:
+                        </p>
+
+                        <div class="space-y-4 mt-4">
+                            {{-- Action 1 --}}
+                            <div class="p-5 border border-gray-100 rounded-3xl space-y-2 bg-gray-50/50">
+                                <h4 class="font-bold text-gray-800 text-sm">1. Pembersihan Seluruh Cache Aplikasi</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed">
+                                    Untuk menghapus cache view, konfigurasi lama, cache route, dan log cache foto sementara, buka tautan berikut di browser Anda:
+                                </p>
+                                <div class="p-3 bg-white border border-gray-100 rounded-xl font-mono text-[11px] text-center text-primary">
+                                    domain-aplikasi.com/clear-opcache-action
+                                </div>
+                            </div>
+
+                            {{-- Action 2 --}}
+                            <div class="p-5 border border-gray-100 rounded-3xl space-y-2 bg-gray-50/50">
+                                <h4 class="font-bold text-gray-800 text-sm">2. Regenerasi Symlink Direktori Storage</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed">
+                                    Jika foto profil peserta atau asset gambar di hosting tidak tampil (error 404), tautan symlink storage Anda mungkin terputus. Lakukan regenerasi otomatis tanpa SSH dengan mengakses:
+                                </p>
+                                <div class="p-3 bg-white border border-gray-100 rounded-xl font-mono text-[11px] text-center text-primary">
+                                    domain-aplikasi.com/generate-symlink
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
