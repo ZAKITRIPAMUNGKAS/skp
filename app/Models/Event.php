@@ -20,6 +20,7 @@ class Event extends Model
         'kuota',
         'created_by',
         'registration_token',
+        'rtl_deadline',
     ];
 
     protected static function boot()
@@ -37,6 +38,7 @@ class Event extends Model
         return [
             'tanggal_mulai' => 'date',
             'tanggal_selesai' => 'date',
+            'rtl_deadline' => 'datetime',
         ];
     }
 

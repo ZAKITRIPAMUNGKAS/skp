@@ -152,8 +152,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/participants/{peserta}/edit', [ParticipantController::class, 'edit'])->name('participants.edit');
         Route::put('/participants/{peserta}', [ParticipantController::class, 'update'])->name('participants.update');
         Route::delete('/participants/{peserta}', [ParticipantController::class, 'destroyParticipant'])->name('participants.destroyParticipant');
-        Route::get('/rtl', [\App\Http\Controllers\Admin\RtlController::class, 'index'])->name('rtl.index');
-        Route::get('/rtl/{rtl}', [\App\Http\Controllers\Admin\RtlController::class, 'show'])->name('rtl.show');
+
         Route::get('/soal', [SoalController::class, 'index'])->name('soal.index');
         
         // CRUD Galeri Pelatihan
@@ -185,41 +184,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Rute Spesifik Event (Harus diverifikasi kepemilikan / penugasan via event_access)
     Route::middleware('event_access')->group(function () {
         Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
-        Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
-        Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
-        Route::post('/events/{event}/status', [EventController::class, 'updateStatus'])->name('events.updateStatus');
-        Route::post('/events/{event}/facilitators', [EventController::class, 'assignFacilitators'])->name('events.assignFacilitators');
         Route::get('/events/{event}/report', [EventController::class, 'downloadReport'])->name('events.report');
         Route::get('/events/{event}/winners-report', [EventController::class, 'downloadWinnersReport'])->name('events.winnersReport');
         Route::get('/events/{event}/angket-report', [EventController::class, 'downloadAngketReport'])->name('events.angketReport');
         Route::get('/events/{event}/export-excel', [EventController::class, 'exportExcel'])->name('events.exportExcel');
         Route::get('/events/{event}/facilitators/pdf', [EventController::class, 'downloadSuratTugas'])->name('events.facilitatorsPdf');
         Route::get('/events/{event}/presentasi', [\App\Http\Controllers\Admin\PresentasiController::class, 'show'])->name('events.presentasi');
-
-        // Manajemen sesi (di dalam event)
-        Route::post('/events/{event}/sessions', [SessionController::class, 'store'])->name('sessions.store');
-        Route::put('/events/{event}/sessions/{session}', [SessionController::class, 'update'])->name('sessions.update');
-        Route::delete('/events/{event}/sessions/{session}', [SessionController::class, 'destroy'])->name('sessions.destroy');
-        Route::post('/events/{event}/sessions/reorder', [SessionController::class, 'reorder'])->name('sessions.reorder');
-
-        // Manajemen peserta (di dalam event)
-        Route::post('/events/{event}/participants', [ParticipantController::class, 'store'])->name('participants.store');
-        Route::delete('/events/{event}/participants/{participant}', [ParticipantController::class, 'destroy'])->name('participants.destroy');
-        Route::get('/events/{event}/participants/template', [ParticipantController::class, 'downloadTemplate'])->name('participants.template');
-        Route::post('/events/{event}/participants/import', [ParticipantController::class, 'import'])->name('participants.import');
-        Route::post('/events/{event}/participants/{participant}/qr', [ParticipantController::class, 'generateQr'])->name('participants.generateQr');
-        Route::get('/events/{event}/participants/{participant}/idcard', [ParticipantController::class, 'downloadIdCard'])->name('participants.downloadIdCard');
-        Route::get('/events/{event}/participants/{participant}/sertifikat', [ParticipantController::class, 'downloadSertifikat'])->name('participants.downloadSertifikat');
-        Route::get('/events/{event}/id-cards', [ParticipantController::class, 'downloadIdCards'])->name('participants.idCards');
-        Route::get('/events/{event}/accounts-pdf', [ParticipantController::class, 'downloadAccounts'])->name('participants.accountsPdf');
-        Route::get('/events/{event}/participants-pdf', [ParticipantController::class, 'participantsPdf'])->name('participants.pdf');
-        Route::get('/events/{event}/participants-export', [ParticipantController::class, 'export'])->name('participants.export');
-
-        // Pemindaian kehadiran
-        Route::get('/events/{event}/absensi/{sesi}/scan', [AbsensiController::class, 'scanPage'])->name('absensi.scan');
-        Route::get('/events/{event}/absensi/{sesi}/recent', [AbsensiController::class, 'recentScans'])->name('absensi.recent');
-
-        // Manajemen soal (pretest/posttest)
+        // Manajemen soal (pretest/posttest) - Boleh diakses Fasilitator
         Route::post('/events/{event}/soal', [SoalController::class, 'store'])->name('soal.store');
         Route::put('/events/{event}/soal/{soal}', [SoalController::class, 'update'])->name('soal.update');
         Route::delete('/events/{event}/soal/{soal}', [SoalController::class, 'destroy'])->name('soal.destroy');
@@ -228,40 +199,79 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::post('/events/{event}/soal/duplicate-posttest', [SoalController::class, 'duplicateToPosttest'])->name('soal.duplicatePosttest');
         Route::post('/events/{event}/soal/copy-from', [SoalController::class, 'copyFromEvent'])->name('soal.copyFrom');
 
-        // Kontrol sesi tes (buka/tutup pretest/posttest)
+        // Kontrol sesi tes (buka/tutup pretest/posttest) - Boleh diakses Fasilitator
         Route::post('/events/{event}/sesi-tes/open', [SesiTesController::class, 'open'])->name('sesiTes.open');
         Route::post('/events/{event}/sesi-tes/close', [SesiTesController::class, 'close'])->name('sesiTes.close');
         Route::get('/events/{event}/sesi-tes/{tipe}/status', [SesiTesController::class, 'status'])->name('sesiTes.status');
 
-        // Manajemen afektif
-        Route::post('/events/{event}/afektif/sub-aspek', [AfektifController::class, 'storeSubAspek'])->name('afektif.storeSubAspek');
-        Route::put('/events/{event}/afektif/sub-aspek/{subAspek}', [AfektifController::class, 'updateSubAspek'])->name('afektif.updateSubAspek');
-        Route::delete('/events/{event}/afektif/sub-aspek/{subAspek}', [AfektifController::class, 'destroySubAspek'])->name('afektif.destroySubAspek');
-        Route::post('/events/{event}/afektif/sub-aspek/{subAspek}/toggle', [AfektifController::class, 'toggleStatus'])->name('afektif.toggleStatus');
-        Route::post('/events/{event}/afektif/sub-aspek/{subAspek}/butir', [AfektifController::class, 'storeButir'])->name('afektif.storeButir');
-        Route::put('/events/{event}/afektif/butir/{butir}', [AfektifController::class, 'updateButir'])->name('afektif.updateButir');
-        Route::delete('/events/{event}/afektif/butir/{butir}', [AfektifController::class, 'destroyButir'])->name('afektif.destroyButir');
-        Route::post('/events/{event}/afektif/sub-aspek/{subAspek}/butir/reorder', [AfektifController::class, 'reorderButir'])->name('afektif.reorderButir');
-        Route::get('/events/{event}/afektif/summary', [AfektifController::class, 'summary'])->name('afektif.summary');
+        // Pemindaian kehadiran - Boleh diakses Fasilitator
+        Route::get('/events/{event}/absensi/{sesi}/scan', [AbsensiController::class, 'scanPage'])->name('absensi.scan');
+        Route::get('/events/{event}/absensi/{sesi}/recent', [AbsensiController::class, 'recentScans'])->name('absensi.recent');
 
-        // Manajemen psikomotor
-        Route::post('/events/{event}/psikomotor/init', [PsikomotorController::class, 'initTemplates'])->name('psikomotor.init');
-        Route::get('/events/{event}/psikomotor/data', [PsikomotorController::class, 'data'])->name('psikomotor.data');
-        Route::post('/events/{event}/psikomotor/save-row', [PsikomotorController::class, 'saveRow'])->name('psikomotor.saveRow');
-        Route::post('/events/{event}/psikomotor/save-all', [PsikomotorController::class, 'saveAll'])->name('psikomotor.saveAll');
+        // RTL - Boleh diakses Fasilitator
+        Route::get('/events/{event}/rtl/{rtl}', [\App\Http\Controllers\Admin\RtlController::class, 'show'])->name('events.rtl.show');
+        Route::post('/events/{event}/rtl-soal', [\App\Http\Controllers\Admin\RtlSoalController::class, 'store'])->name('events.rtlSoal.store');
+        Route::put('/events/{event}/rtl-soal/{soal}', [\App\Http\Controllers\Admin\RtlSoalController::class, 'update'])->name('events.rtlSoal.update');
+        Route::delete('/events/{event}/rtl-soal/{soal}', [\App\Http\Controllers\Admin\RtlSoalController::class, 'destroy'])->name('events.rtlSoal.destroy');
+        Route::post('/events/{event}/rtl-soal/reorder', [\App\Http\Controllers\Admin\RtlSoalController::class, 'reorder'])->name('events.rtlSoal.reorder');
+        Route::put('/events/{event}/rtl-deadline', [\App\Http\Controllers\Admin\RtlSoalController::class, 'updateDeadline'])->name('events.rtlDeadline.update');
 
-        // Manajemen angket
-        Route::post('/events/{event}/angket/item', [AngketController::class, 'storeItem'])->name('angket.storeItem');
-        Route::put('/events/{event}/angket/item/{item}', [AngketController::class, 'updateItem'])->name('angket.updateItem');
-        Route::delete('/events/{event}/angket/item/{item}', [AngketController::class, 'destroyItem'])->name('angket.destroyItem');
-        Route::post('/events/{event}/angket/reorder', [AngketController::class, 'reorderItems'])->name('angket.reorder');
-        Route::get('/events/{event}/angket/summary', [AngketController::class, 'summary'])->name('angket.summary');
+        // Rute-rute Edit & Hapus yang dilarang bagi Fasilitator (Admin Utama Only)
+        Route::middleware('admin_only')->group(function () {
+            Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+            Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+            Route::post('/events/{event}/status', [EventController::class, 'updateStatus'])->name('events.updateStatus');
+            Route::post('/events/{event}/facilitators', [EventController::class, 'assignFacilitators'])->name('events.assignFacilitators');
 
-        // AHP & SAW
-        Route::post('/events/{event}/ahp/calculate', [AhpSawController::class, 'calculateAhp'])->name('ahp.calculate');
-        Route::post('/events/{event}/ahp/save', [AhpSawController::class, 'saveAhp'])->name('ahp.save');
-        Route::get('/events/{event}/ahp/get', [AhpSawController::class, 'getAhp'])->name('ahp.get');
-        Route::post('/events/{event}/saw/calculate', [AhpSawController::class, 'calculateSaw'])->name('saw.calculate');
+            // Manajemen sesi (di dalam event)
+            Route::post('/events/{event}/sessions', [SessionController::class, 'store'])->name('sessions.store');
+            Route::put('/events/{event}/sessions/{session}', [SessionController::class, 'update'])->name('sessions.update');
+            Route::delete('/events/{event}/sessions/{session}', [SessionController::class, 'destroy'])->name('sessions.destroy');
+            Route::post('/events/{event}/sessions/reorder', [SessionController::class, 'reorder'])->name('sessions.reorder');
+
+            // Manajemen peserta (di dalam event)
+            Route::post('/events/{event}/participants', [ParticipantController::class, 'store'])->name('participants.store');
+            Route::delete('/events/{event}/participants/{participant}', [ParticipantController::class, 'destroy'])->name('participants.destroy');
+            Route::get('/events/{event}/participants/template', [ParticipantController::class, 'downloadTemplate'])->name('participants.template');
+            Route::post('/events/{event}/participants/import', [ParticipantController::class, 'import'])->name('participants.import');
+            Route::post('/events/{event}/participants/{participant}/qr', [ParticipantController::class, 'generateQr'])->name('participants.generateQr');
+            Route::get('/events/{event}/participants/{participant}/idcard', [ParticipantController::class, 'downloadIdCard'])->name('participants.downloadIdCard');
+            Route::get('/events/{event}/participants/{participant}/sertifikat', [ParticipantController::class, 'downloadSertifikat'])->name('participants.downloadSertifikat');
+            Route::get('/events/{event}/id-cards', [ParticipantController::class, 'downloadIdCards'])->name('participants.idCards');
+            Route::get('/events/{event}/accounts-pdf', [ParticipantController::class, 'downloadAccounts'])->name('participants.accountsPdf');
+            Route::get('/events/{event}/participants-pdf', [ParticipantController::class, 'participantsPdf'])->name('participants.pdf');
+            Route::get('/events/{event}/participants-export', [ParticipantController::class, 'export'])->name('participants.export');
+
+            // Manajemen afektif
+            Route::post('/events/{event}/afektif/sub-aspek', [AfektifController::class, 'storeSubAspek'])->name('afektif.storeSubAspek');
+            Route::put('/events/{event}/afektif/sub-aspek/{subAspek}', [AfektifController::class, 'updateSubAspek'])->name('afektif.updateSubAspek');
+            Route::delete('/events/{event}/afektif/sub-aspek/{subAspek}', [AfektifController::class, 'destroySubAspek'])->name('afektif.destroySubAspek');
+            Route::post('/events/{event}/afektif/sub-aspek/{subAspek}/toggle', [AfektifController::class, 'toggleStatus'])->name('afektif.toggleStatus');
+            Route::post('/events/{event}/afektif/sub-aspek/{subAspek}/butir', [AfektifController::class, 'storeButir'])->name('afektif.storeButir');
+            Route::put('/events/{event}/afektif/butir/{butir}', [AfektifController::class, 'updateButir'])->name('afektif.updateButir');
+            Route::delete('/events/{event}/afektif/butir/{butir}', [AfektifController::class, 'destroyButir'])->name('afektif.destroyButir');
+            Route::post('/events/{event}/afektif/sub-aspek/{subAspek}/butir/reorder', [AfektifController::class, 'reorderButir'])->name('afektif.reorderButir');
+            Route::get('/events/{event}/afektif/summary', [AfektifController::class, 'summary'])->name('afektif.summary');
+
+            // Manajemen psikomotor
+            Route::post('/events/{event}/psikomotor/init', [PsikomotorController::class, 'initTemplates'])->name('psikomotor.init');
+            Route::get('/events/{event}/psikomotor/data', [PsikomotorController::class, 'data'])->name('psikomotor.data');
+            Route::post('/events/{event}/psikomotor/save-row', [PsikomotorController::class, 'saveRow'])->name('psikomotor.saveRow');
+            Route::post('/events/{event}/psikomotor/save-all', [PsikomotorController::class, 'saveAll'])->name('psikomotor.saveAll');
+
+            // Manajemen angket
+            Route::post('/events/{event}/angket/item', [AngketController::class, 'storeItem'])->name('angket.storeItem');
+            Route::put('/events/{event}/angket/item/{item}', [AngketController::class, 'updateItem'])->name('angket.updateItem');
+            Route::delete('/events/{event}/angket/item/{item}', [AngketController::class, 'destroyItem'])->name('angket.destroyItem');
+            Route::post('/events/{event}/angket/reorder', [AngketController::class, 'reorderItems'])->name('angket.reorder');
+            Route::get('/events/{event}/angket/summary', [AngketController::class, 'summary'])->name('angket.summary');
+
+            // AHP & SAW
+            Route::post('/events/{event}/ahp/calculate', [AhpSawController::class, 'calculateAhp'])->name('ahp.calculate');
+            Route::post('/events/{event}/ahp/save', [AhpSawController::class, 'saveAhp'])->name('ahp.save');
+            Route::get('/events/{event}/ahp/get', [AhpSawController::class, 'getAhp'])->name('ahp.get');
+            Route::post('/events/{event}/saw/calculate', [AhpSawController::class, 'calculateSaw'])->name('saw.calculate');
+        });
     });
 
     Route::post('/absensi/scan', [AbsensiController::class, 'scan'])->name('absensi.process');

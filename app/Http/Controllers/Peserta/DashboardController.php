@@ -124,13 +124,9 @@ class DashboardController extends Controller
             $preActive = false;
             $preSesi = null;
             foreach ($activePreSesis as $aps) {
-                if ($aps->waktu_mulai && now()->timestamp >= ($aps->waktu_mulai->timestamp + ($aps->durasi_menit * 60))) {
-                    $aps->update(['status' => 'tutup', 'waktu_selesai' => now()]);
-                } else {
-                    $preActive = true;
-                    $preSesi = $aps;
-                    break;
-                }
+                $preActive = true;
+                $preSesi = $aps;
+                break;
             }
 
             // Find any active posttest session
@@ -138,23 +134,45 @@ class DashboardController extends Controller
             $postActive = false;
             $postSesi = null;
             foreach ($activePostSesis as $aps) {
-                if ($aps->waktu_mulai && now()->timestamp >= ($aps->waktu_mulai->timestamp + ($aps->durasi_menit * 60))) {
-                    $aps->update(['status' => 'tutup', 'waktu_selesai' => now()]);
-                } else {
-                    $postActive = true;
-                    $postSesi = $aps;
-                    break;
+                $postActive = true;
+                $postSesi = $aps;
+                break;
+            }
+
+            $preRemainingSeconds = 0;
+            if ($preActive && $preSesi) {
+                $pesertaMulai = \App\Models\PesertaTesMulai::where('peserta_id', $peserta->id)
+                    ->where('event_id', $eventId)
+                    ->where('event_sesi_id', $preSesi->event_sesi_id)
+                    ->where('tipe', 'pretest')
+                    ->first();
+                if ($pesertaMulai) {
+                    $endTime = $pesertaMulai->waktu_mulai->timestamp + ($preSesi->durasi_menit * 60);
+                    $preRemainingSeconds = max(0, $endTime - now()->timestamp);
+                }
+            }
+
+            $postRemainingSeconds = 0;
+            if ($postActive && $postSesi) {
+                $pesertaMulai = \App\Models\PesertaTesMulai::where('peserta_id', $peserta->id)
+                    ->where('event_id', $eventId)
+                    ->where('event_sesi_id', $postSesi->event_sesi_id)
+                    ->where('tipe', 'posttest')
+                    ->first();
+                if ($pesertaMulai) {
+                    $endTime = $pesertaMulai->waktu_mulai->timestamp + ($postSesi->durasi_menit * 60);
+                    $postRemainingSeconds = max(0, $endTime - now()->timestamp);
                 }
             }
 
             $sesiStatus['pretest'] = $preActive;
             $sesiStatus['pretest_durasi'] = $preSesi ? $preSesi->durasi_menit : 30;
-            $sesiStatus['pretest_remaining_seconds'] = $preActive && $preSesi->waktu_mulai ? max(0, ($preSesi->waktu_mulai->timestamp + ($preSesi->durasi_menit * 60)) - now()->timestamp) : 0;
+            $sesiStatus['pretest_remaining_seconds'] = $preRemainingSeconds;
             $sesiStatus['pretest_event_sesi_id'] = $preSesi ? $preSesi->event_sesi_id : null;
 
             $sesiStatus['posttest'] = $postActive;
             $sesiStatus['posttest_durasi'] = $postSesi ? $postSesi->durasi_menit : 30;
-            $sesiStatus['posttest_remaining_seconds'] = $postActive && $postSesi->waktu_mulai ? max(0, ($postSesi->waktu_mulai->timestamp + ($postSesi->durasi_menit * 60)) - now()->timestamp) : 0;
+            $sesiStatus['posttest_remaining_seconds'] = $postRemainingSeconds;
             $sesiStatus['posttest_event_sesi_id'] = $postSesi ? $postSesi->event_sesi_id : null;
 
             $scores = PenilaianAkhir::where('event_id', $eventId)->where('peserta_id', $peserta->id)->first();
@@ -195,6 +213,11 @@ class DashboardController extends Controller
             abort(403, 'Sertifikat belum tersedia atau Anda tidak lulus evaluasi.');
         }
 
+        // Validate mandatory profile fields
+        if (empty($peserta->nama_lengkap) || empty($peserta->nik) || empty($peserta->tempat_lahir) || empty($peserta->tanggal_lahir)) {
+            return redirect()->route('peserta.profile.index')->with('error', 'Silakan lengkapi profil Anda (Nama Lengkap, NIK, Tempat Lahir, dan Tanggal Lahir) terlebih dahulu untuk mengunduh sertifikat.');
+        }
+
         // Check if RTL is submitted
         $hasRtl = \App\Models\Rtl::where('event_id', $event->id)
             ->where('peserta_id', $peserta->id)
@@ -202,6 +225,9 @@ class DashboardController extends Controller
             ->exists();
 
         if (!$hasRtl) {
+            if ($event->rtl_deadline && now()->gt($event->rtl_deadline)) {
+                return redirect()->route('peserta.hasil')->with('error', 'Anda tidak dapat mengunduh sertifikat karena belum menyelesaikan RTL dan batas waktu pengerjaan telah habis.');
+            }
             return redirect()->route('peserta.rtl.index', $event)->with('error', 'Anda wajib mengisi Rencana Tindak Lanjut (RTL) terlebih dahulu untuk mengunduh sertifikat.');
         }
 
@@ -387,15 +413,46 @@ class DashboardController extends Controller
             ->firstOrFail();
 
         $skor = PenilaianAkhir::where('event_id', $event->id)->where('peserta_id', $peserta->id)->first();
-        if (!$skor || empty($skor->status_kelulusan) || str_contains($skor->status_kelulusan, 'Tidak Lulus')) {
-            return redirect()->route('peserta.hasil')->with('error', 'RTL hanya dapat diakses setelah Anda dinyatakan lulus evaluasi.');
+        if (!$skor || empty($skor->status_kelulusan)) {
+            return redirect()->route('peserta.hasil')->with('error', 'RTL belum dapat diakses karena pengumuman kelulusan belum dirilis oleh panitia.');
+        }
+        if (str_contains($skor->status_kelulusan, 'Tidak Lulus')) {
+            return redirect()->route('peserta.hasil')->with('error', 'RTL hanya dapat diakses oleh peserta yang dinyatakan lulus evaluasi.');
         }
 
         $rtl = \App\Models\Rtl::where('event_id', $event->id)
             ->where('peserta_id', $peserta->id)
+            ->with('jawaban.soal')
             ->first();
 
-        return view('peserta.rtl.index', compact('peserta', 'event', 'rtl'));
+        // Check deadline
+        if ($event->rtl_deadline && now()->gt($event->rtl_deadline)) {
+            if (!$rtl || $rtl->status !== 'submitted') {
+                return redirect()->route('peserta.hasil')->with('error', 'Batas waktu pengisian RTL telah habis.');
+            }
+        }
+
+        $rtlSoal = \App\Models\RtlSoal::where('event_id', $event->id)->orderBy('urutan')->get();
+        if ($rtlSoal->isEmpty()) {
+            $defaultQuestions = [
+                'Tujuan Rencana Aksi',
+                'Sasaran Utama Penerima Dampak',
+                'Indikator Keberhasilan',
+                'Waktu Pelaksanaan',
+                'Mitra & Pihak Terlibat'
+            ];
+            foreach ($defaultQuestions as $index => $qText) {
+                \App\Models\RtlSoal::create([
+                    'event_id' => $event->id,
+                    'pertanyaan' => $qText,
+                    'tipe' => 'essay',
+                    'urutan' => $index + 1,
+                ]);
+            }
+            $rtlSoal = \App\Models\RtlSoal::where('event_id', $event->id)->orderBy('urutan')->get();
+        }
+
+        return view('peserta.rtl.index', compact('peserta', 'event', 'rtl', 'rtlSoal'));
     }
 
     public function submitRtl(Request $request, Event $event)
@@ -403,18 +460,30 @@ class DashboardController extends Controller
         $peserta = auth()->user()->peserta;
         if (!$peserta) abort(403);
 
-        $request->validate([
+        if ($event->rtl_deadline && now()->gt($event->rtl_deadline)) {
+            return redirect()->route('peserta.hasil')->with('error', 'Waktu pengerjaan RTL telah berakhir.');
+        }
+
+        $rtlSoals = \App\Models\RtlSoal::where('event_id', $event->id)->get();
+
+        // Build validation rules dynamically
+        $rules = [
             'judul_kegiatan' => 'required|string|max:255',
             'kategori_rtl'   => 'required|string|max:100',
-            'tujuan'         => 'required|string',
-            'sasaran'        => 'required|string',
-            'indikator_keberhasilan' => 'required|string',
-            'waktu_pelaksanaan' => 'required|string|max:100',
-            'pihak_terlibat' => 'required|string',
             'steps'          => 'required|array|min:1',
             'steps.*.deskripsi'      => 'required|string|max:255',
             'steps.*.target_tanggal' => 'required|string|max:100',
-        ]);
+        ];
+
+        foreach ($rtlSoals as $soal) {
+            if ($soal->tipe === 'essay') {
+                $rules["answers.{$soal->id}"] = 'required|string';
+            } elseif ($soal->tipe === 'upload') {
+                $rules["answers.{$soal->id}"] = $request->hasFile("answers.{$soal->id}") ? 'required|image|max:5120' : 'nullable';
+            }
+        }
+
+        $request->validate($rules);
 
         $steps = [];
         foreach ($request->input('steps') as $index => $step) {
@@ -425,7 +494,7 @@ class DashboardController extends Controller
             ];
         }
 
-        \App\Models\Rtl::updateOrCreate(
+        $rtl = \App\Models\Rtl::updateOrCreate(
             [
                 'event_id' => $event->id,
                 'peserta_id' => $peserta->id,
@@ -433,15 +502,55 @@ class DashboardController extends Controller
             [
                 'judul_kegiatan' => $request->judul_kegiatan,
                 'kategori_rtl'   => $request->kategori_rtl,
-                'tujuan'         => $request->tujuan,
-                'sasaran'        => $request->sasaran,
-                'indikator_keberhasilan' => $request->indikator_keberhasilan,
-                'waktu_pelaksanaan' => $request->waktu_pelaksanaan,
-                'pihak_terlibat' => $request->pihak_terlibat,
                 'langkah_langkah' => $steps,
                 'status'         => 'submitted',
             ]
         );
+
+        // Save new answers or preserve old uploads if no new file is uploaded
+        foreach ($rtlSoals as $soal) {
+            if ($soal->tipe === 'deskripsi') {
+                continue;
+            }
+
+            $jawabanText = '';
+
+            if ($soal->tipe === 'essay') {
+                $jawabanText = $request->input("answers.{$soal->id}");
+            } elseif ($soal->tipe === 'upload') {
+                if ($request->hasFile("answers.{$soal->id}")) {
+                    $file = $request->file("answers.{$soal->id}");
+                    $filename = time() . '_' . $peserta->id . '_' . $soal->id . '.' . $file->getClientOriginalExtension();
+                    
+                    $uploadPath = public_path('uploads/rtl');
+                    if (!file_exists($uploadPath)) {
+                        mkdir($uploadPath, 0755, true);
+                    }
+                    
+                    $file->move($uploadPath, $filename);
+                    $jawabanText = 'uploads/rtl/' . $filename;
+                } else {
+                    $oldJawaban = \App\Models\RtlJawaban::where('rtl_id', $rtl->id)
+                        ->where('rtl_soal_id', $soal->id)
+                        ->first();
+                    if ($oldJawaban) {
+                        $jawabanText = $oldJawaban->jawaban;
+                    } else {
+                        return back()->withInput()->withErrors(["answers.{$soal->id}" => "Unggah bukti gambar wajib diisi."]);
+                    }
+                }
+            }
+
+            \App\Models\RtlJawaban::updateOrCreate(
+                [
+                    'rtl_id' => $rtl->id,
+                    'rtl_soal_id' => $soal->id,
+                ],
+                [
+                    'jawaban' => $jawabanText,
+                ]
+            );
+        }
 
         return redirect()->route('peserta.hasil')->with('success', 'Rencana Tindak Lanjut (RTL) berhasil disimpan! Anda sekarang dapat mengunduh sertifikat.');
     }

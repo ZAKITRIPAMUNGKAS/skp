@@ -375,7 +375,7 @@
                             localStorage.removeItem(storageKey);
                             localStorage.removeItem(storageKey + '_target');
                             clearInterval(this.timerInterval);
-                            window.location.href = '{{ route("peserta.tes.result", [$event, $eventSesi, $tipe]) }}';
+                            window.location.href = '{{ route("peserta.tes.index") }}';
                         }
                     } catch (e) {
                         alert('Gagal mengirim jawaban. Silakan coba lagi.');

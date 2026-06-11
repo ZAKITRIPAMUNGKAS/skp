@@ -57,14 +57,11 @@
                                 </div>
 
                                 @if($material['pretest']['done'])
-                                    <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100">
-                                        <div>
-                                            <span class="block text-[8px] text-gray-400 font-bold uppercase tracking-wider">Nilai</span>
-                                            <span class="text-base font-extrabold text-primary">{{ $material['pretest']['score'] ?? '-' }}</span>
-                                        </div>
-                                        <a href="{{ route('peserta.tes.result', [$activeEvent, $material['id'], 'pretest']) }}" class="px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-bold hover:bg-primary transition-colors">
-                                            Lihat Detail
-                                        </a>
+                                    <div class="flex items-center gap-2 bg-green-50 p-3 rounded-xl border border-green-100 text-green-700">
+                                        <svg class="w-4 h-4 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span class="text-xs font-medium">Jawaban telah berhasil dikumpulkan</span>
                                     </div>
                                 @else
                                     @if($material['pretest']['active'])
@@ -97,14 +94,11 @@
                                 </div>
 
                                 @if($material['posttest']['done'])
-                                    <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100">
-                                        <div>
-                                            <span class="block text-[8px] text-gray-400 font-bold uppercase tracking-wider">Nilai</span>
-                                            <span class="text-base font-extrabold text-primary">{{ $material['posttest']['score'] ?? '-' }}</span>
-                                        </div>
-                                        <a href="{{ route('peserta.tes.result', [$activeEvent, $material['id'], 'posttest']) }}" class="px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-bold hover:bg-primary transition-colors">
-                                            Lihat Detail
-                                        </a>
+                                    <div class="flex items-center gap-2 bg-green-50 p-3 rounded-xl border border-green-100 text-green-700">
+                                        <svg class="w-4 h-4 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span class="text-xs font-medium">Jawaban telah berhasil dikumpulkan</span>
                                     </div>
                                 @else
                                     @if($material['posttest']['active'])

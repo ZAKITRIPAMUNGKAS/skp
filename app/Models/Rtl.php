@@ -16,11 +16,6 @@ class Rtl extends Model
         'peserta_id',
         'judul_kegiatan',
         'kategori_rtl',
-        'tujuan',
-        'sasaran',
-        'indikator_keberhasilan',
-        'waktu_pelaksanaan',
-        'pihak_terlibat',
         'langkah_langkah',
         'status',
     ];
@@ -39,5 +34,10 @@ class Rtl extends Model
     public function peserta()
     {
         return $this->belongsTo(Peserta::class);
+    }
+
+    public function jawaban()
+    {
+        return $this->hasMany(RtlJawaban::class, 'rtl_id');
     }
 }

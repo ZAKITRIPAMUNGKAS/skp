@@ -25,22 +25,10 @@ class TesController extends Controller
      */
     private function checkAndCloseSession($eventId, $tipe, $eventSesiId)
     {
-        $sesiTes = SesiTes::where('event_id', $eventId)
+        return SesiTes::where('event_id', $eventId)
             ->where('event_sesi_id', $eventSesiId)
             ->where('tipe', $tipe)
             ->first();
-
-        if ($sesiTes && $sesiTes->status === 'aktif' && $sesiTes->waktu_mulai) {
-            $endTime = $sesiTes->waktu_mulai->timestamp + ($sesiTes->durasi_menit * 60);
-            if (now()->timestamp >= $endTime) {
-                $sesiTes->update([
-                    'status' => 'tutup',
-                    'waktu_selesai' => now(),
-                ]);
-                $sesiTes->status = 'tutup';
-            }
-        }
-        return $sesiTes;
     }
 
     /**
@@ -124,7 +112,7 @@ class TesController extends Controller
         }
 
         if ($this->tesService->hasSubmitted($event, $peserta, $tipe, $eventSesi->id)) {
-            return redirect()->route('peserta.tes.result', [$event, $eventSesi, $tipe]);
+            return redirect()->route('peserta.tes.index');
         }
 
         $totalSoal = Soal::where('event_id', $event->id)
@@ -153,15 +141,30 @@ class TesController extends Controller
         }
 
         if ($this->tesService->hasSubmitted($event, $peserta, $tipe, $eventSesi->id)) {
-            return redirect()->route('peserta.tes.result', [$event, $eventSesi, $tipe]);
+            return redirect()->route('peserta.tes.index');
         }
 
         $questions = $this->tesService->getShuffledQuestions($event, $peserta, $tipe, $eventSesi->id);
 
-        $remainingSeconds = 0;
-        if ($sesiTes->waktu_mulai) {
-            $endTime = $sesiTes->waktu_mulai->timestamp + ($sesiTes->durasi_menit * 60);
-            $remainingSeconds = max(0, $endTime - now()->timestamp);
+        $pesertaMulai = \App\Models\PesertaTesMulai::firstOrCreate(
+            [
+                'peserta_id' => $peserta->id,
+                'event_id' => $event->id,
+                'event_sesi_id' => $eventSesi->id,
+                'tipe' => $tipe,
+            ],
+            [
+                'waktu_mulai' => now(),
+            ]
+        );
+
+        $durasiMenit = $sesiTes->durasi_menit ?? 30;
+        $endTime = $pesertaMulai->waktu_mulai->timestamp + ($durasiMenit * 60);
+        $remainingSeconds = max(0, $endTime - now()->timestamp);
+
+        if ($remainingSeconds <= 0) {
+            $this->tesService->submitAnswers($event, $peserta, $tipe, [], $eventSesi->id);
+            return redirect()->route('peserta.tes.index')->with('error', 'Waktu pengerjaan ujian Anda telah habis.');
         }
 
         return view('peserta.tes.take', compact(
@@ -187,7 +190,28 @@ class TesController extends Controller
             return response()->json(['error' => 'Anda sudah mengerjakan tes ini.'], 422);
         }
 
-        $this->checkAndCloseSession($event->id, $tipe, $eventSesi->id);
+        $sesiTes = $this->checkAndCloseSession($event->id, $tipe, $eventSesi->id);
+        if (!$sesiTes || $sesiTes->status !== 'aktif') {
+            return response()->json(['error' => 'Sesi tes tidak aktif.'], 422);
+        }
+
+        // Validate individual timer
+        $pesertaMulai = \App\Models\PesertaTesMulai::where('peserta_id', $peserta->id)
+            ->where('event_id', $event->id)
+            ->where('event_sesi_id', $eventSesi->id)
+            ->where('tipe', $tipe)
+            ->first();
+
+        if ($pesertaMulai) {
+            $durasiMenit = $sesiTes->durasi_menit ?? 30;
+            $endTime = $pesertaMulai->waktu_mulai->timestamp + ($durasiMenit * 60);
+            
+            // Allow 15 seconds tolerance for network latency
+            if (now()->timestamp > ($endTime + 15)) {
+                $this->tesService->submitAnswers($event, $peserta, $tipe, [], $eventSesi->id);
+                return response()->json(['error' => 'Waktu pengerjaan telah habis.'], 422);
+            }
+        }
 
         $result = $this->tesService->submitAnswers(
             $event, $peserta, $tipe, $request->answers, $eventSesi->id
@@ -204,14 +228,6 @@ class TesController extends Controller
      */
     public function result(Event $event, EventSesi $eventSesi, string $tipe)
     {
-        $peserta = auth()->user()->peserta;
-        if (!$peserta) abort(403);
-
-        $result = $this->tesService->getResult($event, $peserta, $tipe, $eventSesi->id);
-        if (!$result) {
-            return redirect()->route('peserta.tes.instruction', [$event, $eventSesi, $tipe]);
-        }
-
-        return view('peserta.tes.result', compact('event', 'eventSesi', 'tipe', 'result'));
+        return redirect()->route('peserta.tes.index')->with('success', 'Ujian telah selesai dikerjakan.');
     }
 }

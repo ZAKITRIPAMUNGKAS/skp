@@ -11,7 +11,7 @@
     tipe: 'pretest', 
     selectedEventId: '',
     selectedSoalIds: JSON.parse(localStorage.getItem('selected_soal_ids') || '[]'),
-    eventsData: {{ $events->map(fn($e) => ['id' => $e->id, 'nama_event' => $e->nama_event, 'sessions' => $e->eventSesi->map(fn($s) => ['id' => $s->id, 'nama_sesi' => $s->nama_sesi])])->toJson() }},
+    eventsData: {{ $events->map(fn($e) => ['id' => $e->id, 'nama_event' => $e->nama_event, 'lokasi' => $e->lokasi, 'sessions' => $e->eventSesi->map(fn($s) => ['id' => $s->id, 'nama_sesi' => $s->nama_sesi])])->toJson() }},
     
     init() {
         this.$watch('selectedSoalIds', value => {
@@ -181,7 +181,7 @@
                         <select name="target_event_id" x-model="selectedEventId" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
                             <option value="">-- Pilih Event --</option>
                             <template x-for="ev in eventsData" :key="ev.id">
-                                <option :value="ev.id" x-text="ev.nama_event"></option>
+                                <option :value="ev.id" x-text="ev.lokasi ? ev.nama_event + ' (' + ev.lokasi + ')' : ev.nama_event"></option>
                             </template>
                         </select>
                     </div>
@@ -230,7 +230,7 @@
                 <template x-for="id in selectedSoalIds" :key="id">
                     <input type="hidden" name="soal_ids[]" :value="id">
                 </template>
-
+ 
                 <p class="text-xs text-gray-600 mb-4 bg-blue-50 p-3 rounded-xl border border-blue-100 font-medium">
                     Akan menyalin <span class="text-blue-600 font-bold" x-text="selectedSoalIds.length"></span> soal yang Anda pilih ke event target.
                 </p>
@@ -241,7 +241,7 @@
                         <select name="target_event_id" x-model="selectedEventId" required class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50/50 cursor-pointer">
                             <option value="">-- Pilih Event --</option>
                             <template x-for="ev in eventsData" :key="ev.id">
-                                <option :value="ev.id" x-text="ev.nama_event"></option>
+                                <option :value="ev.id" x-text="ev.lokasi ? ev.nama_event + ' (' + ev.lokasi + ')' : ev.nama_event"></option>
                             </template>
                         </select>
                     </div>

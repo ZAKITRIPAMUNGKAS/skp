@@ -17,6 +17,42 @@
         </div>
     </div>
 
+    {{-- Countdown Timer if not submitted and deadline exists --}}
+    @if(!$rtl && $event->rtl_deadline)
+        <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-3xl p-6 shadow-md flex flex-col md:flex-row items-center justify-between gap-4"
+             x-data="rtlCountdown('{{ $event->rtl_deadline->toIso8601String() }}')">
+            <div class="flex items-center gap-3">
+                <div class="p-3 bg-white/20 rounded-2xl">
+                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold">Batas Waktu Pengumpulan RTL</h2>
+                    <p class="text-xs text-white/90">Sertifikat tidak dapat diunduh jika melewati batas waktu ini.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 text-center">
+                <div class="bg-white/10 backdrop-blur-sm px-3.5 py-2 rounded-xl min-w-[60px]">
+                    <span class="text-xl font-extrabold block leading-tight" x-text="days">00</span>
+                    <span class="text-[9px] uppercase tracking-wider font-bold">Hari</span>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm px-3.5 py-2 rounded-xl min-w-[60px]">
+                    <span class="text-xl font-extrabold block leading-tight" x-text="hours">00</span>
+                    <span class="text-[9px] uppercase tracking-wider font-bold">Jam</span>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm px-3.5 py-2 rounded-xl min-w-[60px]">
+                    <span class="text-xl font-extrabold block leading-tight" x-text="minutes">00</span>
+                    <span class="text-[9px] uppercase tracking-wider font-bold">Menit</span>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm px-3.5 py-2 rounded-xl min-w-[60px]">
+                    <span class="text-xl font-extrabold block leading-tight" x-text="seconds">00</span>
+                    <span class="text-[9px] uppercase tracking-wider font-bold">Detik</span>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if($rtl)
         {{-- Read-Only View (RTL Submitted) --}}
         <div class="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 space-y-6">
@@ -40,29 +76,18 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tujuan Kegiatan</h3>
-                    <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70">{{ $rtl->tujuan }}</p>
-                </div>
-                <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sasaran Utama</h3>
-                    <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70">{{ $rtl->sasaran }}</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Indikator Keberhasilan</h3>
-                    <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70">{{ $rtl->indikator_keberhasilan }}</p>
-                </div>
-                <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Waktu Pelaksanaan</h3>
-                    <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70">{{ $rtl->waktu_pelaksanaan }}</p>
-                </div>
-                <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Mitra / Pihak Terlibat</h3>
-                    <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70">{{ $rtl->pihak_terlibat }}</p>
-                </div>
+                @foreach($rtl->jawaban as $jw)
+                    <div class="space-y-2">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">{{ $jw->soal?->pertanyaan }}</h3>
+                        @if($jw->soal?->tipe === 'upload')
+                            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center justify-center">
+                                <img src="{{ asset($jw->jawaban) }}" alt="Bukti Upload" class="max-h-60 rounded-xl object-contain shadow-sm border border-gray-200">
+                            </div>
+                        @else
+                            <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70 whitespace-pre-wrap">{{ $jw->jawaban }}</p>
+                        @endif
+                    </div>
+                @endforeach
             </div>
 
             {{-- Langkah-langkah Timeline --}}
@@ -114,7 +139,7 @@
             </div>
 
             {{-- Form Element --}}
-            <form action="{{ route('peserta.rtl.submit', $event) }}" method="POST" id="rtlForm" class="space-y-6 pt-4">
+            <form action="{{ route('peserta.rtl.submit', $event) }}" method="POST" id="rtlForm" enctype="multipart/form-data" class="space-y-6 pt-4">
                 @csrf
                 
                 {{-- Step 0: Informasi Umum --}}
@@ -139,47 +164,40 @@
                     </div>
                 </div>
 
-                {{-- Step 1: Tujuan & Sasaran --}}
-                <div x-show="step === 1" x-transition>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Tujuan Rencana Kegiatan</label>
-                            <textarea name="tujuan" required rows="4" placeholder="Jelaskan secara singkat apa tujuan akhir dari kegiatan ini..."
-                                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm bg-gray-50/50"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Sasaran Kegiatan</label>
-                            <textarea name="sasaran" required rows="3" placeholder="Siapa target sasaran dari kegiatan ini? (Misal: Anggota PCM, Dosen, Guru AUM, Pemuda Muhammadiyah)"
-                                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm bg-gray-50/50"></textarea>
-                        </div>
+                {{-- Step 1: Pertanyaan RTL --}}
+                <div x-show="step === 1" x-transition style="display: none;">
+                    <div class="space-y-6">
+                        @foreach($rtlSoal as $soal)
+                            <div>
+                                @if($soal->tipe === 'deskripsi')
+                                    <div class="bg-gray-50 border border-gray-150 p-5 rounded-2xl text-sm text-gray-700 leading-relaxed">
+                                        <div class="flex items-start gap-2.5">
+                                            <div class="p-1.5 bg-primary/10 rounded-lg text-primary mt-0.5">
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-800 mb-1">Penjelasan Teknis</p>
+                                                {!! nl2br(e($soal->pertanyaan)) !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($soal->tipe === 'essay')
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">{{ $soal->pertanyaan }} <span class="text-red-500">*</span></label>
+                                    <textarea name="answers[{{ $soal->id }}]" required rows="3" placeholder="Tuliskan jawaban Anda..."
+                                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm bg-gray-50/50"></textarea>
+                                @elseif($soal->tipe === 'upload')
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">{{ $soal->pertanyaan }} <span class="text-red-500">*</span></label>
+                                    <p class="text-[11px] text-gray-400 mb-2.5">Maksimal ukuran file gambar adalah 5MB (Format: JPG, JPEG, PNG)</p>
+                                    <input type="file" name="answers[{{ $soal->id }}]" required accept="image/*"
+                                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer cursor-pointer border border-gray-200 rounded-xl p-2.5 bg-gray-50/50">
+                                @endif
+                            </div>
+                        @endforeach
                     </div>
                 </div>
 
-                {{-- Step 2: Parameter Keberhasilan --}}
-                <div x-show="step === 2" x-transition>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Indikator Keberhasilan</label>
-                            <textarea name="indikator_keberhasilan" required rows="3" placeholder="Apa parameter/ukuran keberhasilan kegiatan ini? (Contoh: Terlaksananya kajian minimal 2x sebulan dengan dihadiri 80% anggota)"
-                                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm bg-gray-50/50"></textarea>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">Estimasi Waktu Pelaksanaan</label>
-                                <input type="text" name="waktu_pelaksanaan" required placeholder="Contoh: Juli - Agustus 2026"
-                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm bg-gray-50/50">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">Mitra / Pihak yang Terlibat</label>
-                                <input type="text" name="pihak_terlibat" required placeholder="Contoh: Pengurus PCM, Takmir Masjid, Aisyiyah Ranting"
-                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm bg-gray-50/50">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Step 3: Alur & Langkah Pelaksanaan --}}
-                <div x-show="step === 3" x-transition>
+                {{-- Step 2: Alur & Langkah Pelaksanaan --}}
+                <div x-show="step === 2" x-transition style="display: none;">
                     <div class="space-y-4">
                         <div class="flex items-center justify-between mb-2">
                             <div>
@@ -194,7 +212,7 @@
 
                         <div class="space-y-3">
                             <template x-for="(item, index) in stepsList" :key="index">
-                                <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 space-y-3 relative group">
+                                <div class="bg-gray-55/40 p-4 rounded-2xl border border-gray-100 space-y-3 relative group">
                                     <div class="flex items-center justify-between">
                                         <span class="text-xs font-bold text-primary" x-text="'Langkah #' + (index + 1)"></span>
                                         <button type="button" @click="removeStep(index)" x-show="stepsList.length > 1"
@@ -247,13 +265,52 @@
 
 @push('scripts')
 <script>
+    function rtlCountdown(deadlineString) {
+        return {
+            deadline: new Date(deadlineString).getTime(),
+            days: '00',
+            hours: '00',
+            minutes: '00',
+            seconds: '00',
+            interval: null,
+            init() {
+                this.updateTime();
+                this.interval = setInterval(() => {
+                    this.updateTime();
+                }, 1000);
+            },
+            updateTime() {
+                const now = new Date().getTime();
+                const distance = this.deadline - now;
+
+                if (distance < 0) {
+                    clearInterval(this.interval);
+                    this.days = '00';
+                    this.hours = '00';
+                    this.minutes = '00';
+                    this.seconds = '00';
+                    return;
+                }
+
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+                this.days = d.toString().padStart(2, '0');
+                this.hours = h.toString().padStart(2, '0');
+                this.minutes = m.toString().padStart(2, '0');
+                this.seconds = s.toString().padStart(2, '0');
+            }
+        }
+    }
+
     function rtlWizard() {
         return {
             step: 0,
             steps: [
                 { label: 'Informasi Kegiatan' },
-                { label: 'Tujuan & Sasaran' },
-                { label: 'Parameter & Waktu' },
+                { label: 'Pertanyaan RTL' },
                 { label: 'Langkah Kerja' }
             ],
             stepsList: [

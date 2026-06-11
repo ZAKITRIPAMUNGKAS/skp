@@ -11,8 +11,8 @@
             <p class="text-sm text-gray-500 mt-1">Evaluasi rincian alur langkah dan sasaran rencana aksi peserta pelatihan.</p>
         </div>
         <div>
-            <a href="{{ route('admin.rtl.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl text-sm font-bold transition-all">
-                ← Kembali ke Daftar
+            <a href="{{ route('admin.events.show', [$event, 'tab' => 'rtl']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl text-sm font-bold transition-all">
+                ← Kembali ke Event
             </a>
         </div>
     </div>
@@ -36,29 +36,18 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tujuan Rencana Aksi</h3>
-                <p class="text-sm text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-2xl border border-gray-100">{{ $rtl->tujuan }}</p>
-            </div>
-            <div class="space-y-2">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sasaran Utama Penerima Dampak</h3>
-                <p class="text-sm text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-2xl border border-gray-100">{{ $rtl->sasaran }}</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-            <div class="space-y-2">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Indikator Keberhasilan</h3>
-                <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70">{{ $rtl->indikator_keberhasilan }}</p>
-            </div>
-            <div class="space-y-2">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Waktu Pelaksanaan</h3>
-                <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70">{{ $rtl->waktu_pelaksanaan }}</p>
-            </div>
-            <div class="space-y-2">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Mitra & Pihak Terlibat</h3>
-                <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70">{{ $rtl->pihak_terlibat }}</p>
-            </div>
+            @foreach($rtl->jawaban as $jw)
+                <div class="space-y-2">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">{{ $jw->soal?->pertanyaan }}</h3>
+                    @if($jw->soal?->tipe === 'upload')
+                        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center justify-center">
+                            <img src="{{ asset($jw->jawaban) }}" alt="Bukti Upload" class="max-h-60 rounded-xl object-contain shadow-sm border border-gray-200">
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-700 leading-relaxed bg-gray-55/40 p-4 rounded-2xl border border-gray-50/70 whitespace-pre-wrap">{{ $jw->jawaban }}</p>
+                    @endif
+                </div>
+            @endforeach
         </div>
 
         {{-- Langkah-langkah Timeline --}}

@@ -119,6 +119,32 @@ class EventController extends Controller
                 ->get();
         }
 
+        // Fetch RTLs for this event
+        $rtls = \App\Models\Rtl::where('event_id', $event->id)
+            ->with(['peserta'])
+            ->latest()
+            ->get();
+
+        // Load or initialize RTL questions
+        $rtlSoal = \App\Models\RtlSoal::where('event_id', $event->id)->orderBy('urutan')->get();
+        if ($rtlSoal->isEmpty()) {
+            $defaultQuestions = [
+                'Tujuan Rencana Aksi',
+                'Sasaran Utama Penerima Dampak',
+                'Indikator Keberhasilan',
+                'Waktu Pelaksanaan',
+                'Mitra & Pihak Terlibat'
+            ];
+            foreach ($defaultQuestions as $index => $qText) {
+                \App\Models\RtlSoal::create([
+                    'event_id' => $event->id,
+                    'pertanyaan' => $qText,
+                    'urutan' => $index + 1,
+                ]);
+            }
+            $rtlSoal = \App\Models\RtlSoal::where('event_id', $event->id)->orderBy('urutan')->get();
+        }
+
         return view('admin.events.show', compact(
             'event',
             'totalPeserta',
@@ -128,7 +154,9 @@ class EventController extends Controller
             'sessions',
             'allFasilitators',
             'assignedFasilitatorIds',
-            'eventLogs'
+            'eventLogs',
+            'rtls',
+            'rtlSoal'
         ));
     }
 

@@ -41,7 +41,7 @@
             z-index: 1;
             width: 100%;
             text-align: center;
-            padding-top: 14mm;
+            padding-top: 14.5mm;
         }
 
         /* ── PESERTA label ── */
@@ -69,25 +69,25 @@
 
         /* ── Lokasi & Tanggal ── */
         .lbl-place {
-            font-size: 8pt;
+            font-size: 5pt;
             font-weight: 700;
             color: #1a5276;
             text-transform: uppercase;
             letter-spacing: 0.3px;
             line-height: 1;
-            margin-bottom: 3mm;
+            margin-bottom: 2mm;
         }
 
         /* ── Foto Kotak (1:1) ── */
         .photo-area {
             width: 100%;
             text-align: center;
-            margin-bottom: 4mm;
+            margin-bottom: 2mm;
         }
         .photo-square {
             display: inline-block;
             width: 30mm;
-            height: 30mm;
+            height: 40mm;
             border-radius: 2mm;
             overflow: hidden;
             border: 2.5px solid #ffffff;
@@ -108,12 +108,12 @@
         .photo-placeholder {
             display: inline-block;
             width: 30mm;
-            height: 30mm;
+            height: 40mm;
             border-radius: 2mm;
             border: 2.5px solid #ffffff;
             background: #dbeafe;
             text-align: center;
-            padding-top: 7mm;
+            padding-top: 12mm;
             color: #1a5276;
             font-size: 18pt;
             font-weight: bold;
@@ -121,13 +121,13 @@
 
         /* ── Nickname badge ── */
         .nickname-area {
-            margin-bottom: 3.5mm;
+            margin-bottom: 2.5mm;
         }
         .nickname-badge {
             display: inline-block;
             background: #f5b300;
             color: #ffffff;
-            font-size: 14pt;
+            font-size: 16pt;
             font-weight: 900;
             padding: 1.5mm 8mm;
             border-radius: 2.5mm;
@@ -143,7 +143,7 @@
             color: #0d3a73;
             text-transform: uppercase;
             padding: 0 4mm;
-            margin-bottom: 1.2mm;
+            margin-bottom: 0.8mm;
             line-height: 1.2;
             word-wrap: break-word;
         }
@@ -154,7 +154,7 @@
             color: #1a5276;
             font-weight: 600;
             padding: 0 5mm;
-            margin-bottom: 2mm;
+            margin-bottom: 1.5mm;
             line-height: 1.3;
         }
 
@@ -245,7 +245,6 @@
             ]));
         }
         
-        // Generate QR code instan di memori (ringan)
         $qrc = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
             ->errorCorrection('M')
             ->size(100)
@@ -318,7 +317,7 @@
         <img class="card-bg" src="{{ $idcardBg }}">
 
         <div class="back-body">
-            <div class="rules-title" style="padding-top: 20mm;">Tata Tertib</div>
+            <div class="rules-title" style="padding-top: 15mm;">Tata Tertib</div>
             <table class="rule-table">
                 <tr>
                     <td class="rule-dot">•</td>
@@ -345,6 +344,9 @@
                     <td class="rule-text">Menjaga kebersihan dan fasilitas di lokasi acara.</td>
                 </tr>
             </table>
+            <div style="text-align: center; margin-top: 15px;">
+                  <img style="width: 90%;" src="{{ public_path('kata.png') }}" alt="Kata Penutup">
+            </div>
         </div>
     </div>
 @endforeach
