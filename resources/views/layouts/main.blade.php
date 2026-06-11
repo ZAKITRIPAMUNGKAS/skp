@@ -393,9 +393,13 @@
             }
         });
         
-        // Also capture form submits to show loading
-        document.addEventListener('submit', function() {
-            window.dispatchEvent(new CustomEvent('page-loading'));
+        // Also capture form submits to show loading, but check if the event was prevented/cancelled (e.g. by confirm() alert)
+        document.addEventListener('submit', function(event) {
+            setTimeout(function() {
+                if (!event.defaultPrevented) {
+                    window.dispatchEvent(new CustomEvent('page-loading'));
+                }
+            }, 0);
         });
     </script>
 </body>
