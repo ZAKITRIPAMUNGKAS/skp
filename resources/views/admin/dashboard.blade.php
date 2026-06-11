@@ -124,26 +124,33 @@
 
         {{-- Charts Row --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <x-card>
+            <x-card class="relative">
                 <h3 class="text-sm font-semibold text-gray-800 mb-4">Distribusi Predikat Kelulusan</h3>
                 <div class="h-64 relative w-full">
                     <canvas id="predikatChart"></canvas>
                 </div>
                 @if(array_sum($chartData['predikat_data']) === 0)
-                <div class="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10 m-6 rounded-xl border border-gray-100">
-                    <p class="text-sm text-gray-500 font-medium">Belum ada data nilai</p>
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-sm z-10 rounded-2xl p-6">
+                    <svg class="w-10 h-10 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063 1.06l-.041.02a.75.75 0 11-1.063-1.06zm-6 0h.008v.008H5.25v-.008zm6 0h.008v.008h-.008v-.008zm6 0h.008v.008h-.008v-.008zM4.5 9h15M5.25 6H18.75A2.25 2.25 0 0121 8.25v9.75A2.25 2.25 0 0118.75 20H5.25A2.25 2.25 0 013 17.75V8.25A2.25 2.25 0 015.25 6z" />
+                    </svg>
+                    <p class="text-xs text-gray-400 font-medium">Belum ada data nilai kelulusan</p>
                 </div>
                 @endif
             </x-card>
             
-            <x-card>
+            <x-card class="relative">
                 <h3 class="text-sm font-semibold text-gray-800 mb-4">Peningkatan Kognitif (Pretest vs Posttest)</h3>
                 <div class="h-64 relative w-full flex items-center justify-center">
                     <canvas id="kognitifChart"></canvas>
                 </div>
                 @if($stats['avg_pretest'] == 0 && $stats['avg_posttest'] == 0)
-                <div class="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10 m-6 rounded-xl border border-gray-100">
-                    <p class="text-sm text-gray-500 font-medium">Belum ada data nilai</p>
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-sm z-10 rounded-2xl p-6">
+                    <svg class="w-10 h-10 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
+                    </svg>
+                    <p class="text-xs text-gray-400 font-medium">Belum ada data nilai pretest/posttest</p>
                 </div>
                 @endif
             </x-card>
