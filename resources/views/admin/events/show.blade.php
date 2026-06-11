@@ -34,34 +34,45 @@
                     @endif
                 </div>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2 sm:mt-0 mt-3">
                 @if($event->status === 'persiapan')
-                    <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline">
+                    <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline-block">
                         @csrf
                         <input type="hidden" name="status" value="berlangsung">
-                        <x-button type="submit" variant="success" size="sm">
-                            <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
+                        <x-button type="submit" variant="primary" size="sm" class="flex items-center gap-1 bg-gradient-to-r from-primary to-[#155C84]">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
                             Mulai Event
                         </x-button>
                     </form>
                 @elseif($event->status === 'berlangsung')
-                    <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan event ini? Status yang sudah diselesaikan tidak dapat diubah kembali.');">
+                    <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan event ini? Status yang sudah diselesaikan tidak dapat diubah kembali.');">
                         @csrf
                         <input type="hidden" name="status" value="selesai">
-                        <x-button type="submit" variant="danger" size="sm">
-                            <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0"/></svg>
+                        <x-button type="submit" variant="danger" size="sm" class="flex items-center gap-1 bg-red-600 hover:bg-red-700">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0"/></svg>
                             Selesaikan Event
                         </x-button>
                     </form>
                 @endif
+                
                 @if(auth()->user()->isAdmin())
-                    <x-button variant="ghost" size="sm" href="{{ route('admin.events.edit', $event) }}">
-                        <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    <x-button variant="ghost" size="sm" href="{{ route('admin.events.edit', $event) }}" class="flex items-center gap-1 border border-gray-200">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         Edit
                     </x-button>
+                    
+                    {{-- Tombol Reset Event --}}
+                    <form method="POST" action="{{ route('admin.events.reset', $event) }}" class="inline-block" onsubmit="return confirm('PERINGATAN: Apakah Anda yakin ingin MERESET event ini?\nTindakan ini akan menghapus SELURUH data absensi, jawaban ujian, angket evaluasi, afektif, psikomotor, dan RTL peserta.\n\nData peserta terdaftar, materi, dan soal ujian TETAP AMAN.');">
+                        @csrf
+                        <x-button type="submit" variant="danger" size="sm" class="flex items-center gap-1 bg-red-500 hover:bg-red-600 border border-red-500">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5"/></svg>
+                            Reset Data Event
+                        </x-button>
+                    </form>
                 @endif
-                <x-button variant="accent" size="sm" href="{{ route('admin.participants.idCards', $event) }}" target="_blank">
-                    <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                
+                <x-button variant="accent" size="sm" href="{{ route('admin.participants.idCards', $event) }}" target="_blank" class="flex items-center gap-1 bg-amber-500 hover:bg-amber-600">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     Download ID Cards
                 </x-button>
             </div>

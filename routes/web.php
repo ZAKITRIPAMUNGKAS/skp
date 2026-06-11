@@ -223,6 +223,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
             Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
             Route::post('/events/{event}/status', [EventController::class, 'updateStatus'])->name('events.updateStatus');
+            Route::post('/events/{event}/reset', [EventController::class, 'resetEvent'])->name('events.reset');
             Route::post('/events/{event}/facilitators', [EventController::class, 'assignFacilitators'])->name('events.assignFacilitators');
 
             // Manajemen sesi (di dalam event)

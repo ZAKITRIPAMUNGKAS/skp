@@ -345,4 +345,55 @@ class EventController extends Controller
         return redirect()->route('admin.events.show', $event)
             ->with('success', 'Status event berhasil diperbarui menjadi ' . ucfirst($newStatus) . '!');
     }
+
+    public function resetEvent(Event $event)
+    {
+        if (auth()->user()->isFasilitator()) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            // Hapus data dinamis yang diinputkan peserta/proses di event ini
+            \App\Models\JawabanPeserta::where('event_id', $event->id)->delete();
+            \App\Models\PesertaTesMulai::where('event_id', $event->id)->delete();
+            \App\Models\Absensi::where('event_id', $event->id)->delete();
+            \App\Models\AfektifJawaban::where('event_id', $event->id)->delete();
+            \App\Models\AngketJawaban::where('event_id', $event->id)->delete();
+            \App\Models\AngketKomentar::where('event_id', $event->id)->delete();
+            \App\Models\PsikomotorNilai::where('event_id', $event->id)->delete();
+            \App\Models\PenilaianAkhir::where('event_id', $event->id)->delete();
+            
+            // Hapus RTL & Jawabannya
+            $rtlIds = \App\Models\Rtl::where('event_id', $event->id)->pluck('id');
+            \App\Models\RtlJawaban::whereIn('rtl_id', $rtlIds)->delete();
+            \App\Models\Rtl::where('event_id', $event->id)->delete();
+
+            // Reset status sesi tes ke non-aktif
+            \App\Models\SesiTes::where('event_id', $event->id)->update(['status' => 'non-aktif']);
+
+            // Catat log aktivitas reset
+            if (auth()->check()) {
+                $user = auth()->user();
+                \App\Models\ActivityLog::create([
+                    'user_id'     => $user->id,
+                    'event_id'    => $event->id,
+                    'action'      => 'deleted',
+                    'role_user'   => $user->role,
+                    'model_type'  => get_class($event),
+                    'model_id'    => $event->id,
+                    'description' => "Admin '{$user->name}' melakukan reset semua data hasil (absensi, jawaban ujian, angket, nilai akhir) untuk event '{$event->nama_event}'",
+                    'ip_address'  => request()->ip(),
+                ]);
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->route('admin.events.show', $event)
+                ->with('success', 'Seluruh data evaluasi/hasil event berhasil di-reset!');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->route('admin.events.show', $event)
+                ->with('error', 'Gagal meriset data event: ' . $e->getMessage());
+        }
+    }
 }
