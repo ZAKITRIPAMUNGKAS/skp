@@ -109,6 +109,56 @@ class EventController extends Controller
             $assignedFasilitatorIds = $event->facilitators()->pluck('users.id')->toArray();
         }
 
+        // Kalkulasi Statistik Laporan Kognitif & SAW
+        $stats = [
+            'avg_pretest'   => 0,
+            'avg_posttest'  => 0,
+            'avg_kehadiran' => 0,
+            'avg_ngain'     => 0,
+        ];
+
+        $chartData = [
+            'predikat_labels' => ['Amat Baik', 'Baik', 'Cukup', 'Kurang'],
+            'predikat_data'   => [0, 0, 0, 0],
+            'pre_post_avg'    => [0, 0]
+        ];
+
+        $topRankings = collect();
+
+        $penilaian = PenilaianAkhir::where('event_id', $event->id)
+            ->whereHas('peserta.eventPeserta', function ($q) use ($event) {
+                $q->where('event_id', $event->id)->where('status_aktif', true);
+            })
+            ->get();
+        
+        if ($penilaian->count()) {
+            $stats['avg_pretest']   = $penilaian->avg('nilai_pretest') ?? 0;
+            $stats['avg_posttest']  = $penilaian->avg('nilai_posttest') ?? 0;
+            $stats['avg_kehadiran'] = $penilaian->avg('nilai_kehadiran') ?? 0;
+            
+            $nGains = $penilaian->map(fn($p) => $p->n_gain_score);
+            $stats['avg_ngain']     = $nGains->avg() ?? 0;
+
+            $chartData['predikat_data'] = [
+                $penilaian->where('predikat', 'Amat Baik')->count(),
+                $penilaian->where('predikat', 'Baik')->count(),
+                $penilaian->where('predikat', 'Cukup')->count(),
+                $penilaian->where('predikat', 'Kurang')->count(),
+            ];
+
+            $chartData['pre_post_avg'] = [
+                round($stats['avg_pretest'], 2),
+                round($stats['avg_posttest'], 2)
+            ];
+        }
+
+        $topRankings = PenilaianAkhir::where('event_id', $event->id)
+            ->with('peserta')
+            ->whereNotNull('ranking')
+            ->orderBy('ranking')
+            ->take(10)
+            ->get();
+
         // Logs aktivitas khusus untuk event ini (Dilihat oleh Admin Utama)
         $eventLogs = [];
         if (auth()->user()->isAdmin()) {
@@ -156,7 +206,10 @@ class EventController extends Controller
             'assignedFasilitatorIds',
             'eventLogs',
             'rtls',
-            'rtlSoal'
+            'rtlSoal',
+            'stats',
+            'chartData',
+            'topRankings'
         ));
     }
 
