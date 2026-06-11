@@ -4,10 +4,26 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-800 font-heading">Activity Logs</h1>
             <p class="text-sm text-gray-500 mt-1">Pantau riwayat aktivitas admin dan sistem.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <form method="POST" action="{{ route('admin.logs.clearSoal') }}" onsubmit="return confirm('Apakah Anda YAKIN ingin menghapus SELURUH data di Bank Soal? Tindakan ini tidak dapat dibatalkan!');">
+                @csrf
+                <button type="submit" class="px-4 py-2.5 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors duration-200 flex items-center gap-2 shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    Kosongkan Bank Soal
+                </button>
+            </form>
+            <form method="POST" action="{{ route('admin.logs.clearPeserta') }}" onsubmit="return confirm('Apakah Anda YAKIN ingin menghapus SELURUH data peserta beserta akun loginnya? Tindakan ini tidak dapat dibatalkan!');">
+                @csrf
+                <button type="submit" class="px-4 py-2.5 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors duration-200 flex items-center gap-2 shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    Kosongkan Data Peserta
+                </button>
+            </form>
         </div>
     </div>
 
