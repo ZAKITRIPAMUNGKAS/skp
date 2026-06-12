@@ -297,8 +297,8 @@
                     .then(res => res.json())
                     .then(data => {
                         if (!data.success) return;
-                        const pretestLink  = `/peserta/tes/${data.event_id}/pretest`;
-                        const posttestLink = `/peserta/tes/${data.event_id}/posttest`;
+                        const pretestLink  = `/peserta/tes/${data.event_id}/${data.pretest_sesi_id}/pretest`;
+                        const posttestLink = `/peserta/tes/${data.event_id}/${data.posttest_sesi_id}/posttest`;
 
                         // Pertama kali load — rekam status tanpa notifikasi
                         if (this.lastPretest === null) {
