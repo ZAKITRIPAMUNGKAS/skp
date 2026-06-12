@@ -141,11 +141,13 @@ Route::get('/generate-symlink', function () {
 
 // ── Rute Admin ──────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/video', [\App\Http\Controllers\Admin\DashboardController::class, 'video'])->name('dashboard.video');
+    Route::get('/dashboard/documentation', [\App\Http\Controllers\Admin\DashboardController::class, 'documentation'])->name('dashboard.documentation');
+    Route::get('/soal', [SoalController::class, 'index'])->name('soal.index');
+
     // Rute Global Admin Only (Hanya bisa diakses oleh Admin Utama, bukan Fasilitator)
     Route::middleware('admin_only')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/dashboard/video', [\App\Http\Controllers\Admin\DashboardController::class, 'video'])->name('dashboard.video');
-        Route::get('/dashboard/documentation', [\App\Http\Controllers\Admin\DashboardController::class, 'documentation'])->name('dashboard.documentation');
         Route::get('/logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('logs.index');
         Route::post('/logs/clear-soal', [\App\Http\Controllers\Admin\ActivityLogController::class, 'clearSoal'])->name('logs.clearSoal');
         Route::post('/logs/clear-peserta', [\App\Http\Controllers\Admin\ActivityLogController::class, 'clearPeserta'])->name('logs.clearPeserta');
@@ -157,8 +159,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::put('/participants/{peserta}', [ParticipantController::class, 'update'])->name('participants.update');
         Route::delete('/participants/{peserta}', [ParticipantController::class, 'destroyParticipant'])->name('participants.destroyParticipant');
 
-        Route::get('/soal', [SoalController::class, 'index'])->name('soal.index');
-        
         // CRUD Galeri Pelatihan
         Route::resource('galleries', \App\Http\Controllers\Admin\GalleryController::class)->except(['show']);
         

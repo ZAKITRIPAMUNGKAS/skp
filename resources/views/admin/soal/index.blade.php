@@ -40,7 +40,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
             <h1 class="text-2xl font-bold font-heading text-gray-800">Bank Soal</h1>
-            <p class="text-sm text-gray-500 mt-1">Kelola seluruh database soal pretest dan posttest.</p>
+            <p class="text-sm text-gray-500 mt-1">{{ auth()->user()->isAdmin() ? 'Kelola seluruh database soal pretest dan posttest.' : 'Kelola soal pretest dan posttest pada event Anda.' }}</p>
         </div>
         
         <form method="GET" action="{{ route('admin.soal.index') }}" class="flex gap-2">

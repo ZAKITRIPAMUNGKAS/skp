@@ -5,13 +5,22 @@
 @section('content')
 <div class="space-y-6" x-data="{
     activeVideo: {
+        @if(auth()->user()->isAdmin())
         id: 'u-G7pv-PXi0',
         title: 'Pengenalan & Dashboard Utama ArqamApp',
         description: 'Membahas pengenalan antarmuka (interface) aplikasi, gambaran umum fitur-fitur, dan statistik dashboard administrator.',
         duration: '02:15',
         index: 0
+        @else
+        id: 'YOUR_VIDEO_ID',
+        title: 'Panduan Penggunaan Untuk Fasilitator',
+        description: 'Panduan memindai QR code presensi dan mengisi nilai evaluasi peserta (Afektif & Psikomotorik).',
+        duration: '05:00',
+        index: 0
+        @endif
     },
     videos: [
+        @if(auth()->user()->isAdmin())
         {
             id: 'u-G7pv-PXi0',
             title: 'Pengenalan & Dashboard Utama ArqamApp',
@@ -42,6 +51,14 @@
             description: 'Proses pembobotan kriteria menggunakan matriks AHP, normalisasi nilai SAW, penentuan predikat kelulusan otomatis, dan pencetakan berkas laporan PDF/Excel.',
             duration: '04:50'
         }
+        @else
+        {
+            id: 'YOUR_VIDEO_ID',
+            title: 'Panduan Penggunaan Untuk Fasilitator',
+            description: 'Panduan memindai QR code presensi dan mengisi nilai evaluasi peserta (Afektif & Psikomotorik).',
+            duration: '05:00'
+        }
+        @endif
     ],
     selectVideo(video, idx) {
         this.activeVideo = {

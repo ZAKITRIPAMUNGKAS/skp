@@ -24,20 +24,16 @@
         </div>
 
         @if($isAdmin || $isFasilitator)
-            {{-- Admin & Fasilitator Menu --}}
-            @if($isAdmin)
-                <x-sidebar-item icon="dashboard" label="Dashboard" route="admin.dashboard" :collapsed="false" />
-            @endif
-
+            <x-sidebar-item icon="dashboard" label="Dashboard" route="admin.dashboard" :collapsed="false" />
             <div x-show="!sidebarCollapsed" class="px-3 mt-5 mb-2">
                 <span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Kelola</span>
             </div>
             <x-sidebar-item icon="event" label="Kelola Event" route="admin.events.index" :collapsed="false" />
+            <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" />
             
             @if($isAdmin)
                 <x-sidebar-item icon="people" label="Kelola Peserta" route="admin.participants.index" :collapsed="false" />
                 <x-sidebar-item icon="fasilitator" label="Kelola Fasilitator" route="admin.fasilitator.index" :collapsed="false" />
-                <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" />
                 <x-sidebar-item icon="image" label="Galeri Pelatihan" route="admin.galleries.index" :collapsed="false" />
                 <x-sidebar-item icon="comment" label="Testimoni" route="admin.testimonials.index" :collapsed="false" />
 
@@ -68,7 +64,9 @@
                 @elseif(auth()->user()->peserta && auth()->user()->peserta->foto)
                     <img src="{{ auth()->user()->peserta->foto_url }}" referrerpolicy="no-referrer" class="w-full h-full object-cover">
                 @else
-                    <span class="text-sm font-semibold text-accent">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'U' }}</span>
+                    <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
                 @endif
             </div>
             <div x-show="!sidebarCollapsed" x-transition class="flex-1 overflow-hidden">
@@ -111,15 +109,13 @@
     {{-- Mobile Navigation (Admin & Fasilitator) --}}
     @if($isAdmin || $isFasilitator)
     <nav class="flex-1 overflow-y-auto sidebar-scroll py-4 px-3">
-        @if($isAdmin)
-            <x-sidebar-item icon="dashboard" label="Dashboard" route="admin.dashboard" :collapsed="false" :mobile="true" />
-        @endif
+        <x-sidebar-item icon="dashboard" label="Dashboard" route="admin.dashboard" :collapsed="false" :mobile="true" />
         <div class="px-3 mt-5 mb-2"><span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Kelola</span></div>
         <x-sidebar-item icon="event" label="Kelola Event" route="admin.events.index" :collapsed="false" :mobile="true" />
+        <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" :mobile="true" />
         @if($isAdmin)
             <x-sidebar-item icon="people" label="Kelola Peserta" route="admin.participants.index" :collapsed="false" :mobile="true" />
             <x-sidebar-item icon="fasilitator" label="Kelola Fasilitator" route="admin.fasilitator.index" :collapsed="false" :mobile="true" />
-            <x-sidebar-item icon="quiz" label="Bank Soal" route="admin.soal.index" :collapsed="false" :mobile="true" />
             <x-sidebar-item icon="image" label="Galeri Pelatihan" route="admin.galleries.index" :collapsed="false" :mobile="true" />
             <x-sidebar-item icon="comment" label="Testimoni" route="admin.testimonials.index" :collapsed="false" :mobile="true" />
             <div class="px-3 mt-5 mb-2"><span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Sistem</span></div>
@@ -142,7 +138,9 @@
                 @elseif(auth()->user()->peserta && auth()->user()->peserta->foto)
                     <img src="{{ auth()->user()->peserta->foto_url }}" referrerpolicy="no-referrer" class="w-full h-full object-cover">
                 @else
-                    <span class="text-sm font-semibold text-accent">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'U' }}</span>
+                    <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
                 @endif
             </div>
             <div>

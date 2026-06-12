@@ -10,7 +10,7 @@
 
 @section('content')
 
-    <x-page-header title="Kelola Event" subtitle="Kelola seluruh kegiatan Baitul Arqam">
+    <x-page-header title="Kelola Event" subtitle="{{ auth()->user()->isAdmin() ? 'Kelola seluruh kegiatan Baitul Arqam' : 'Kelola kegiatan Baitul Arqam yang ditugaskan kepada Anda' }}">
         @if(auth()->user()->isAdmin())
             <x-slot:actions>
                 <x-button variant="primary" href="{{ route('admin.events.create') }}">

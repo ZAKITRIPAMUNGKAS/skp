@@ -1,0 +1,155 @@
+<?php $__env->startSection('title', 'Video Tutorial - ArqamApp'); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="space-y-6" x-data="{
+    activeVideo: {
+        <?php if(auth()->user()->isAdmin()): ?>
+        id: 'u-G7pv-PXi0',
+        title: 'Pengenalan & Dashboard Utama ArqamApp',
+        description: 'Membahas pengenalan antarmuka (interface) aplikasi, gambaran umum fitur-fitur, dan statistik dashboard administrator.',
+        duration: '02:15',
+        index: 0
+        <?php else: ?>
+        id: 'YOUR_VIDEO_ID',
+        title: 'Panduan Penggunaan Untuk Fasilitator',
+        description: 'Panduan memindai QR code presensi dan mengisi nilai evaluasi peserta (Afektif & Psikomotorik).',
+        duration: '05:00',
+        index: 0
+        <?php endif; ?>
+    },
+    videos: [
+        <?php if(auth()->user()->isAdmin()): ?>
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Pengenalan & Dashboard Utama ArqamApp',
+            description: 'Membahas pengenalan antarmuka (interface) aplikasi, gambaran umum fitur-fitur, dan statistik dashboard administrator.',
+            duration: '02:15'
+        },
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Manajemen Event & Import Data Peserta via Excel',
+            description: 'Panduan lengkap membuat event Baitul Arqam baru, mengunduh format template Excel, mengimpor data peserta massal, dan plotting fasilitator.',
+            duration: '03:40'
+        },
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Pengaturan Sesi Jadwal & Kelola Bank Soal',
+            description: 'Langkah-langkah menyusun sesi jadwal pelatihan keagamaan, mengelola butir-butir soal ujian kognitif pretest dan posttest.',
+            duration: '04:10'
+        },
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Presensi QR-Code & Input Evaluasi Psikomotorik / Afektif',
+            description: 'Cara memindai QR-Code peserta untuk presensi kehadiran, cara fasilitator mengisi form nilai afektif dan praktik keagamaan psikomotorik.',
+            duration: '03:05'
+        },
+        {
+            id: 'u-G7pv-PXi0',
+            title: 'Kalkulasi SPK AHP-SAW & Ekspor Laporan Akhir',
+            description: 'Proses pembobotan kriteria menggunakan matriks AHP, normalisasi nilai SAW, penentuan predikat kelulusan otomatis, dan pencetakan berkas laporan PDF/Excel.',
+            duration: '04:50'
+        }
+        <?php else: ?>
+        {
+            id: 'YOUR_VIDEO_ID',
+            title: 'Panduan Penggunaan Untuk Fasilitator',
+            description: 'Panduan memindai QR code presensi dan mengisi nilai evaluasi peserta (Afektif & Psikomotorik).',
+            duration: '05:00'
+        }
+        <?php endif; ?>
+    ],
+    selectVideo(video, idx) {
+        this.activeVideo = {
+            id: video.id,
+            title: video.title,
+            description: video.description,
+            duration: video.duration,
+            index: idx
+        };
+    }
+}">
+    
+    <div class="flex items-center gap-4">
+        <a href="<?php echo e(route('admin.dashboard')); ?>" class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+        </a>
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800 font-heading">Video Tutorial Penggunaan</h1>
+            <p class="text-sm text-gray-500 mt-1">Panduan visual untuk mengoperasikan fitur-fitur utama di ArqamApp secara bertahap.</p>
+        </div>
+    </div>
+
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-2 bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-4">
+            <div class="aspect-video w-full rounded-2xl bg-slate-900 overflow-hidden relative border border-slate-800">
+                <iframe 
+                    class="w-full h-full"
+                    :src="'https://www.youtube.com/embed/' + activeVideo.id" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-2">
+                <div class="space-y-1">
+                    <span class="text-[10px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-md uppercase tracking-widest">
+                        Materi Bagian <span x-text="activeVideo.index + 1"></span>
+                    </span>
+                    <h3 class="text-lg font-bold text-gray-800 mt-2" x-text="activeVideo.title"></h3>
+                    <p class="text-xs text-gray-500" x-text="activeVideo.description"></p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
+                        Durasi: <span x-text="activeVideo.duration"></span>
+                    </span>
+                    <a :href="'https://www.youtube.com/watch?v=' + activeVideo.id" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+                        Tonton di YT
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-6">
+            <div>
+                <h3 class="font-bold text-gray-800 font-heading text-lg">Daftar Materi Video</h3>
+                <p class="text-xs text-gray-500 mt-1">Pilih materi panduan di bawah ini:</p>
+            </div>
+
+            <div class="space-y-3">
+                <template x-for="(video, index) in videos" :key="index">
+                    <div 
+                        @click="selectVideo(video, index)"
+                        :class="activeVideo.index === index ? 'bg-primary/5 border-primary/20 text-primary' : 'hover:bg-gray-50 border-transparent hover:border-gray-100'"
+                        class="flex items-start gap-3 p-3 border rounded-2xl cursor-pointer transition-all duration-200"
+                    >
+                        <div 
+                            :class="activeVideo.index === index ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600'"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0" 
+                            x-text="index + 1"
+                        ></div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-gray-800" x-text="video.title"></h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[9px] text-gray-400 font-medium" x-text="'Durasi: ' + video.duration"></span>
+                                <span class="text-[9px] text-primary font-semibold" x-show="activeVideo.index === index">Sedang Diputar</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.main', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\website\SKRIPSI\SISTEM\resources\views/admin/video_tutorial.blade.php ENDPATH**/ ?>

@@ -12,16 +12,32 @@ class SoalController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
         $query = Soal::with(['event', 'pilihanJawaban'])->latest();
+
+        if ($user->isFasilitator()) {
+            $query->whereHas('event.facilitators', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            });
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('teks_soal', 'like', "%{$search}%")
+            $query->where(function($q) use ($search) {
+                $q->where('teks_soal', 'like', "%{$search}%")
                   ->orWhereHas('event', fn($q) => $q->where('nama_event', 'like', "%{$search}%"));
+            });
         }
 
         $soals = $query->paginate(20)->withQueryString();
-        $events = Event::with('eventSesi')->orderByDesc('tanggal_mulai')->get();
+        
+        $eventsQuery = Event::with('eventSesi')->orderByDesc('tanggal_mulai');
+        if ($user->isFasilitator()) {
+            $eventsQuery->whereHas('facilitators', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            });
+        }
+        $events = $eventsQuery->get();
 
         return view('admin.soal.index', compact('soals', 'events'));
     }

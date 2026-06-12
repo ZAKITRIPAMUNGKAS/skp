@@ -9,13 +9,19 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-800 font-heading">{{ $greeting }}, {{ auth()->user()->name }}! 👋</h1>
+            @if(auth()->user()->isAdmin())
             <p class="text-sm text-gray-500 mt-1">Selamat datang di panel admin utama ArqamApp.</p>
+            @else
+            <p class="text-sm text-gray-500 mt-1">Selamat datang di panel fasilitator ArqamApp.</p>
+            @endif
         </div>
         <div class="flex items-center gap-3">
+            @if(auth()->user()->isAdmin())
             <a href="{{ route('admin.events.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-600 text-white text-sm font-semibold rounded-xl transition-all shadow-sm">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 Buat Event Baru
             </a>
+            @endif
         </div>
     </div>
 
@@ -47,25 +53,40 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
                     </a>
                 @else
+                    @if(auth()->user()->isAdmin())
                     <a href="{{ route('admin.events.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white text-sm font-bold rounded-2xl hover:bg-primary-600 transition-all shadow-md shadow-primary/20 hover:-translate-y-0.5">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                         Buat Event Sekarang
                     </a>
+                    @else
+                    <div class="px-6 py-3 bg-amber-100 text-amber-800 text-sm font-bold rounded-2xl">
+                        Belum Ada Event Yang Ditugaskan Ke Anda
+                    </div>
+                    @endif
                 @endif
-                <a href="{{ route('admin.events.index') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-50 border border-gray-200 text-gray-700 text-sm font-bold rounded-2xl hover:bg-gray-100 transition-all">
-                    Lihat Semua Event
+                <a href="{{ route('admin.events.index') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-50 border border-gray-200 text-gray-700 text-sm font-bold rounded-2xl hover:bg-gray-100 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" /></svg>
+                    {{ auth()->user()->isAdmin() ? 'Lihat Semua Event' : 'Daftar Event Saya' }}
                 </a>
             </div>
         </div>
 
         {{-- Guide Summary Panel --}}
-        <div class="bg-gradient-to-br from-gray-900 to-slate-800 rounded-3xl p-8 text-white shadow-sm flex flex-col justify-between">
-            <div>
+        <div class="bg-gradient-to-br from-gray-900 to-slate-800 rounded-3xl p-8 text-white shadow-sm flex flex-col justify-center gap-6 relative overflow-hidden min-h-[350px]">
+            {{-- Background Decoration --}}
+            <div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none">
+                <svg class="w-48 h-48 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+
+            <div class="relative z-10">
                 <h3 class="font-bold text-lg font-heading text-yellow-400 mb-2">Panduan Pengguna</h3>
-                <p class="text-xs text-slate-300 leading-relaxed mb-6">Akses panduan lengkap penggunaan ArqamApp untuk membantu Anda mengelola sistem secara maksimal.</p>
+                <p class="text-xs text-slate-300 leading-relaxed mb-2">Akses panduan lengkap penggunaan ArqamApp untuk membantu Anda mengelola sistem secara maksimal.</p>
             </div>
             
-            <div class="space-y-3">
+            <div class="space-y-3 relative z-10">
+                @if(auth()->user()->isAdmin())
                 {{-- Manual Book v1 --}}
                 <a href="{{ asset('MANUAL BOOK.pdf') }}" download="MANUAL BOOK.pdf" target="_blank" class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 hover:border-white/20 transition-all group">
                     <div class="w-10 h-10 rounded-xl bg-yellow-400/20 text-yellow-400 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
@@ -81,6 +102,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                 </a>
+                @endif
 
                 {{-- Video Tutorial --}}
                 <a href="{{ route('admin.dashboard.video') }}" class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 hover:border-white/20 transition-all group">
@@ -99,6 +121,7 @@
                     </svg>
                 </a>
 
+                @if(auth()->user()->isAdmin())
                 {{-- Documentation Sistem --}}
                 <a href="{{ route('admin.dashboard.documentation') }}" class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 hover:border-white/20 transition-all group">
                     <div class="w-10 h-10 rounded-xl bg-emerald-400/20 text-emerald-400 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
@@ -114,6 +137,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                 </a>
+                @endif
             </div>
         </div>
     </div>

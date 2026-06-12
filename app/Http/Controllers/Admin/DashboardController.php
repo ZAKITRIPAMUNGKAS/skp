@@ -24,7 +24,11 @@ class DashboardController extends Controller
         }
 
         // Ambil event terakhir untuk dipandu jika ada
-        $latestEvent = Event::latest()->first();
+        if (auth()->user()->isFasilitator()) {
+            $latestEvent = auth()->user()->assignedEvents()->latest()->first();
+        } else {
+            $latestEvent = Event::latest()->first();
+        }
 
         return view('admin.dashboard', compact('greeting', 'latestEvent'));
     }
