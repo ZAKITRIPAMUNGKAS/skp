@@ -52,9 +52,14 @@
                 class="px-5 py-2 text-sm rounded-lg transition-all">
                 Posttest <span class="ml-1 text-xs" x-text="'(' + posttestSoal.length + ')'"></span>
             </button>
+            <button @click="subTab = 'progres'"
+                :class="subTab === 'progres' ? 'bg-white shadow-sm text-primary font-semibold' : 'text-gray-500 hover:text-gray-700'"
+                class="px-5 py-2 text-sm rounded-lg transition-all">
+                Progres Peserta
+            </button>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3" x-show="subTab !== 'progres'">
             {{-- Copy From Event toggle --}}
             <button @click="showCopyForm = true"
                 class="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200 font-medium font-heading">
@@ -75,7 +80,7 @@
     </div>
 
     {{-- Test Control Panel --}}
-    <div class="bg-gray-50 rounded-xl border border-gray-100 p-4 mb-6">
+    <div class="bg-gray-50 rounded-xl border border-gray-100 p-4 mb-6" x-show="subTab !== 'progres'">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div>
@@ -130,7 +135,7 @@
     </div>
 
     {{-- Question List --}}
-    <div class="space-y-3" x-show="currentSoalList.length > 0">
+    <div class="space-y-3" x-show="subTab !== 'progres' && currentSoalList.length > 0">
         <template x-for="(soal, idx) in currentSoalList" :key="soal.id">
             <div class="bg-white rounded-xl border border-gray-100 hover:border-primary/20 hover:shadow-sm transition-all group"
                  draggable="true"
@@ -174,35 +179,47 @@
         </template>
     </div>
 
-    <template x-if="currentSoalList.length === 0">
+    <template x-if="subTab !== 'progres' && currentSoalList.length === 0">
         <div class="py-8">
             <x-empty-state title="Belum ada soal" description="Tambahkan soal baru untuk tes ini." icon="document" />
         </div>
     </template>
 
     {{-- Participant Progress --}}
-    <div class="mt-8 bg-white rounded-xl border border-gray-100 p-6 shadow-sm" x-show="participants.length > 0">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4" x-text="'Progres Peserta - ' + (subTab === 'pretest' ? 'Pretest' : 'Posttest')"></h3>
+    <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm" x-show="subTab === 'progres'">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Progres Nilai Peserta - Sesi <span x-text="selectedSesiId"></span></h3>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm border-collapse">
                 <thead>
-                    <tr class="border-b border-gray-100 text-gray-400 font-semibold">
-                        <th class="py-3 px-4">Nama Peserta</th>
-                        <th class="py-3 px-4 text-center">Status</th>
-                        <th class="py-3 px-4 text-center">Nilai</th>
+                    <tr class="border-b border-gray-100 text-gray-400 font-semibold bg-gray-50/50">
+                        <th class="py-3 px-4 rounded-tl-xl">Nama Peserta</th>
+                        <th class="py-3 px-4 text-center">Nilai Pretest</th>
+                        <th class="py-3 px-4 text-center">Nilai Posttest</th>
+                        <th class="py-3 px-4 text-center rounded-tr-xl">N-Gain</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                     <template x-for="p in participants" :key="p.id">
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50 transition-colors">
                             <td class="py-3 px-4 font-medium text-gray-800" x-text="p.nama"></td>
                             <td class="py-3 px-4 text-center">
-                                <span x-show="subTab === 'pretest' ? p.pretest_done : p.posttest_done" class="inline-flex px-2.5 py-1 bg-green-50 text-green-600 rounded-lg text-xs font-bold">Selesai</span>
-                                <span x-show="!(subTab === 'pretest' ? p.pretest_done : p.posttest_done)" class="inline-flex px-2.5 py-1 bg-gray-100 text-gray-500 rounded-lg text-xs font-bold">Belum</span>
+                                <span class="font-bold" :class="p.pretest_score >= 70 ? 'text-green-600' : 'text-red-500'" x-text="p.pretest_done ? p.pretest_score : '-'"></span>
                             </td>
-                            <td class="py-3 px-4 text-center font-bold" :class="(subTab === 'pretest' ? p.pretest_score : p.posttest_score) >= 70 ? 'text-green-600' : 'text-red-500'" x-text="(subTab === 'pretest' ? p.pretest_done : p.posttest_done) ? (subTab === 'pretest' ? p.pretest_score : p.posttest_score) : '-'"></td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-bold" :class="p.posttest_score >= 70 ? 'text-green-600' : 'text-red-500'" x-text="p.posttest_done ? p.posttest_score : '-'"></span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-bold inline-flex items-center gap-1" :class="p.n_gain > 0.7 ? 'text-green-600' : (p.n_gain >= 0.3 ? 'text-yellow-600' : 'text-red-500')">
+                                    <span x-text="p.posttest_done && p.pretest_done ? p.n_gain : '-'"></span>
+                                </span>
+                            </td>
                         </tr>
                     </template>
+                    <tr x-show="participants.length === 0">
+                        <td colspan="4" class="text-center py-8 text-gray-400">Belum ada data peserta untuk sesi ini.</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

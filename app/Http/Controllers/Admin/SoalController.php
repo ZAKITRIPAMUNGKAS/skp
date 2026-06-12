@@ -411,6 +411,14 @@ class SoalController extends Controller
             $posttestDone = $soalIdsPosttest->count() > 0 && $p_jawabanPost->count() >= $soalIdsPosttest->count();
             $posttestScore = $soalIdsPosttest->count() > 0 ? round(($p_jawabanPost->where('is_correct', true)->count() / $soalIdsPosttest->count()) * 100, 1) : 0;
 
+            $nGain = 0;
+            if ($pretestScore < 100) {
+                $nGain = ($posttestScore - $pretestScore) / (100 - $pretestScore);
+            } else if ($pretestScore == 100 && $posttestScore < 100) {
+                $nGain = ($posttestScore - $pretestScore) / 100;
+            }
+            $nGain = round($nGain, 3);
+
             return [
                 'id' => $pesertaId,
                 'nama' => $ep->peserta->nama_lengkap ?? ($ep->peserta->user->name ?? 'Unknown'),
@@ -418,6 +426,7 @@ class SoalController extends Controller
                 'pretest_score' => $pretestScore,
                 'posttest_done' => $posttestDone,
                 'posttest_score' => $posttestScore,
+                'n_gain' => $nGain,
             ];
         });
 
