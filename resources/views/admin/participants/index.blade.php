@@ -97,7 +97,12 @@
                             <div class="space-y-1">
                                 @forelse($p->eventPeserta as $ep)
                                     <div class="flex flex-col gap-0.5">
-                                        <span class="text-xs font-medium text-gray-700">{{ optional($ep->event)->nama_event ?? 'Event' }}</span>
+                                        <span class="text-xs font-medium text-gray-700">
+                                            {{ optional($ep->event)->nama_event ?? 'Event' }}
+                                            @if(optional($ep->event)->lokasi)
+                                                <span class="text-[10px] text-gray-400 font-normal ml-1">(&bull; {{ $ep->event->lokasi }})</span>
+                                            @endif
+                                        </span>
                                         <div class="flex items-center flex-wrap gap-1.5">
                                             @if($ep->konfirmasi_kesediaan === 'bersedia')
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-50 text-green-700 border border-green-200">
