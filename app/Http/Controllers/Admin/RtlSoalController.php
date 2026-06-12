@@ -31,7 +31,7 @@ class RtlSoalController extends Controller
 
     public function update(Request $request, Event $event, RtlSoal $soal)
     {
-        if ($soal->event_id !== $event->id) {
+        if ($soal->event_id != $event->id) {
             abort(404);
         }
 
@@ -51,7 +51,7 @@ class RtlSoalController extends Controller
 
     public function destroy(Event $event, RtlSoal $soal)
     {
-        if ($soal->event_id !== $event->id) {
+        if ($soal->event_id != $event->id) {
             abort(404);
         }
 
