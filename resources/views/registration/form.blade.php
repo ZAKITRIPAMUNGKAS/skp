@@ -269,22 +269,18 @@
                         <div class="p-5 bg-blue-50/50 rounded-2xl border border-blue-100 mb-6">
                             <label class="block text-sm font-bold text-slate-800 mb-3">Apakah Anda bersedia mengikuti kegiatan ini secara penuh? <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <label class="relative cursor-pointer group">
-                                    <input type="radio" name="konfirmasi_kesediaan" value="bersedia" x-model="kesediaan" required class="peer sr-only">
-                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm peer-checked:shadow-none">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <svg class="w-5 h-5 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                            Ya, Saya Bersedia
-                                        </div>
+                                <label class="relative cursor-pointer block">
+                                    <input type="radio" name="konfirmasi_kesediaan" value="bersedia" x-model="kesediaan" required class="sr-only">
+                                    <div class="p-3 text-center rounded-xl border-[1.5px] font-semibold text-sm transition-all"
+                                         :class="kesediaan === 'bersedia' ? 'border-primary bg-[#e6f4fa] text-primary shadow-none' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 shadow-sm'">
+                                        Ya, Saya Bersedia
                                     </div>
                                 </label>
-                                <label class="relative cursor-pointer group">
-                                    <input type="radio" name="konfirmasi_kesediaan" value="tidak_bersedia" x-model="kesediaan" required class="peer sr-only">
-                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-600 hover:border-slate-300 shadow-sm peer-checked:shadow-none">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <svg class="w-5 h-5 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                            Tidak Bersedia
-                                        </div>
+                                <label class="relative cursor-pointer block">
+                                    <input type="radio" name="konfirmasi_kesediaan" value="tidak_bersedia" x-model="kesediaan" required class="sr-only">
+                                    <div class="p-3 text-center rounded-xl border-[1.5px] font-semibold text-sm transition-all"
+                                         :class="kesediaan === 'tidak_bersedia' ? 'border-red-500 bg-[#fef2f2] text-red-600 shadow-none' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 shadow-sm'">
+                                        Tidak Bersedia
                                     </div>
                                 </label>
                             </div>
@@ -787,10 +783,6 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Organisasi Lain (Selain Muhammadiyah) <span class="text-red-500">*</span></label>
                                 <textarea name="organisasi_lain" rows="2" placeholder="Isi '-' jika tidak ada" required class="input-modern resize-none"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Harapan Mengikuti Baitul Arqam <span class="text-red-500">*</span></label>
-                                <textarea name="harapan_mengikuti_ba" rows="2" required class="input-modern resize-none"></textarea>
                             </div>
                         </div>
 
