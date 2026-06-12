@@ -255,7 +255,11 @@
                 <div class="relative" data-aos="fade-right">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary/15 to-accent/15 rounded-[2rem] transform rotate-3 scale-105 filter blur-lg"></div>
                     <div class="relative z-10 bg-white rounded-[2rem] border border-slate-100 shadow-soft overflow-hidden aspect-[4/3] group">
-                        <img src="{{ asset('kegiatan.webp') }}" alt="{{ \App\Models\SystemSetting::get('landing_header_subtitle', 'Baitul Arqam LP3A UMS') }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        @php
+                            $headerImage = \App\Models\SystemSetting::get('landing_header_image');
+                            $headerImageUrl = $headerImage ? asset('storage/' . $headerImage) : asset('kegiatan.webp');
+                        @endphp
+                        <img src="{{ $headerImageUrl }}" alt="{{ \App\Models\SystemSetting::get('landing_header_subtitle', 'Baitul Arqam LP3A UMS') }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-6">
                             <p class="text-white text-sm font-semibold font-heading">{{ \App\Models\SystemSetting::get('landing_header_title', 'Kegiatan Baitul Arqam LP3A UMS') }}</p>
                         </div>

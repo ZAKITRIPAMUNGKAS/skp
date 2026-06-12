@@ -11,6 +11,7 @@ class LandingSettingController extends Controller
     public function edit()
     {
         $settings = [
+            'landing_header_image' => SystemSetting::get('landing_header_image'),
             'landing_header_subtitle' => SystemSetting::get('landing_header_subtitle', 'Baitul Arqam LP3A UMS'),
             'landing_header_title' => SystemSetting::get('landing_header_title', 'Kegiatan Baitul Arqam LP3A UMS'),
             'landing_about_subtitle' => SystemSetting::get('landing_about_subtitle', 'Tentang Aplikasi'),
@@ -33,6 +34,7 @@ class LandingSettingController extends Controller
     public function update(Request $request)
     {
         $request->validate([
+            'landing_header_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'landing_header_subtitle' => 'required|string|max:255',
             'landing_header_title' => 'required|string|max:255',
             'landing_about_subtitle' => 'required|string|max:255',
@@ -42,6 +44,11 @@ class LandingSettingController extends Controller
             'features.*.title' => 'required|string|max:255',
             'features.*.description' => 'required|string',
         ]);
+
+        if ($request->hasFile('landing_header_image')) {
+            $path = $request->file('landing_header_image')->store('landing', 'public');
+            SystemSetting::set('landing_header_image', $path);
+        }
 
         SystemSetting::set('landing_header_subtitle', $request->landing_header_subtitle);
         SystemSetting::set('landing_header_title', $request->landing_header_title);

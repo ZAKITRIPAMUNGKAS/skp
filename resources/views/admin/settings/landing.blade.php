@@ -14,7 +14,7 @@
     </div>
     @endif
 
-    <form action="{{ route('admin.settings.landing.update') }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.settings.landing.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -22,6 +22,18 @@
                 <h3 class="text-lg font-bold text-gray-800 font-heading border-b border-gray-100 pb-3">Bagian Header (Gambar & Teks)</h3>
                 
                 <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Gambar Utama (Rekomendasi 4:3)</label>
+                        @if($settings['landing_header_image'])
+                            <div class="mb-3">
+                                <img src="{{ asset('storage/' . $settings['landing_header_image']) }}" alt="Current Image" class="w-48 rounded-lg shadow-sm border border-gray-200">
+                            </div>
+                        @endif
+                        <input type="file" name="landing_header_image" accept="image/*" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-sm">
+                        <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah gambar.</p>
+                        @error('landing_header_image') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                    </div>
+
                     <div class="space-y-2">
                         <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Alt Gambar Utama / Subtitle</label>
                         <input type="text" name="landing_header_subtitle" value="{{ old('landing_header_subtitle', $settings['landing_header_subtitle']) }}" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-sm" required>
