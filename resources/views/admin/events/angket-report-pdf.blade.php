@@ -269,7 +269,7 @@
     <!-- IDENTITAS PESERTA -->
     <div class="box-peserta">
         <h2>{{ $p->nama_lengkap }}</h2>
-        <p><strong>NIP/NBM</strong>: {{ $p->nim_nip_nbm ?: '—' }}</p>
+        <p><strong>NIP/NBM</strong>: {{ $p->nik ?? $p->nbm ?? '—' }}</p>
         <p><strong>UNIT KERJA</strong>: {{ $p->unit_kerja ?: '—' }}</p>
     </div>
 

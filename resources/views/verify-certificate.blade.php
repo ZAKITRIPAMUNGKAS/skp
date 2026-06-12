@@ -26,7 +26,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">NIP / NBM</p>
-                            <p class="text-gray-800 font-medium">{{ $peserta->nim_nip_nbm ?? '-' }}</p>
+                            <p class="text-gray-800 font-medium">{{ $peserta->nik ?? $peserta->nbm ?? '-' }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Instansi</p>
