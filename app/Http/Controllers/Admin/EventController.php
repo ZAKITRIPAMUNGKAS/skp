@@ -33,7 +33,7 @@ class EventController extends Controller
             $query->where('created_by', $user->id);
         }
 
-        $query->latest();
+        $query->orderBy('tanggal_mulai', 'asc');
 
         if ($request->filled('search')) {
             $search = $request->search;
