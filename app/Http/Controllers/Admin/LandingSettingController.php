@@ -49,7 +49,7 @@ class LandingSettingController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'landing_header_images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'landing_header_images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'remove_images' => 'nullable|array',
             'landing_header_subtitle' => 'required|string|max:255',
             'landing_header_title' => 'required|string|max:255',

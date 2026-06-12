@@ -950,17 +950,21 @@
                                 <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </summary>
                             <div class="p-5 border-t border-gray-100">
-                                <p class="text-xs text-gray-500 mb-3">Rilis penambahan modul CRUD Landing Page dan penyempurnaan modal aplikasi.</p>
+                                <p class="text-xs text-gray-500 mb-3">Rilis penambahan modul CRUD Landing Page lengkap (Header, Tentang, Fitur, Keunggulan), optimasi gambar otomatis, dan perbaikan bug unggahan.</p>
                                 <ul class="list-disc pl-4 text-xs space-y-1.5 text-gray-600">
-                                    <li><strong>Fitur Baru (Landing Page):</strong> Penambahan Modul CRUD Pengaturan Landing Page (menggunakan <code>SystemSetting</code>) pada dasbor admin.</li>
-                                    <li><strong>Enhancement (Landing Page):</strong> Fitur pemetaan teks dinamis untuk Judul, Subjudul, Deskripsi "Tentang Aplikasi", dan pengelolaan daftar fitur (tambah/edit/hapus).</li>
-                                    <li><strong>Enhancement (Landing Header):</strong> Mendukung unggah banyak gambar sekaligus (multi-gambar) untuk bagian <em>header</em> yang akan dirender sebagai <em>slider / carousel</em> otomatis (menggunakan Alpine.js).</li>
-                                    <li><strong>Performance (Auto-WebP):</strong> Semua gambar <em>header</em> yang diunggah akan otomatis dikonversi secara <em>on-the-fly</em> ke format WEBP dengan kualitas 80% untuk kecepatan akses.</li>
+                                    <li><strong>Fitur Baru (Landing Page — CRUD Penuh):</strong> Penambahan Modul CRUD Pengaturan Landing Page pada dasbor admin, mencakup semua bagian: <em>Header</em>, <em>Tentang Aplikasi</em>, <em>Daftar Fitur (01, 02, 03)</em>, dan <em>Keunggulan Sistem</em> (6 kartu fitur warna-warni).</li>
+                                    <li><strong>Enhancement (Header — Multi-Gambar &amp; Slider):</strong> Mendukung unggah banyak gambar sekaligus (<em>multiple upload</em>) untuk bagian <em>header</em> yang akan dirender sebagai <em>slider / carousel</em> otomatis bergantian tiap 4 detik (menggunakan Alpine.js).</li>
+                                    <li><strong>Performance (Auto-WebP &amp; Kompresi):</strong> Semua gambar <em>header</em> yang diunggah akan otomatis dikonversi secara <em>on-the-fly</em> ke format <strong>WEBP</strong> dengan kualitas 80% menggunakan ekstensi GD bawaan PHP, tanpa library tambahan.</li>
+                                    <li><strong>Enhancement (Keunggulan Dinamis):</strong> Bagian "Fitur Unggulan Sistem" (Ranah Kognitif, Afektif, Psikomotor, QR Code, Ranking, Mobile-First) kini sepenuhnya bisa ditambah, diedit, dan dihapus melalui admin. Warna dan ikon akan menyesuaikan secara otomatis berdasarkan urutan.</li>
+                                    <li><strong>Enhancement (Fitur Dinamis):</strong> Daftar poin fitur (01, 02, 03) pada bagian "Tentang Aplikasi" kini bisa ditambah, diedit, atau dihapus sesuka hati melalui halaman Pengaturan Landing.</li>
+                                    <li><strong>Bug Fix (Upload Limit):</strong> Menambahkan file <code>.user.ini</code> di folder <code>public/</code> untuk menaikkan batas maksimal unggahan (<code>post_max_size</code> &amp; <code>upload_max_filesize</code>) menjadi <strong>50MB</strong> tanpa perlu akses <em>root</em> server.</li>
+                                    <li><strong>Bug Fix (Session Cookie):</strong> Perbaikan error <em>"Set-Cookie header is ignored"</em> yang menyebabkan form tidak bisa tersimpan, akibat <code>SESSION_DRIVER=cookie</code> yang melebihi batas 4096 byte browser. Solusi: ubah ke <code>SESSION_DRIVER=file</code> di <code>.env</code> server produksi.</li>
                                     <li><strong>Bug Fix (Modal):</strong> Memperbaiki teks kode HTML literal (<code>&amp;bull;</code>) yang bocor sebagai string biasa pada judul modal "Alasan Tidak Hadir".</li>
                                     <li><strong>Enhancement (Modal Detail):</strong> Memperluas informasi pada pop-up "Alasan Tidak Hadir" sehingga menampilkan juga Lokasi Kegiatan, diimplementasikan pada halaman Kelola Event, Daftar Peserta, dan Detail Peserta.</li>
                                 </ul>
                             </div>
                         </details>
+
 
                         {{-- Versi 2.0.1 --}}
                         <details class="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-4">
