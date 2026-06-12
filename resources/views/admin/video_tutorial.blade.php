@@ -6,47 +6,47 @@
 <div class="space-y-6" x-data="{
     activeVideo: {
         @if(auth()->user()->isAdmin())
-        id: 'u-G7pv-PXi0',
+        id: 'RGSeBnnDJ3k',
         title: 'Pengenalan & Dashboard Utama ArqamApp',
         description: 'Membahas pengenalan antarmuka (interface) aplikasi, gambaran umum fitur-fitur, dan statistik dashboard administrator.',
         duration: '02:15',
         index: 0
         @else
         id: 'YOUR_VIDEO_ID',
-        title: 'Panduan Penggunaan Untuk Fasilitator',
-        description: 'Panduan memindai QR code presensi dan mengisi nilai evaluasi peserta (Afektif & Psikomotorik).',
-        duration: '05:00',
+        title: 'Coming Soon: Panduan Penggunaan Untuk Fasilitator',
+        description: 'Materi panduan ini sedang dalam tahap produksi dan akan segera tersedia. Nantinya akan membahas cara memindai QR code presensi dan mengisi nilai evaluasi peserta.',
+        duration: '--:--',
         index: 0
         @endif
     },
     videos: [
         @if(auth()->user()->isAdmin())
         {
-            id: 'u-G7pv-PXi0',
+            id: 'RGSeBnnDJ3k',
             title: 'Pengenalan & Dashboard Utama ArqamApp',
             description: 'Membahas pengenalan antarmuka (interface) aplikasi, gambaran umum fitur-fitur, dan statistik dashboard administrator.',
             duration: '02:15'
         },
         {
-            id: 'u-G7pv-PXi0',
+            id: 'RGSeBnnDJ3k',
             title: 'Manajemen Event & Import Data Peserta via Excel',
             description: 'Panduan lengkap membuat event Baitul Arqam baru, mengunduh format template Excel, mengimpor data peserta massal, dan plotting fasilitator.',
             duration: '03:40'
         },
         {
-            id: 'u-G7pv-PXi0',
+            id: 'RGSeBnnDJ3k',
             title: 'Pengaturan Sesi Jadwal & Kelola Bank Soal',
             description: 'Langkah-langkah menyusun sesi jadwal pelatihan keagamaan, mengelola butir-butir soal ujian kognitif pretest dan posttest.',
             duration: '04:10'
         },
         {
-            id: 'u-G7pv-PXi0',
+            id: 'RGSeBnnDJ3k',
             title: 'Presensi QR-Code & Input Evaluasi Psikomotorik / Afektif',
             description: 'Cara memindai QR-Code peserta untuk presensi kehadiran, cara fasilitator mengisi form nilai afektif dan praktik keagamaan psikomotorik.',
             duration: '03:05'
         },
         {
-            id: 'u-G7pv-PXi0',
+            id: 'RGSeBnnDJ3k',
             title: 'Kalkulasi SPK AHP-SAW & Ekspor Laporan Akhir',
             description: 'Proses pembobotan kriteria menggunakan matriks AHP, normalisasi nilai SAW, penentuan predikat kelulusan otomatis, dan pencetakan berkas laporan PDF/Excel.',
             duration: '04:50'
@@ -54,9 +54,9 @@
         @else
         {
             id: 'YOUR_VIDEO_ID',
-            title: 'Panduan Penggunaan Untuk Fasilitator',
-            description: 'Panduan memindai QR code presensi dan mengisi nilai evaluasi peserta (Afektif & Psikomotorik).',
-            duration: '05:00'
+            title: 'Coming Soon: Panduan Penggunaan Untuk Fasilitator',
+            description: 'Materi panduan ini sedang dalam tahap produksi dan akan segera tersedia. Nantinya akan membahas cara memindai QR code presensi dan mengisi nilai evaluasi peserta.',
+            duration: '--:--'
         }
         @endif
     ],
@@ -88,14 +88,26 @@
         {{-- Video Player Card --}}
         <div class="lg:col-span-2 bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-4">
             <div class="aspect-video w-full rounded-2xl bg-slate-900 overflow-hidden relative border border-slate-800">
-                <iframe 
-                    class="w-full h-full"
-                    :src="'https://www.youtube.com/embed/' + activeVideo.id" 
-                    title="YouTube video player" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-                </iframe>
+                <template x-if="activeVideo.id !== 'YOUR_VIDEO_ID'">
+                    <iframe 
+                        class="w-full h-full"
+                        :src="'https://www.youtube.com/embed/' + activeVideo.id" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </template>
+                <template x-if="activeVideo.id === 'YOUR_VIDEO_ID'">
+                    <div class="w-full h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
+                        <svg class="w-16 h-16 mb-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l-3.197-2.132a1 1 0 000-1.664z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="text-xl font-bold text-white mb-2">Video Segera Hadir</h3>
+                        <p class="text-sm">Materi panduan ini sedang dalam tahap produksi.</p>
+                    </div>
+                </template>
             </div>
 
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-2">
@@ -110,7 +122,7 @@
                     <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
                         Durasi: <span x-text="activeVideo.duration"></span>
                     </span>
-                    <a :href="'https://www.youtube.com/watch?v=' + activeVideo.id" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+                    <a x-show="activeVideo.id !== 'YOUR_VIDEO_ID'" :href="'https://www.youtube.com/watch?v=' + activeVideo.id" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
                         Tonton di YT
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
