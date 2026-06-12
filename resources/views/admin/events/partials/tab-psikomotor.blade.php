@@ -23,14 +23,21 @@
         </div>
     </div>
 
-    {{-- Filter --}}
+    {{-- Filter & Search --}}
     <template x-if="hasTemplates && rows.length > 0">
-        <div class="flex items-center gap-3 mb-4">
-            <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
-                <input type="checkbox" x-model="filterUnevaluated" class="w-3.5 h-3.5 text-primary rounded focus:ring-primary">
-                Hanya yang belum dinilai
-            </label>
-            <span class="text-xs text-gray-400" x-text="filteredRows.length + ' peserta'"></span>
+        <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" x-model="searchQuery" placeholder="Cari nama peserta..." 
+                        class="pl-9 pr-4 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none w-64">
+                </div>
+                <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-gray-800 transition-colors">
+                    <input type="checkbox" x-model="filterUnevaluated" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                    Hanya yang belum dinilai
+                </label>
+            </div>
+            <span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-lg" x-text="filteredRows.length + ' peserta'"></span>
         </div>
     </template>
 
@@ -119,12 +126,22 @@
 function psikomotorManager() {
     return {
         templates: [], rows: [], hasTemplates: false,
-        filterUnevaluated: false, activeRow: null, isSaving: false,
+        filterUnevaluated: false, searchQuery: '', activeRow: null, isSaving: false,
         dirtyRows: new Set(),
 
         get outboundTemplates() { return this.templates.filter(t => t.jenis === 'outbound'); },
         get ibadahTemplates() { return this.templates.filter(t => t.jenis === 'ibadah'); },
-        get filteredRows() { return this.filterUnevaluated ? this.rows.filter(r => !r.has_all) : this.rows; },
+        get filteredRows() { 
+            let result = this.rows;
+            if (this.filterUnevaluated) {
+                result = result.filter(r => !r.has_all);
+            }
+            if (this.searchQuery.trim() !== '') {
+                const query = this.searchQuery.toLowerCase();
+                result = result.filter(r => r.nama.toLowerCase().includes(query));
+            }
+            return result;
+        },
 
         async init() { await this.loadData(); },
 
