@@ -256,12 +256,48 @@
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary/15 to-accent/15 rounded-[2rem] transform rotate-3 scale-105 filter blur-lg"></div>
                     <div class="relative z-10 bg-white rounded-[2rem] border border-slate-100 shadow-soft overflow-hidden aspect-[4/3] group">
                         @php
-                            $headerImage = \App\Models\SystemSetting::get('landing_header_image');
-                            $headerImageUrl = $headerImage ? asset('storage/' . $headerImage) : asset('kegiatan.webp');
+                            $headerImages = json_decode(\App\Models\SystemSetting::get('landing_header_images', '[]'), true);
+                            if (empty($headerImages)) {
+                                $headerImages = ['kegiatan.webp']; // Fallback
+                            } else {
+                                $headerImages = array_map(function($img) { return asset('storage/' . $img); }, $headerImages);
+                            }
                         @endphp
-                        <img src="{{ $headerImageUrl }}" alt="{{ \App\Models\SystemSetting::get('landing_header_subtitle', 'Baitul Arqam LP3A UMS') }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-6">
-                            <p class="text-white text-sm font-semibold font-heading">{{ \App\Models\SystemSetting::get('landing_header_title', 'Kegiatan Baitul Arqam LP3A UMS') }}</p>
+
+                        <div x-data="{
+                                activeSlide: 0,
+                                slides: {{ json_encode($headerImages) }},
+                                interval: null,
+                                init() {
+                                    if(this.slides.length > 1) {
+                                        this.interval = setInterval(() => {
+                                            this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+                                        }, 4000);
+                                    }
+                                }
+                             }"
+                             class="w-full h-full relative overflow-hidden"
+                        >
+                            <template x-for="(slide, index) in slides" :key="index">
+                                <img :src="slide" 
+                                     alt="{{ \App\Models\SystemSetting::get('landing_header_subtitle', 'Baitul Arqam LP3A UMS') }}" 
+                                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 group-hover:scale-105"
+                                     :class="activeSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0'"
+                                >
+                            </template>
+                            
+                            <!-- Indicators -->
+                            <div x-show="slides.length > 1" class="absolute bottom-16 left-0 right-0 z-20 flex justify-center gap-2">
+                                <template x-for="(slide, index) in slides" :key="'ind-'+index">
+                                    <button @click="activeSlide = index"
+                                            class="w-2 h-2 rounded-full transition-all"
+                                            :class="activeSlide === index ? 'bg-white w-4' : 'bg-white/50 hover:bg-white/80'"></button>
+                                </template>
+                            </div>
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-6 z-20 pointer-events-none">
+                                <p class="text-white text-sm font-semibold font-heading">{{ \App\Models\SystemSetting::get('landing_header_title', 'Kegiatan Baitul Arqam LP3A UMS') }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

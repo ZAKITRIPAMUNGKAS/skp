@@ -22,16 +22,26 @@
                 <h3 class="text-lg font-bold text-gray-800 font-heading border-b border-gray-100 pb-3">Bagian Header (Gambar & Teks)</h3>
                 
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div class="space-y-2 md:col-span-2">
-                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Gambar Utama (Rekomendasi 4:3)</label>
-                        @if($settings['landing_header_image'])
-                            <div class="mb-3">
-                                <img src="{{ asset('storage/' . $settings['landing_header_image']) }}" alt="Current Image" class="w-48 rounded-lg shadow-sm border border-gray-200">
+                    <div class="space-y-4 md:col-span-2">
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Gambar Utama (Slider / Multiple)</label>
+                        
+                        @if(!empty($settings['landing_header_images']))
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
+                                @foreach($settings['landing_header_images'] as $image)
+                                    <div class="relative group rounded-lg overflow-hidden border border-gray-200">
+                                        <img src="{{ asset('storage/' . $image) }}" class="w-full h-32 object-cover">
+                                        <label class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                                            <input type="checkbox" name="remove_images[]" value="{{ $image }}" class="w-5 h-5 text-red-600 rounded border-gray-300 focus:ring-red-500">
+                                            <span class="ml-2 text-white text-xs font-bold">Hapus</span>
+                                        </label>
+                                    </div>
+                                @endforeach
                             </div>
                         @endif
-                        <input type="file" name="landing_header_image" accept="image/*" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-sm">
-                        <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah gambar.</p>
-                        @error('landing_header_image') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+
+                        <input type="file" name="landing_header_images[]" accept="image/*" multiple class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-sm">
+                        <p class="text-xs text-gray-500 mt-1">Anda dapat memilih lebih dari satu gambar (Multiple Select). Kosongkan jika tidak ingin menambah gambar.</p>
+                        @error('landing_header_images.*') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="space-y-2">
