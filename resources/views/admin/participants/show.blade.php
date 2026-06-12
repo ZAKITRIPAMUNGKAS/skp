@@ -164,7 +164,12 @@
                             <tr x-show="filterKesediaan === 'all' || filterKesediaan === '{{ $ep->konfirmasi_kesediaan ?? 'belum_konfirmasi' }}'" class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4">
                                     <p class="font-medium text-gray-800">{{ optional($ep->event)->nama_event ?? 'Event tidak ditemukan/dihapus' }}</p>
-                                    <p class="text-[10px] text-gray-400">{{ $ep->event ? \Carbon\Carbon::parse($ep->event->tanggal_mulai)->format('d M Y') : '-' }}</p>
+                                    <p class="text-[10px] text-gray-400">
+                                        {{ $ep->event ? \Carbon\Carbon::parse($ep->event->tanggal_mulai)->format('d M Y') : '-' }}
+                                        @if(optional($ep->event)->lokasi)
+                                            &bull; {{ $ep->event->lokasi }}
+                                        @endif
+                                    </p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @if($ep->konfirmasi_kesediaan === 'bersedia')
