@@ -4,6 +4,23 @@
         ->with(['butir' => fn($q) => $q->orderBy('urutan')])
         ->orderBy('urutan')
         ->get();
+
+    $pesertas = \App\Models\EventPeserta::with('peserta.user')
+        ->where('event_id', $event->id)
+        ->get();
+        
+    $penilaianAkhirs = \App\Models\PenilaianAkhir::where('event_id', $event->id)
+        ->pluck('nilai_afektif', 'peserta_id');
+
+    $afektifParticipants = $pesertas->map(function($ep) use ($penilaianAkhirs) {
+        $score = $penilaianAkhirs->get($ep->peserta_id);
+        return [
+            'id' => $ep->peserta_id,
+            'nama' => $ep->peserta->nama_lengkap ?? ($ep->peserta->user->name ?? 'Unknown'),
+            'score' => $score !== null ? round($score, 1) : null,
+            'done' => $score !== null
+        ];
+    })->values()->toArray();
 @endphp
 
 <div x-data="afektifManager()" x-init="init()">
@@ -111,6 +128,46 @@
         </div>
     </template>
 
+    {{-- Participant Progress --}}
+    <div class="mt-8 bg-white rounded-xl border border-gray-100 p-6 shadow-sm" x-show="participants.length > 0">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Progres Nilai Afektif Peserta</h3>
+            <div class="relative">
+                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" x-model="searchQuery" placeholder="Cari nama peserta..." 
+                    class="pl-9 pr-4 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none w-64">
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-100 text-gray-400 font-semibold bg-gray-50/50">
+                        <th class="py-3 px-4 rounded-tl-xl">Nama Peserta</th>
+                        <th class="py-3 px-4 text-center">Status</th>
+                        <th class="py-3 px-4 text-center rounded-tr-xl">Nilai Afektif</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <template x-for="p in filteredParticipants" :key="p.id">
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 font-medium text-gray-800" x-text="p.nama"></td>
+                            <td class="py-3 px-4 text-center">
+                                <span x-show="p.done" class="inline-flex px-2.5 py-1 bg-green-50 text-green-600 rounded-lg text-xs font-bold">Selesai</span>
+                                <span x-show="!p.done" class="inline-flex px-2.5 py-1 bg-gray-100 text-gray-500 rounded-lg text-xs font-bold">Belum</span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-bold" :class="p.score >= 70 ? 'text-green-600' : 'text-red-500'" x-text="p.done ? p.score : '-'"></span>
+                            </td>
+                        </tr>
+                    </template>
+                    <tr x-show="filteredParticipants.length === 0">
+                        <td colspan="3" class="text-center py-8 text-gray-400">Belum ada data peserta yang cocok.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     {{-- Add Sub-Aspek Modal --}}
     <div x-show="showAddSubAspek || showEditSubAspek" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" @click.self="showAddSubAspek = false; showEditSubAspek = false">
         <div x-transition class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 w-full max-w-md mx-4">
@@ -161,9 +218,17 @@
 function afektifManager() {
     return {
         subAspeks: @json($subAspeks->map(fn($sa) => array_merge($sa->toArray(), ['_expanded' => false]))),
+        participants: @json($afektifParticipants),
+        searchQuery: '',
         showAddSubAspek: false, showEditSubAspek: false, showButirForm: false,
         subAspekName: '', editingSubAspek: null, activeSubAspek: null,
         butirForm: { teks_pernyataan: '', is_positif: true }, editingButir: null,
+
+        get filteredParticipants() {
+            if (this.searchQuery.trim() === '') return this.participants;
+            const query = this.searchQuery.toLowerCase();
+            return this.participants.filter(p => p.nama.toLowerCase().includes(query));
+        },
 
         init() {},
 
