@@ -143,7 +143,7 @@
                 <div class="text-center lg:text-left">
                     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-white text-sm font-medium mb-8" data-aos="fade-down">
                         <span class="w-2 h-2 rounded-full bg-scan-success animate-pulse"></span>
-                        ARQAM App V2.0
+                        ARQAM App v2.0.2
                     </div>
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-white leading-tight mb-6" data-aos="fade-up" data-aos-delay="100">
                         Evaluasi Perkaderan <br /> 
