@@ -94,7 +94,7 @@
         
         <div class="max-w-4xl mx-auto flex items-center justify-between relative z-10">
             <div class="flex items-center gap-4">
-                <div class="h-12 w-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl flex items-center justify-center shadow-xl overflow-hidden shrink-0">
+                <div class="h-12 w-12 bg-white rounded-xl flex items-center justify-center shadow-lg overflow-hidden shrink-0">
                     <img src="{{ asset('logo.webp') }}" alt="Logo" class="w-8 h-8 object-contain">
                 </div>
                 <div class="flex flex-col text-white">
