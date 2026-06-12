@@ -62,7 +62,24 @@ class LandingSettingController extends Controller
         // Tambah gambar baru
         if ($request->hasFile('landing_header_images')) {
             foreach ($request->file('landing_header_images') as $file) {
-                $currentImages[] = $file->store('landing', 'public');
+                // Convert to webp
+                $image = imagecreatefromstring(file_get_contents($file->path()));
+                if ($image !== false) {
+                    $filename = uniqid('landing_') . '.webp';
+                    $path = 'landing/' . $filename;
+                    
+                    ob_start();
+                    imagewebp($image, null, 80); // 80 is quality
+                    $webpData = ob_get_clean();
+                    
+                    \Illuminate\Support\Facades\Storage::disk('public')->put($path, $webpData);
+                    imagedestroy($image);
+                    
+                    $currentImages[] = $path;
+                } else {
+                    // Fallback to normal store if not an image that can be created
+                    $currentImages[] = $file->store('landing', 'public');
+                }
             }
         }
         
