@@ -258,7 +258,7 @@
                         <?php
                             $headerImages = json_decode(\App\Models\SystemSetting::get('landing_header_images', '[]'), true);
                             if (empty($headerImages)) {
-                                $headerImages = ['kegiatan.webp']; // Fallback
+                                $headerImages = [asset('kegiatan.webp')]; // Fallback
                             } else {
                                 $headerImages = array_map(function($img) { return asset('storage/' . $img); }, $headerImages);
                             }

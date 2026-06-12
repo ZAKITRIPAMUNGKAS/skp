@@ -16,7 +16,10 @@ class LandingSettingController extends Controller
             'landing_header_title' => SystemSetting::get('landing_header_title', 'Kegiatan Baitul Arqam LP3A UMS'),
             'landing_about_subtitle' => SystemSetting::get('landing_about_subtitle', 'Tentang Aplikasi'),
             'landing_about_title' => SystemSetting::get('landing_about_title', 'Sistem Evaluasi Perkaderan Baitul Arqam Terpadu'),
-            'landing_about_description' => SystemSetting::get('landing_about_description', 'ARQAM App merupakan sistem resmi milik LP3A (Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni) UMS yang dirancang dan dikembangkan secara khusus untuk mendukung penyelenggaraan serta evaluasi kegiatan Baitul Arqam. Sebagai unit kerja di bawah naungan Wakil Rektor III Bidang Al Islam Kemuhammadiyahan, Pengkaderan dan Alumni (sejak tahun 2025), LP3A bertugas membina, menyiapkan, dan memberdayakan kader persyarikatan secara presisi, objektif, dan transparan.'),
+            'landing_about_description' => SystemSetting::get('landing_about_description', '<strong>ARQAM App</strong> merupakan sistem resmi milik <strong>LP3A (Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni)</strong> UMS yang dirancang dan dikembangkan secara khusus untuk mendukung penyelenggaraan serta evaluasi kegiatan <strong>Baitul Arqam</strong>. Sebagai unit kerja di bawah naungan Wakil Rektor III Bidang Al Islam Kemuhammadiyahan, Pengkaderan dan Alumni (sejak tahun 2025), LP3A bertugas membina, menyiapkan, dan memberdayakan kader persyarikatan secara presisi, objektif, dan transparan.'),
+            'landing_advantages_subtitle' => SystemSetting::get('landing_advantages_subtitle', 'Keunggulan Sistem'),
+            'landing_advantages_title' => SystemSetting::get('landing_advantages_title', 'Fitur Unggulan Sistem ARQAM'),
+            'landing_advantages_description' => SystemSetting::get('landing_advantages_description', 'Solusi praktis untuk mengelola pelatihan dengan akurasi penilaian yang didukung oleh sistem pendukung keputusan yang cerdas.'),
         ];
 
         $defaultFeatures = [
@@ -28,7 +31,19 @@ class LandingSettingController extends Controller
         $rawFeatures = SystemSetting::get('landing_features');
         $features = $rawFeatures ? json_decode($rawFeatures, true) : $defaultFeatures;
 
-        return view('admin.settings.landing', compact('settings', 'features'));
+        $defaultAdvantages = [
+            ['title' => 'Ranah Kognitif (CBT)', 'description' => 'Fasilitas CBT cerdas untuk Pretest & Posttest dilengkapi Timer otomatis, anti-kecurangan, dan Auto-grading seketika.'],
+            ['title' => 'Ranah Afektif', 'description' => 'Instrumen kuesioner skala Likert digital untuk mengukur aspek sikap peserta (Self-Assessment) dengan sinkronisasi bobot secara dinamis.'],
+            ['title' => 'Ranah Psikomotor', 'description' => 'Penilaian observasi lapangan berbasis matriks rubric digital oleh Instruktur (MoT) yang dapat dikustomisasi sesuai kurikulum materi.'],
+            ['title' => 'Kehadiran QR Code', 'description' => 'Sistem terintegrasi cetak ID Card pintar dengan QR Code Scanner untuk pencatatan absensi otomatis dan real-time.'],
+            ['title' => 'Ranking & Penentuan Kelulusan', 'description' => 'Rekapitulasi nilai otomatis untuk menentukan predikat kelulusan kader secara objektif berdasarkan seluruh aspek penilaian.'],
+            ['title' => 'Mobile-First UI', 'description' => 'Desain responsif paripurna yang memprioritaskan kenyamanan pengguna di perangkat seluler dengan navigasi Bottom Menu yang intuitif.'],
+        ];
+
+        $rawAdvantages = SystemSetting::get('landing_advantages');
+        $advantages = $rawAdvantages ? json_decode($rawAdvantages, true) : $defaultAdvantages;
+
+        return view('admin.settings.landing', compact('settings', 'features', 'advantages'));
     }
 
     public function update(Request $request)
@@ -41,9 +56,15 @@ class LandingSettingController extends Controller
             'landing_about_subtitle' => 'required|string|max:255',
             'landing_about_title' => 'required|string|max:255',
             'landing_about_description' => 'required|string',
+            'landing_advantages_subtitle' => 'required|string|max:255',
+            'landing_advantages_title' => 'required|string|max:255',
+            'landing_advantages_description' => 'required|string',
             'features' => 'nullable|array',
             'features.*.title' => 'required|string|max:255',
             'features.*.description' => 'required|string',
+            'advantages' => 'nullable|array',
+            'advantages.*.title' => 'required|string|max:255',
+            'advantages.*.description' => 'required|string',
         ]);
 
         $currentImages = json_decode(SystemSetting::get('landing_header_images', '[]'), true) ?: [];
@@ -91,9 +112,22 @@ class LandingSettingController extends Controller
         SystemSetting::set('landing_about_title', $request->landing_about_title);
         SystemSetting::set('landing_about_description', $request->landing_about_description);
         
-        $features = $request->features ?? [];
-        SystemSetting::set('landing_features', json_encode(array_values($features)));
+        SystemSetting::set('landing_advantages_subtitle', $request->landing_advantages_subtitle);
+        SystemSetting::set('landing_advantages_title', $request->landing_advantages_title);
+        SystemSetting::set('landing_advantages_description', $request->landing_advantages_description);
 
-        return back()->with('success', 'Pengaturan landing page berhasil disimpan.');
+        if ($request->has('features')) {
+            SystemSetting::set('landing_features', json_encode(array_values($request->features)));
+        } else {
+            SystemSetting::set('landing_features', json_encode([]));
+        }
+
+        if ($request->has('advantages')) {
+            SystemSetting::set('landing_advantages', json_encode(array_values($request->advantages)));
+        } else {
+            SystemSetting::set('landing_advantages', json_encode([]));
+        }
+
+        return redirect()->route('admin.settings.landing')->with('success', 'Pengaturan Landing Page berhasil disimpan.');
     }
 }

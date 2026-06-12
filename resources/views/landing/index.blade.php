@@ -462,80 +462,59 @@
     </section>
 
     {{-- Features Section --}}
+    @php
+    $rawAdvantages = \App\Models\SystemSetting::get('landing_advantages');
+    $advantages = $rawAdvantages ? json_decode($rawAdvantages, true) : [
+        ['title' => 'Ranah Kognitif (CBT)', 'description' => 'Fasilitas CBT (Computer Based Test) cerdas untuk Pretest & Posttest dilengkapi Timer otomatis, anti-kecurangan, dan Auto-grading seketika.'],
+        ['title' => 'Ranah Afektif', 'description' => 'Instrumen kuesioner skala Likert digital untuk mengukur aspek sikap peserta (Self-Assessment) dengan sinkronisasi bobot secara dinamis.'],
+        ['title' => 'Ranah Psikomotor', 'description' => 'Penilaian observasi lapangan berbasis matriks *rubric* digital oleh Instruktur (MoT) yang dapat dikustomisasi sesuai kurikulum materi.'],
+        ['title' => 'Kehadiran QR Code', 'description' => 'Sistem terintegrasi cetak ID Card pintar dengan QR Code Scanner untuk pencatatan absensi otomatis dan *real-time*.'],
+        ['title' => 'Ranking & Penentuan Kelulusan', 'description' => 'Rekapitulasi nilai otomatis untuk menentukan predikat kelulusan kader secara objektif berdasarkan seluruh aspek penilaian.'],
+        ['title' => 'Mobile-First UI', 'description' => 'Desain responsif paripurna yang memprioritaskan kenyamanan pengguna di perangkat seluler dengan navigasi *Bottom Menu* yang intuitif.'],
+    ];
+    $advColors = [
+        ['bg' => 'bg-blue-100', 'text' => 'text-primary', 'hoverBg' => 'group-hover:bg-primary', 'border' => 'hover:border-primary/30'],
+        ['bg' => 'bg-amber-100', 'text' => 'text-accent', 'hoverBg' => 'group-hover:bg-accent', 'border' => 'hover:border-accent/30'],
+        ['bg' => 'bg-emerald-100', 'text' => 'text-emerald-600', 'hoverBg' => 'group-hover:bg-emerald-500', 'border' => 'hover:border-emerald-300'],
+        ['bg' => 'bg-indigo-100', 'text' => 'text-indigo-600', 'hoverBg' => 'group-hover:bg-indigo-500', 'border' => 'hover:border-indigo-300'],
+        ['bg' => 'bg-purple-100', 'text' => 'text-purple-600', 'hoverBg' => 'group-hover:bg-purple-600', 'border' => 'hover:border-purple-300'],
+        ['bg' => 'bg-rose-100', 'text' => 'text-rose-600', 'hoverBg' => 'group-hover:bg-rose-500', 'border' => 'hover:border-rose-300'],
+    ];
+    $advIcons = [
+        '<svg class="w-7 h-7 currentColor group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>',
+        '<svg class="w-7 h-7 currentColor group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>',
+        '<svg class="w-7 h-7 currentColor group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>',
+        '<svg class="w-7 h-7 currentColor group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>',
+        '<svg class="w-7 h-7 currentColor group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
+        '<svg class="w-7 h-7 currentColor group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>',
+    ];
+    @endphp
     <section id="fitur" class="py-24 bg-white relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <span class="text-accent font-bold tracking-wider uppercase text-sm mb-2 block">Keunggulan Sistem</span>
-                <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6">Fitur Unggulan Sistem ARQAM</h2>
-                <p class="text-gray-500 text-lg">Solusi praktis untuk mengelola pelatihan dengan akurasi penilaian yang didukung oleh sistem pendukung keputusan yang cerdas.</p>
+                <span class="text-accent font-bold tracking-wider uppercase text-sm mb-2 block">{{ \App\Models\SystemSetting::get('landing_advantages_subtitle', 'Keunggulan Sistem') }}</span>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6">{{ \App\Models\SystemSetting::get('landing_advantages_title', 'Fitur Unggulan Sistem ARQAM') }}</h2>
+                <p class="text-gray-500 text-lg">{!! nl2br(e(\App\Models\SystemSetting::get('landing_advantages_description', 'Solusi praktis untuk mengelola pelatihan dengan akurasi penilaian yang didukung oleh sistem pendukung keputusan yang cerdas.'))) !!}</p>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div class="bg-surface rounded-3xl p-8 border border-gray-100 hover:border-primary/30 hover:shadow-xl hover:bg-white transition-all duration-300 group" data-aos="fade-up" data-aos-delay="0">
-                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary transition-all duration-300 shadow-sm">
-                        <svg class="w-7 h-7 text-primary group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                @foreach($advantages as $i => $adv)
+                @php
+                    $c = $advColors[$i % count($advColors)];
+                    $icon = str_replace('currentColor group-hover', $c['text'] . ' group-hover', $advIcons[$i % count($advIcons)]);
+                    $delay = ($i % 3) * 100;
+                @endphp
+                <!-- Feature {{ $i + 1 }} -->
+                <div class="bg-surface rounded-3xl p-8 border border-gray-100 {{ $c['border'] }} hover:shadow-xl hover:bg-white transition-all duration-300 group" data-aos="fade-up" data-aos-delay="{{ $delay }}">
+                    <div class="w-14 h-14 {{ $c['bg'] }} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 {{ $c['hoverBg'] }} transition-all duration-300 shadow-sm">
+                        {!! $icon !!}
                     </div>
-                    <h3 class="text-xl font-heading font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">Ranah Kognitif (CBT)</h3>
+                    <h3 class="text-xl font-heading font-bold text-gray-900 mb-3 group-hover:{{ str_replace('text-', 'text-', $c['text']) }} transition-colors">{{ $adv['title'] }}</h3>
                     <p class="text-gray-500 leading-relaxed text-sm">
-                        Fasilitas CBT (Computer Based Test) cerdas untuk Pretest & Posttest dilengkapi Timer otomatis, anti-kecurangan, dan Auto-grading seketika.
+                        {{ $adv['description'] }}
                     </p>
                 </div>
-
-                <!-- Feature 2 -->
-                <div class="bg-surface rounded-3xl p-8 border border-gray-100 hover:border-accent/30 hover:shadow-xl hover:bg-white transition-all duration-300 group" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-accent transition-all duration-300 shadow-sm">
-                        <svg class="w-7 h-7 text-accent group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-heading font-bold text-gray-900 mb-3 group-hover:text-accent transition-colors">Ranah Afektif</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">
-                        Instrumen kuesioner skala Likert digital untuk mengukur aspek sikap peserta (Self-Assessment) dengan sinkronisasi bobot secara dinamis.
-                    </p>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="bg-surface rounded-3xl p-8 border border-gray-100 hover:border-emerald-300 hover:shadow-xl hover:bg-white transition-all duration-300 group" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500 transition-all duration-300 shadow-sm">
-                        <svg class="w-7 h-7 text-emerald-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-heading font-bold text-gray-900 mb-3 group-hover:text-emerald-600 transition-colors">Ranah Psikomotor</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">
-                        Penilaian observasi lapangan berbasis matriks *rubric* digital oleh Instruktur (MoT) yang dapat dikustomisasi sesuai kurikulum materi.
-                    </p>
-                </div>
-
-                <!-- Feature 4 -->
-                <div class="bg-surface rounded-3xl p-8 border border-gray-100 hover:border-indigo-300 hover:shadow-xl hover:bg-white transition-all duration-300 group" data-aos="fade-up" data-aos-delay="0">
-                    <div class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-indigo-500 transition-all duration-300 shadow-sm">
-                        <svg class="w-7 h-7 text-indigo-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-heading font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors">Kehadiran QR Code</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">
-                        Sistem terintegrasi cetak ID Card pintar dengan QR Code Scanner untuk pencatatan absensi otomatis dan *real-time*.
-                    </p>
-                </div>
-
-                <!-- Feature 5 -->
-                <div class="bg-surface rounded-3xl p-8 border border-gray-100 hover:border-purple-300 hover:shadow-xl hover:bg-white transition-all duration-300 group" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-600 transition-all duration-300 shadow-sm">
-                        <svg class="w-7 h-7 text-purple-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-heading font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors">Ranking & Penentuan Kelulusan</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">
-                        Rekapitulasi nilai otomatis untuk menentukan predikat kelulusan kader secara objektif berdasarkan seluruh aspek penilaian.
-                    </p>
-                </div>
-
-                <!-- Feature 6 -->
-                <div class="bg-surface rounded-3xl p-8 border border-gray-100 hover:border-rose-300 hover:shadow-xl hover:bg-white transition-all duration-300 group" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-14 h-14 bg-rose-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-rose-500 transition-all duration-300 shadow-sm">
-                        <svg class="w-7 h-7 text-rose-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-heading font-bold text-gray-900 mb-3 group-hover:text-rose-600 transition-colors">Mobile-First UI</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">
-                        Desain responsif paripurna yang memprioritaskan kenyamanan pengguna di perangkat seluler dengan navigasi *Bottom Menu* yang intuitif.
-                    </p>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>

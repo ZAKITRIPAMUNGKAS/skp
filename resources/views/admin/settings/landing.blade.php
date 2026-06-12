@@ -124,6 +124,71 @@
             </div>
         </div>
 
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mt-6">
+            <div class="p-6 space-y-6">
+                <h3 class="text-lg font-bold text-gray-800 font-heading border-b border-gray-100 pb-3">Bagian Keunggulan Sistem</h3>
+                
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Label Section</label>
+                    <input type="text" name="landing_advantages_subtitle" value="{{ old('landing_advantages_subtitle', $settings['landing_advantages_subtitle'] ?? 'Keunggulan Sistem') }}" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-sm" required>
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Judul Utama</label>
+                    <input type="text" name="landing_advantages_title" value="{{ old('landing_advantages_title', $settings['landing_advantages_title'] ?? 'Fitur Unggulan Sistem ARQAM') }}" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-sm" required>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Deskripsi Singkat</label>
+                    <textarea name="landing_advantages_description" rows="3" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-sm" required>{{ old('landing_advantages_description', $settings['landing_advantages_description'] ?? 'Solusi praktis untuk mengelola pelatihan dengan akurasi penilaian yang didukung oleh sistem pendukung keputusan yang cerdas.') }}</textarea>
+                </div>
+                
+                <div x-data="{
+                        advantages: {{ json_encode(old('advantages', $advantages)) }},
+                        addAdvantage() {
+                            this.advantages.push({ title: '', description: '' });
+                        },
+                        removeAdvantage(index) {
+                            this.advantages.splice(index, 1);
+                        }
+                    }" class="space-y-4 pt-4 border-t border-gray-100">
+                    
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Daftar Keunggulan</label>
+                        <button type="button" @click="addAdvantage()" class="px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded-lg hover:bg-primary/20 transition-colors">
+                            + Tambah Keunggulan
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <template x-for="(advantage, index) in advantages" :key="index">
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 relative">
+                                <button type="button" @click="removeAdvantage(index)" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                                
+                                <div class="space-y-3 pr-10">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Judul Keunggulan <span x-text="index + 1"></span></label>
+                                        <input type="text" x-model="advantage.title" :name="`advantages[${index}][title]`" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Deskripsi Singkat</label>
+                                        <textarea x-model="advantage.description" :name="`advantages[${index}][description]`" rows="2" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <div x-show="advantages.length === 0" class="text-center py-6 bg-gray-50 border border-gray-200 border-dashed rounded-xl">
+                            <p class="text-sm text-gray-500">Belum ada keunggulan ditambahkan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="flex justify-end pt-4">
             <button type="submit" class="px-6 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all active:scale-95 shadow-sm shadow-primary/30">
                 Simpan Perubahan
