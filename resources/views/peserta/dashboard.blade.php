@@ -459,10 +459,10 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                    <th class="pb-3 w-16">Sesi</th>
-                                    <th class="pb-3">Judul Sesi / Pemateri</th>
-                                    <th class="pb-3 text-center w-24">Kehadiran</th>
-                                    <th class="pb-3 text-right w-40">Materi</th>
+                                    <th class="pb-3 w-16 min-w-[60px]">Sesi</th>
+                                    <th class="pb-3 min-w-[250px]">Judul Sesi / Pemateri</th>
+                                    <th class="pb-3 text-center w-24 min-w-[100px]">Kehadiran</th>
+                                    <th class="pb-3 text-right w-32 min-w-[120px]">Materi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50">
