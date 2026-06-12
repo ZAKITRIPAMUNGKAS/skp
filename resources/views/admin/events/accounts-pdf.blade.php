@@ -277,46 +277,5 @@
             </tbody>
         </table>
     </div>
-
-    {{-- Footer Accent at the very bottom --}}
-    <div class="footer-fixed">
-        <table class="footer-social-table">
-            <tr>
-                <td>
-                    <!-- Globe Web Icon -->
-                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="2" y1="12" x2="22" y2="12"></line>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                        </svg>
-                    </span>
-                    lp3a.ums.ac.id
-                </td>
-                <td>
-                    <!-- Instagram Icon -->
-                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                        </svg>
-                    </span>
-                    @lp3aums
-                </td>
-                <td>
-                    <!-- Email Icon -->
-                    <span style="display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#0b3a75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; display: block;">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                    </span>
-                    lp3a@ums.ac.id
-                </td>
-            </tr>
-        </table>
-        <div class="footer-yellow-bar"></div>
-    </div>
 </body>
 </html>
