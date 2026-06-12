@@ -112,7 +112,7 @@
                                                 <button type="button"
                                                     @click="$dispatch('open-alasan-modal', { 
                                                         pesertaNama: '{{ addslashes($p->nama_lengkap) }}', 
-                                                        eventNama: '{{ addslashes(optional($ep->event)->nama_event) }}', 
+                                                        eventNama: '{{ addslashes(optional($ep->event)->nama_event) }}{{ optional($ep->event)->lokasi ? ' (&bull; ' . addslashes($ep->event->lokasi) . ')' : '' }}', 
                                                         alasan: '{{ addslashes($ep->alasan_tidak_hadir) }}' 
                                                     })"
                                                     class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors shadow-sm cursor-pointer"
