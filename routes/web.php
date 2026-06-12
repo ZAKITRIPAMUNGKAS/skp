@@ -165,6 +165,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         // CRUD Testimoni (Apa Kata Mereka)
         Route::resource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class)->except(['show']);
         
+        // Pengaturan Landing Page
+        Route::get('/settings/landing', [\App\Http\Controllers\Admin\LandingSettingController::class, 'edit'])->name('settings.landing');
+        Route::post('/settings/landing', [\App\Http\Controllers\Admin\LandingSettingController::class, 'update'])->name('settings.landing.update');
+        
         // Rute untuk membuat event baru dan menyimpannya (hanya admin utama)
         Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
         Route::post('/events', [EventController::class, 'store'])->name('events.store');

@@ -255,9 +255,9 @@
                 <div class="relative" data-aos="fade-right">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary/15 to-accent/15 rounded-[2rem] transform rotate-3 scale-105 filter blur-lg"></div>
                     <div class="relative z-10 bg-white rounded-[2rem] border border-slate-100 shadow-soft overflow-hidden aspect-[4/3] group">
-                        <img src="{{ asset('kegiatan.webp') }}" alt="Baitul Arqam LP3A UMS" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="{{ asset('kegiatan.webp') }}" alt="{{ \App\Models\SystemSetting::get('landing_header_subtitle', 'Baitul Arqam LP3A UMS') }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-6">
-                            <p class="text-white text-sm font-semibold font-heading">Kegiatan Baitul Arqam LP3A UMS</p>
+                            <p class="text-white text-sm font-semibold font-heading">{{ \App\Models\SystemSetting::get('landing_header_title', 'Kegiatan Baitul Arqam LP3A UMS') }}</p>
                         </div>
                     </div>
                 </div>
@@ -265,34 +265,42 @@
                 <!-- Column 2: Text & Features (Right) -->
                 <div class="relative" data-aos="fade-left">
                     <div class="absolute -top-4 -left-4 w-12 h-12 bg-accent/20 rounded-2xl -z-10 animate-pulse"></div>
-                    <span class="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">Tentang Aplikasi</span>
-                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6 leading-tight">Sistem Evaluasi Perkaderan Baitul Arqam Terpadu</h2>
+                    <span class="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">{{ \App\Models\SystemSetting::get('landing_about_subtitle', 'Tentang Aplikasi') }}</span>
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6 leading-tight">{{ \App\Models\SystemSetting::get('landing_about_title', 'Sistem Evaluasi Perkaderan Baitul Arqam Terpadu') }}</h2>
                     <p class="text-gray-600 leading-relaxed mb-6">
-                        <strong>ARQAM App</strong> merupakan sistem resmi milik <strong>LP3A (Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni)</strong> UMS yang dirancang dan dikembangkan secara khusus untuk mendukung penyelenggaraan serta evaluasi kegiatan <strong>Baitul Arqam</strong>. Sebagai unit kerja di bawah naungan Wakil Rektor III Bidang Al Islam Kemuhammadiyahan, Pengkaderan dan Alumni (sejak tahun 2025), LP3A bertugas membina, menyiapkan, dan memberdayakan kader persyarikatan secara presisi, objektif, dan transparan.
+                        {!! \App\Models\SystemSetting::get('landing_about_description', '<strong>ARQAM App</strong> merupakan sistem resmi milik <strong>LP3A (Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni)</strong> UMS yang dirancang dan dikembangkan secara khusus untuk mendukung penyelenggaraan serta evaluasi kegiatan <strong>Baitul Arqam</strong>. Sebagai unit kerja di bawah naungan Wakil Rektor III Bidang Al Islam Kemuhammadiyahan, Pengkaderan dan Alumni (sejak tahun 2025), LP3A bertugas membina, menyiapkan, dan memberdayakan kader persyarikatan secara presisi, objektif, dan transparan.') !!}
                     </p>
                     
                     <div class="mt-8 space-y-4">
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold text-sm">01</div>
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading">Standardisasi Penilaian</h4>
-                                <p class="text-xs text-slate-500 leading-relaxed">Menggunakan indikator penilaian terukur untuk objektivitas hasil evaluasi.</p>
+                        @php
+                            $defaultFeatures = [
+                                ['title' => 'Standardisasi Penilaian', 'description' => 'Menggunakan indikator penilaian terukur untuk objektivitas hasil evaluasi.'],
+                                ['title' => 'Kemudahan Akses', 'description' => 'Antarmuka yang dioptimalkan untuk perangkat mobile memudahkan peserta dan instruktur.'],
+                                ['title' => 'Laporan Real-time', 'description' => 'Hasil perhitungan SAW dan grafik demografi langsung tersaji secara instan.'],
+                            ];
+                            $rawFeatures = \App\Models\SystemSetting::get('landing_features');
+                            $features = $rawFeatures ? json_decode($rawFeatures, true) : $defaultFeatures;
+                            $colors = [
+                                ['bg' => 'bg-primary/10', 'text' => 'text-primary'],
+                                ['bg' => 'bg-accent/10', 'text' => 'text-accent'],
+                                ['bg' => 'bg-green-100', 'text' => 'text-green-700'],
+                                ['bg' => 'bg-purple-100', 'text' => 'text-purple-700'],
+                                ['bg' => 'bg-rose-100', 'text' => 'text-rose-700'],
+                            ];
+                        @endphp
+                        
+                        @foreach($features as $index => $feature)
+                            @php
+                                $color = $colors[$index % count($colors)];
+                            @endphp
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-lg {{ $color['bg'] }} {{ $color['text'] }} flex items-center justify-center shrink-0 font-bold text-sm">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading">{{ $feature['title'] ?? '' }}</h4>
+                                    <p class="text-xs text-slate-500 leading-relaxed">{{ $feature['description'] ?? '' }}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0 font-bold text-sm">02</div>
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading">Kemudahan Akses</h4>
-                                <p class="text-xs text-slate-500 leading-relaxed">Antarmuka yang dioptimalkan untuk perangkat mobile memudahkan peserta dan instruktur.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 rounded-lg bg-green-100 text-green-700 flex items-center justify-center shrink-0 font-bold text-sm">03</div>
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading">Laporan Real-time</h4>
-                                <p class="text-xs text-slate-500 leading-relaxed">Hasil perhitungan SAW dan grafik demografi langsung tersaji secara instan.</p>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

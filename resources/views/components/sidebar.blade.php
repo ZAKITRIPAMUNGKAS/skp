@@ -41,6 +41,7 @@
                     <span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Sistem</span>
                 </div>
                 <x-sidebar-item icon="logs" label="Log Aktivitas" route="admin.logs.index" :collapsed="false" />
+                <x-sidebar-item icon="web" label="Pengaturan Landing" route="admin.settings.landing" :collapsed="false" />
             @endif
         @else
             {{-- Peserta Menu --}}
@@ -120,6 +121,7 @@
             <x-sidebar-item icon="comment" label="Testimoni" route="admin.testimonials.index" :collapsed="false" :mobile="true" />
             <div class="px-3 mt-5 mb-2"><span class="text-[10px] font-semibold uppercase tracking-widest text-white/40">Sistem</span></div>
             <x-sidebar-item icon="logs" label="Log Aktivitas" route="admin.logs.index" :collapsed="false" :mobile="true" />
+            <x-sidebar-item icon="web" label="Pengaturan Landing" route="admin.settings.landing" :collapsed="false" :mobile="true" />
         @endif
     </nav>
     @else
