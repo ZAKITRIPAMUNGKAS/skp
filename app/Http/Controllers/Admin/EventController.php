@@ -515,7 +515,7 @@ class EventController extends Controller
     {
         $user = auth()->user();
         if ($user->isAdmin()) {
-            if ($event->created_by !== $user->id) {
+            if ($event->created_by != $user->id) {
                 abort(403, 'Akses ditolak. Anda tidak berhak mengelola event ini.');
             }
         } elseif ($user->isFasilitator()) {
