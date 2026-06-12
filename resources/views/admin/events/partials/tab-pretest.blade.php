@@ -102,8 +102,8 @@
                 <div class="flex items-center gap-2">
                     <label class="text-xs text-gray-500">Durasi:</label>
                     <template x-if="currentSesiStatus === 'aktif'">
-                        <span class="text-sm font-mono font-bold text-red-500 animate-pulse bg-red-50 px-3 py-1.5 rounded-lg border border-red-100"
-                              x-text="subTab === 'pretest' ? pretestRemaining : posttestRemaining"></span>
+                        <span class="text-sm font-mono font-bold text-red-500 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100"
+                              x-text="(subTab === 'pretest' ? pretestDurasi : posttestDurasi) + ' Menit'"></span>
                     </template>
                     <template x-if="currentSesiStatus !== 'aktif'">
                         <div class="flex items-center gap-1.5">
@@ -179,6 +179,34 @@
             <x-empty-state title="Belum ada soal" description="Tambahkan soal baru untuk tes ini." icon="document" />
         </div>
     </template>
+
+    {{-- Participant Progress --}}
+    <div class="mt-8 bg-white rounded-xl border border-gray-100 p-6 shadow-sm" x-show="participants.length > 0">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4" x-text="'Progres Peserta - ' + (subTab === 'pretest' ? 'Pretest' : 'Posttest')"></h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-100 text-gray-400 font-semibold">
+                        <th class="py-3 px-4">Nama Peserta</th>
+                        <th class="py-3 px-4 text-center">Status</th>
+                        <th class="py-3 px-4 text-center">Nilai</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <template x-for="p in participants" :key="p.id">
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 font-medium text-gray-800" x-text="p.nama"></td>
+                            <td class="py-3 px-4 text-center">
+                                <span x-show="subTab === 'pretest' ? p.pretest_done : p.posttest_done" class="inline-flex px-2.5 py-1 bg-green-50 text-green-600 rounded-lg text-xs font-bold">Selesai</span>
+                                <span x-show="!(subTab === 'pretest' ? p.pretest_done : p.posttest_done)" class="inline-flex px-2.5 py-1 bg-gray-100 text-gray-500 rounded-lg text-xs font-bold">Belum</span>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold" :class="(subTab === 'pretest' ? p.pretest_score : p.posttest_score) >= 70 ? 'text-green-600' : 'text-red-500'" x-text="(subTab === 'pretest' ? p.pretest_done : p.posttest_done) ? (subTab === 'pretest' ? p.pretest_score : p.posttest_score) : '-'"></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     {{-- Add/Edit Form Modal --}}
     <div x-show="showForm" x-transition.opacity class="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-8"
@@ -336,6 +364,8 @@ function soalManager() {
         posttestSesiStatus: '{{ $posttestSesi?->status ?? "belum_buka" }}',
         pretestRemainingSecs: {{ $pretestRemainingSecs }},
         posttestRemainingSecs: {{ $posttestRemainingSecs }},
+        pretestDurasi: {{ $pretestSesi?->durasi_menit ?? 30 }},
+        posttestDurasi: {{ $posttestSesi?->durasi_menit ?? 30 }},
         pretestRemaining: '',
         posttestRemaining: '',
         preTarget: 0,
@@ -344,6 +374,7 @@ function soalManager() {
         otherEvents: @json(\App\Models\Event::where('id', '!=', $event->id)->with(['sesi' => function($q) { $q->orderBy('urutan'); }])->orderByDesc('tanggal_mulai')->get()),
         selectedSourceEventId: '',
         selectedSourceSesiId: '',
+        participants: [],
 
         get currentSoalList() { return this.subTab === 'pretest' ? this.pretestSoal : this.posttestSoal; },
         get currentSesiStatus() { return this.subTab === 'pretest' ? this.pretestSesiStatus : this.posttestSesiStatus; },
@@ -356,9 +387,9 @@ function soalManager() {
                     ? (this.pretestDurasi ?? 30)
                     : (this.posttestDurasi ?? 30);
             });
-
-            this.preTarget = this.pretestRemainingSecs > 0 ? Date.now() + (this.pretestRemainingSecs * 1000) : 0;
-            this.postTarget = this.posttestRemainingSecs > 0 ? Date.now() + (this.posttestRemainingSecs * 1000) : 0;
+            
+            // Load initial participants dynamically
+            this.loadMaterialData();
 
             const updateCountdown = () => {
                 // Pretest
@@ -407,12 +438,9 @@ function soalManager() {
                 this.posttestSoal = data.posttestSoal;
                 this.pretestSesiStatus = data.pretestSesiStatus;
                 this.posttestSesiStatus = data.posttestSesiStatus;
-                this.pretestRemainingSecs = data.pretestRemainingSecs;
-                this.posttestRemainingSecs = data.posttestRemainingSecs;
                 this.pretestDurasi = data.pretestDurasi;
                 this.posttestDurasi = data.posttestDurasi;
-                this.preTarget = this.pretestRemainingSecs > 0 ? Date.now() + (this.pretestRemainingSecs * 1000) : 0;
-                this.postTarget = this.posttestRemainingSecs > 0 ? Date.now() + (this.posttestRemainingSecs * 1000) : 0;
+                this.participants = data.participants || [];
                 this.durasi = this.subTab === 'pretest' ? data.pretestDurasi : data.posttestDurasi;
             }
         },

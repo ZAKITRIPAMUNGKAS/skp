@@ -393,6 +393,34 @@ class SoalController extends Controller
         $pretestRemainingSecs = $pretestSesi && $pretestSesi->status === 'aktif' && $pretestSesi->waktu_mulai ? max(0, ($pretestSesi->waktu_mulai->timestamp + ($pretestSesi->durasi_menit * 60)) - now()->timestamp) : 0;
         $posttestRemainingSecs = $posttestSesi && $posttestSesi->status === 'aktif' && $posttestSesi->waktu_mulai ? max(0, ($posttestSesi->waktu_mulai->timestamp + ($posttestSesi->durasi_menit * 60)) - now()->timestamp) : 0;
 
+        $participants = \App\Models\EventPeserta::with('peserta.user')->where('event_id', $event->id)->get();
+        $soalIdsPretest = $pretestSoal->pluck('id');
+        $soalIdsPosttest = $posttestSoal->pluck('id');
+
+        $jawabanPretest = \App\Models\JawabanPeserta::where('event_id', $event->id)->whereIn('soal_id', $soalIdsPretest)->get()->groupBy('peserta_id');
+        $jawabanPosttest = \App\Models\JawabanPeserta::where('event_id', $event->id)->whereIn('soal_id', $soalIdsPosttest)->get()->groupBy('peserta_id');
+
+        $participantList = $participants->map(function($ep) use ($jawabanPretest, $jawabanPosttest, $soalIdsPretest, $soalIdsPosttest) {
+            $pesertaId = $ep->peserta_id;
+            
+            $p_jawabanPre = $jawabanPretest->get($pesertaId) ?? collect();
+            $pretestDone = $soalIdsPretest->count() > 0 && $p_jawabanPre->count() >= $soalIdsPretest->count();
+            $pretestScore = $soalIdsPretest->count() > 0 ? round(($p_jawabanPre->where('is_correct', true)->count() / $soalIdsPretest->count()) * 100, 1) : 0;
+
+            $p_jawabanPost = $jawabanPosttest->get($pesertaId) ?? collect();
+            $posttestDone = $soalIdsPosttest->count() > 0 && $p_jawabanPost->count() >= $soalIdsPosttest->count();
+            $posttestScore = $soalIdsPosttest->count() > 0 ? round(($p_jawabanPost->where('is_correct', true)->count() / $soalIdsPosttest->count()) * 100, 1) : 0;
+
+            return [
+                'id' => $pesertaId,
+                'nama' => $ep->peserta->nama_lengkap ?? ($ep->peserta->user->name ?? 'Unknown'),
+                'pretest_done' => $pretestDone,
+                'pretest_score' => $pretestScore,
+                'posttest_done' => $posttestDone,
+                'posttest_score' => $posttestScore,
+            ];
+        });
+
         return response()->json([
             'pretestSoal' => $pretestSoal,
             'posttestSoal' => $posttestSoal,
@@ -402,6 +430,7 @@ class SoalController extends Controller
             'posttestRemainingSecs' => $posttestRemainingSecs,
             'pretestDurasi' => $pretestSesi?->durasi_menit ?? 30,
             'posttestDurasi' => $posttestSesi?->durasi_menit ?? 30,
+            'participants' => $participantList
         ]);
     }
 }
