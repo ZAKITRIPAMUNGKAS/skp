@@ -940,12 +940,34 @@
                     <hr class="border-gray-100">
                     <div class="space-y-6 text-sm text-gray-600 leading-relaxed">
                         
-                        {{-- Versi 2.0.1 --}}
+                        {{-- Versi 2.0.2 --}}
                         <details class="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-4" open>
                             <summary class="cursor-pointer p-4 bg-gray-50 flex items-center justify-between font-heading font-bold text-gray-800 hover:bg-gray-100 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <span class="w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_0_3px_rgba(26,109,155,0.2)]"></span>
-                                    v2.0.1 (12 Juni 2026) <span class="text-[10px] font-bold px-2 py-1 bg-green-100 text-green-700 rounded-lg ml-2">Terbaru</span>
+                                    v2.0.2 (13 Juni 2026) <span class="text-[10px] font-bold px-2 py-1 bg-green-100 text-green-700 rounded-lg ml-2">Terbaru</span>
+                                </div>
+                                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <div class="p-5 border-t border-gray-100">
+                                <p class="text-xs text-gray-500 mb-3">Rilis penambahan modul CRUD Landing Page dan penyempurnaan modal aplikasi.</p>
+                                <ul class="list-disc pl-4 text-xs space-y-1.5 text-gray-600">
+                                    <li><strong>Fitur Baru (Landing Page):</strong> Penambahan Modul CRUD Pengaturan Landing Page (menggunakan <code>SystemSetting</code>) pada dasbor admin.</li>
+                                    <li><strong>Enhancement (Landing Page):</strong> Fitur pemetaan teks dinamis untuk Judul, Subjudul, Deskripsi "Tentang Aplikasi", dan pengelolaan daftar fitur (tambah/edit/hapus).</li>
+                                    <li><strong>Enhancement (Landing Header):</strong> Mendukung unggah banyak gambar sekaligus (multi-gambar) untuk bagian <em>header</em> yang akan dirender sebagai <em>slider / carousel</em> otomatis (menggunakan Alpine.js).</li>
+                                    <li><strong>Performance (Auto-WebP):</strong> Semua gambar <em>header</em> yang diunggah akan otomatis dikonversi secara <em>on-the-fly</em> ke format WEBP dengan kualitas 80% untuk kecepatan akses.</li>
+                                    <li><strong>Bug Fix (Modal):</strong> Memperbaiki teks kode HTML literal (<code>&amp;bull;</code>) yang bocor sebagai string biasa pada judul modal "Alasan Tidak Hadir".</li>
+                                    <li><strong>Enhancement (Modal Detail):</strong> Memperluas informasi pada pop-up "Alasan Tidak Hadir" sehingga menampilkan juga Lokasi Kegiatan, diimplementasikan pada halaman Kelola Event, Daftar Peserta, dan Detail Peserta.</li>
+                                </ul>
+                            </div>
+                        </details>
+
+                        {{-- Versi 2.0.1 --}}
+                        <details class="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-4">
+                            <summary class="cursor-pointer p-4 bg-gray-50 flex items-center justify-between font-heading font-bold text-gray-800 hover:bg-gray-100 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 bg-gray-400 rounded-full"></span>
+                                    v2.0.1 (12 Juni 2026)
                                 </div>
                                 <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </summary>
