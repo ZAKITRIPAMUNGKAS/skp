@@ -17,7 +17,6 @@
             background-color: #ffffff;
         }
         .page {
-            page-break-after: always;
             position: relative;
             padding: 30px 45px 50px 45px;
             box-sizing: border-box;
@@ -231,7 +230,7 @@
     $komentarTeks = $komentarObj ? $komentarObj->komentar : '— (Tidak ada saran/komentar tertulis)';
 @endphp
 
-<div class="page">
+<div class="page" style="{{ !$loop->last ? 'page-break-after: always;' : '' }}">
     <!-- Top Left Accent Bar -->
     <div class="top-left-bar"></div>
 

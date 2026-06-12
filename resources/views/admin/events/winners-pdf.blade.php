@@ -32,11 +32,6 @@
             position: relative;
             overflow: hidden;
             background-color: #ffffff;
-            page-break-after: always;
-        }
-
-        .certificate-container:last-child {
-            page-break-after: avoid;
         }
 
         /* --- Elemen Grafis Latar Belakang (Style Anak Muda) --- */
@@ -344,7 +339,7 @@
     $medal = $medals[$index] ?? 'Juara';
 @endphp
 
-    <div class="certificate-container">
+    <div class="certificate-container" style="{{ !$loop->last ? 'page-break-after: always;' : '' }}">
         
         <!-- Elemen Latar Belakang Geometris -->
         <div class="shape-top-left"></div>
