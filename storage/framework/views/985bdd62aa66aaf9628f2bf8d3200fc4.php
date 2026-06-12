@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Pendaftaran Baitul Arqam — ' . $event->nama_event); ?>
 
-@section('title', 'Pendaftaran Baitul Arqam — ' . $event->nama_event)
-
-@section('head_extra')
+<?php $__env->startSection('head_extra'); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -82,12 +80,12 @@
         opacity: 1 !important;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="min-h-screen bg-slate-100 font-sans text-slate-700 pb-10" x-data="registrationWizard()">
     
-    {{-- Top Header Section --}}
+    
     <div class="hero-mesh pb-24 pt-8 px-4 md:px-8 shadow-lg relative overflow-hidden">
         <div class="absolute top-[-50px] right-[-50px] w-64 h-64 bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
         <div class="absolute bottom-[-100px] left-[-50px] w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -95,13 +93,13 @@
         <div class="max-w-4xl mx-auto flex items-center justify-between relative z-10">
             <div class="flex items-center gap-4">
                 <div class="h-12 w-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl flex items-center justify-center shadow-xl overflow-hidden shrink-0">
-                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="w-8 h-8 object-contain">
+                    <img src="<?php echo e(asset('logo.webp')); ?>" alt="Logo" class="w-8 h-8 object-contain">
                 </div>
                 <div class="flex flex-col text-white">
                     <h1 class="text-xl font-extrabold leading-tight tracking-tight">Pendaftaran Peserta</h1>
                     <div class="flex items-center gap-2 mt-0.5">
                         <span class="w-1.5 h-1.5 bg-accent rounded-full animate-pulse shrink-0"></span>
-                        <p class="text-xs font-medium text-blue-100/90 whitespace-normal leading-snug">{{ $event->nama_event }}</p>
+                        <p class="text-xs font-medium text-blue-100/90 whitespace-normal leading-snug"><?php echo e($event->nama_event); ?></p>
                     </div>
                 </div>
             </div>
@@ -114,7 +112,7 @@
             </div>
         </div>
 
-        {{-- Progress Bar --}}
+        
         <div class="max-w-4xl mx-auto mt-8 relative z-10 transition-all duration-500" :class="step === 0 ? 'opacity-0 h-0' : 'opacity-100'">
             <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
                 <div class="h-full bg-gradient-to-right from-accent to-accent-600 transition-all duration-500 ease-out rounded-full shadow-[0_0_15px_rgba(212,160,23,0.5)]" 
@@ -126,7 +124,7 @@
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 -mt-12 relative z-20 flex flex-col md:flex-row gap-6 lg:gap-8 pb-28 md:pb-10">
         
-        {{-- Desktop Navigation Sidebar --}}
+        
         <aside class="hidden md:block w-[260px] lg:w-[280px] flex-shrink-0 transition-opacity duration-500" :class="step === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'">
             <nav class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-slate-200 sticky top-8">
                 <div class="mb-6 px-2">
@@ -161,14 +159,14 @@
             </nav>
         </aside>
 
-        {{-- Main Form Area --}}
+        
         <main class="flex-grow w-full max-w-2xl mx-auto md:mx-0 transition-all duration-500">
             
-            <form action="{{ route('registration.store', $event->registration_token) }}" method="POST" enctype="multipart/form-data" id="regForm" @input="saveCache" @submit="handleSubmit($event)"
+            <form action="<?php echo e(route('registration.store', $event->registration_token)); ?>" method="POST" enctype="multipart/form-data" id="regForm" @input="saveCache" @submit="handleSubmit($event)"
                   class="bg-white p-6 sm:p-10 rounded-[1.5rem] shadow-sm border border-slate-200 relative min-h-[400px]">
-                @csrf
+                <?php echo csrf_field(); ?>
                 
-                @if ($errors->any())
+                <?php if($errors->any()): ?>
                 <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-800">
                     <div class="flex items-center gap-2 mb-2">
                         <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -177,19 +175,19 @@
                         <h4 class="text-sm font-bold">Pendaftaran Gagal. Harap periksa kembali:</h4>
                     </div>
                     <ul class="list-disc list-inside text-xs space-y-1 font-medium">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </div>
-                @endif
+                <?php endif; ?>
                 
-                {{-- STEP 0: LANDING / INFO PAGE --}}
+                
                 <section x-show="step === 0" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                     <div class="text-center py-4">
                         <div class="flex justify-center mb-6 relative">
                             <div class="absolute inset-0 bg-primary/20 blur-2xl rounded-full w-32 h-32 mx-auto mt-8"></div>
-                            <img src="{{ asset('images/arka/arka_greeting.png') }}" alt="Arka Greeting" class="w-40 h-40 object-contain relative z-10 drop-shadow-xl hover:scale-105 transition-transform duration-500">
+                            <img src="<?php echo e(asset('images/arka/arka_greeting.png')); ?>" alt="Arka Greeting" class="w-40 h-40 object-contain relative z-10 drop-shadow-xl hover:scale-105 transition-transform duration-500">
                         </div>
                         <h2 class="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight leading-tight mb-4">Pendaftaran Terpadu<br><span class="text-primary">Baitul Arqam</span></h2>
                         <p class="text-slate-500 text-sm leading-relaxed max-w-md mx-auto mb-8 font-medium">
@@ -204,10 +202,11 @@
                                 <div>
                                     <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-0.5">Waktu Pelaksanaan</p>
                                     <p class="text-xs font-semibold text-slate-700">
-                                        {{ \Carbon\Carbon::parse($event->tanggal_mulai)->translatedFormat('d M Y') }} 
-                                        @if($event->tanggal_selesai && $event->tanggal_mulai != $event->tanggal_selesai)
-                                            - {{ \Carbon\Carbon::parse($event->tanggal_selesai)->translatedFormat('d M Y') }}
-                                        @endif
+                                        <?php echo e(\Carbon\Carbon::parse($event->tanggal_mulai)->translatedFormat('d M Y')); ?> 
+                                        <?php if($event->tanggal_selesai && $event->tanggal_mulai != $event->tanggal_selesai): ?>
+                                            - <?php echo e(\Carbon\Carbon::parse($event->tanggal_selesai)->translatedFormat('d M Y')); ?>
+
+                                        <?php endif; ?>
                                     </p>
                                 </div>
                             </div>
@@ -217,17 +216,17 @@
                                 </div>
                                 <div>
                                     <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-0.5">Lokasi</p>
-                                    <p class="text-xs font-semibold text-slate-700">{{ $event->lokasi ?? 'Lokasi belum ditentukan' }}</p>
+                                    <p class="text-xs font-semibold text-slate-700"><?php echo e($event->lokasi ?? 'Lokasi belum ditentukan'); ?></p>
                                 </div>
                             </div>
                         </div>
 
-                        @if($event->deskripsi)
+                        <?php if($event->deskripsi): ?>
                         <div class="mb-8 p-5 bg-slate-50 rounded-2xl border border-slate-100 text-left">
                             <h3 class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Tentang Kegiatan</h3>
-                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">{{ $event->deskripsi }}</p>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed"><?php echo e($event->deskripsi); ?></p>
                         </div>
-                        @endif
+                        <?php endif; ?>
 
                         <div class="bg-white rounded-2xl p-6 text-left border-[1.5px] border-slate-200 shadow-sm mb-2">
                             <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -256,7 +255,7 @@
                     </div>
                 </section>
 
-                {{-- STEP 1: BIODATA DASAR & KONFIRMASI --}}
+                
                 <section x-show="step === 1" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 1</span>
@@ -271,7 +270,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label class="relative cursor-pointer group">
                                     <input type="radio" name="konfirmasi_kesediaan" value="bersedia" x-model="kesediaan" required class="peer sr-only">
-                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary hover:border-slate-300 shadow-sm peer-checked:shadow-none">
+                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 hover:border-slate-300 shadow-sm peer-checked:shadow-none">
                                         <div class="flex items-center justify-center gap-2">
                                             <svg class="w-5 h-5 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                             Ya, Saya Bersedia
@@ -280,7 +279,7 @@
                                 </label>
                                 <label class="relative cursor-pointer group">
                                     <input type="radio" name="konfirmasi_kesediaan" value="tidak_bersedia" x-model="kesediaan" required class="peer sr-only">
-                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-red-500 peer-checked:bg-red-500/10 peer-checked:text-red-600 hover:border-slate-300 shadow-sm peer-checked:shadow-none">
+                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-700 hover:border-slate-300 shadow-sm peer-checked:shadow-none">
                                         <div class="flex items-center justify-center gap-2">
                                             <svg class="w-5 h-5 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                             Tidak Bersedia
@@ -329,14 +328,15 @@
                                     <div>
                                         <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Jenis Kelamin <span class="text-red-500">*</span></label>
                                         <div class="grid grid-cols-2 gap-3">
-                                            @foreach(['L' => 'Laki-laki', 'P' => 'Perempuan'] as $val => $label)
+                                            <?php $__currentLoopData = ['L' => 'Laki-laki', 'P' => 'Perempuan']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <label class="relative cursor-pointer group">
-                                                <input type="radio" name="jenis_kelamin" value="{{ $val }}" :required="kesediaan === 'bersedia'" class="peer sr-only">
+                                                <input type="radio" name="jenis_kelamin" value="<?php echo e($val); ?>" :required="kesediaan === 'bersedia'" class="peer sr-only">
                                                 <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm peer-checked:shadow-none">
-                                                    {{ $label }}
+                                                    <?php echo e($label); ?>
+
                                                 </div>
                                             </label>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
                                     </div>
                                     <div>
@@ -433,7 +433,7 @@
                     </div>
                 </section>
 
-                {{-- STEP 2: PEKERJAAN & KONTAK --}}
+                
                 <section x-show="step === 2" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 2</span>
@@ -523,20 +523,21 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-3 ml-1">Bahasa yang Dikuasai</label>
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                @foreach(['Inggris', 'Arab', 'Mandarin', 'Jepang'] as $lang)
+                                <?php $__currentLoopData = ['Inggris', 'Arab', 'Mandarin', 'Jepang']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lang): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <label class="relative cursor-pointer group">
-                                    <input type="checkbox" name="bahasa_dikuasai[]" value="Bahasa {{ $lang }}" class="peer sr-only">
+                                    <input type="checkbox" name="bahasa_dikuasai[]" value="Bahasa <?php echo e($lang); ?>" class="peer sr-only">
                                     <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-xs text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm peer-checked:shadow-none">
-                                        {{ $lang }}
+                                        <?php echo e($lang); ?>
+
                                     </div>
                                 </label>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {{-- STEP 3: LATAR KEAGAMAAN --}}
+                
                 <section x-show="step === 3" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 3</span>
@@ -549,7 +550,7 @@
                             <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Penilaian Diri Kompetensi <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Keagamaan</label>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Keberagamaan</label>
                                     <select name="kompetensi_keberagamaan" required class="input-modern py-2 text-sm">
                                         <option value="">Pilih</option>
                                         <option value="Sangat Baik">Sangat Baik</option>
@@ -594,80 +595,81 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Kemampuan Membaca Al-Qur'an <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                @foreach(["Iqro'", "Terbata-bata", "Lancar belum fasih", "Lancar dan Fasih", "Bersanad Ulama"] as $opt)
+                                <?php $__currentLoopData = ["Iqro'", "Terbata-bata", "Lancar belum fasih", "Lancar dan Fasih", "Bersanad Ulama"]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <label class="relative cursor-pointer group">
-                                    <input type="radio" name="kemampuan_baca_quran" value="{{ $opt }}" required class="peer sr-only">
+                                    <input type="radio" name="kemampuan_baca_quran" value="<?php echo e($opt); ?>" required class="peer sr-only">
                                     <div class="p-3.5 rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-sm text-slate-700 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm flex items-center justify-between gap-2">
-                                        <span class="leading-tight">{{ $opt }}</span>
+                                        <span class="leading-tight"><?php echo e($opt); ?></span>
                                         <div class="w-4 h-4 shrink-0 rounded-full border-2 border-slate-300 peer-checked:border-primary peer-checked:bg-primary transition-all"></div>
                                     </div>
                                 </label>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Jumlah Hafalan Al-Qur'an <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                @foreach(['Juz 30 (Juz Amma)', '1-2 Juz', '3-5 Juz', '6-10 Juz', '11-20 Juz', '21-30 Juz (Hafidz)'] as $opt)
+                                <?php $__currentLoopData = ["1-10 surat", "10-20 surat", "1 juz", "5 juz", "10 juz", "30 juz"]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <label class="relative cursor-pointer group">
-                                    <input type="radio" name="hafalan_quran_1" value="{{ $opt }}" required class="peer sr-only">
+                                    <input type="radio" name="hafalan_quran_1" value="<?php echo e($opt); ?>" required class="peer sr-only">
                                     <div class="py-3 px-2 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-bold text-xs text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white hover:border-slate-300 shadow-sm leading-tight flex items-center justify-center min-h-[44px]">
-                                        {{ $opt }}
+                                        <?php echo e($opt); ?>
+
                                     </div>
                                 </label>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Rutinitas Sholat Berjamaah di Masjid <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                @foreach(["Selalu", "Sering", "Kadang-kadang", "Jarang"] as $opt)
+                                <?php $__currentLoopData = ["Selalu", "Sering", "Kadang-kadang", "Jarang"]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <label class="relative cursor-pointer group">
-                                    <input type="radio" name="aktivitas_sholat_masjid" value="{{ $opt }} di masjid" required class="peer sr-only">
+                                    <input type="radio" name="aktivitas_sholat_masjid" value="<?php echo e($opt); ?> di masjid" required class="peer sr-only">
                                     <div class="p-3.5 rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-sm text-slate-700 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm flex items-center justify-between gap-2">
-                                        <span class="leading-tight">{{ $opt }} di masjid</span>
+                                        <span class="leading-tight"><?php echo e($opt); ?> di masjid</span>
                                         <div class="w-4 h-4 shrink-0 rounded-full border-2 border-slate-300 peer-checked:border-primary peer-checked:bg-primary transition-all"></div>
                                     </div>
                                 </label>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Kehadiran Kajian Ilmu Agama <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                @foreach(["Seminggu 1-3x", "Seminggu 1x", "Sebulan 1x", "Tidak pernah"] as $opt)
+                                <?php $__currentLoopData = ["Seminggu 1-3x", "Seminggu 1x", "Sebulan 1x", "Tidak pernah"]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <label class="relative cursor-pointer group">
-                                    <input type="radio" name="aktivitas_kajian_agama" value="{{ $opt }}" required class="peer sr-only">
+                                    <input type="radio" name="aktivitas_kajian_agama" value="<?php echo e($opt); ?>" required class="peer sr-only">
                                     <div class="p-3.5 rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-sm text-slate-700 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm flex items-center justify-between gap-2">
-                                        <span class="leading-tight">{{ $opt }}</span>
+                                        <span class="leading-tight"><?php echo e($opt); ?></span>
                                         <div class="w-4 h-4 shrink-0 rounded-full border-2 border-slate-300 peer-checked:border-primary peer-checked:bg-primary transition-all"></div>
                                     </div>
                                 </label>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Jumlah Buku Agama yang Dimiliki <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                @foreach(["1 - 5 buku", "6 - 10 buku", "11 - 20 buku", "Lebih dari 20 buku"] as $opt)
+                                <?php $__currentLoopData = ["1 - 5 buku", "6 - 10 buku", "11 - 20 buku", "Lebih dari 20 buku"]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <label class="relative cursor-pointer group">
-                                    <input type="radio" name="jumlah_buku_agama_text" value="{{ $opt }}" required class="peer sr-only">
+                                    <input type="radio" name="jumlah_buku_agama_text" value="<?php echo e($opt); ?>" required class="peer sr-only">
                                     <div class="p-3.5 rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-sm text-slate-700 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm flex items-center justify-between gap-2">
-                                        <span class="leading-tight">{{ $opt }}</span>
+                                        <span class="leading-tight"><?php echo e($opt); ?></span>
                                         <div class="w-4 h-4 shrink-0 rounded-full border-2 border-slate-300 peer-checked:border-primary peer-checked:bg-primary transition-all"></div>
                                     </div>
                                 </label>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {{-- STEP 4: KEMUHAMMADIYAHAN --}}
+                
                 <section x-show="step === 4" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 4</span>
@@ -680,31 +682,31 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Sumber Informasi Muhammadiyah <span class="text-red-500">*</span></label>
                                 <div class="grid grid-cols-1 gap-2.5">
-                                    @foreach(['Kajian', 'Buku', 'Internet/Sosmed'] as $opt)
+                                    <?php $__currentLoopData = ['Kajian', 'Buku', 'Internet/Sosmed']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <label class="relative cursor-pointer group">
-                                        <input type="checkbox" name="sumber_info_muhammadiyah[]" value="{{ $opt }}" class="peer sr-only">
+                                        <input type="checkbox" name="sumber_info_muhammadiyah[]" value="<?php echo e($opt); ?>" class="peer sr-only">
                                         <div class="p-3 rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-sm text-slate-700 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm flex items-center justify-between gap-2">
-                                            <span>{{ $opt }}</span>
+                                            <span><?php echo e($opt); ?></span>
                                             <div class="w-4 h-4 shrink-0 rounded border-2 border-slate-300 peer-checked:border-primary peer-checked:bg-primary transition-all flex items-center justify-center">
                                                 <svg class="w-3 h-3 text-white scale-0 peer-checked:scale-100 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                             </div>
                                         </div>
                                     </label>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Suara Muhammadiyah <span class="text-red-500">*</span></label>
                                 <div class="grid grid-cols-1 gap-2.5">
-                                    @foreach(['Berlangganan', 'Terkadang beli', 'Tidak pernah'] as $opt)
+                                    <?php $__currentLoopData = ['Berlangganan', 'Terkadang beli', 'Tidak pernah']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <label class="relative cursor-pointer group">
-                                        <input type="radio" name="langganan_suara_muhammadiyah" value="{{ $opt }}" required class="peer sr-only">
+                                        <input type="radio" name="langganan_suara_muhammadiyah" value="<?php echo e($opt); ?>" required class="peer sr-only">
                                         <div class="p-3 rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-sm text-slate-700 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm flex items-center justify-between gap-2">
-                                            <span>{{ $opt }}</span>
+                                            <span><?php echo e($opt); ?></span>
                                             <div class="w-4 h-4 shrink-0 rounded-full border-2 border-slate-300 peer-checked:border-primary peer-checked:bg-primary transition-all"></div>
                                         </div>
                                     </label>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
                         </div>
@@ -712,14 +714,15 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Lembaga ZIS yang Diikuti <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                @foreach(['BAZNAS', 'LAZISMU', 'LAZISNU', 'LAINNYA'] as $opt)
+                                <?php $__currentLoopData = ['BAZNAS', 'LAZISMU', 'LAZISNU', 'LAINNYA']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <label class="relative cursor-pointer group">
-                                    <input type="checkbox" name="lembaga_zis_diikuti[]" value="{{ $opt }}" class="peer sr-only">
+                                    <input type="checkbox" name="lembaga_zis_diikuti[]" value="<?php echo e($opt); ?>" class="peer sr-only">
                                     <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-bold text-xs text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white hover:border-slate-300 shadow-sm peer-checked:shadow-none min-h-[44px] flex items-center justify-center">
-                                        {{ $opt }}
+                                        <?php echo e($opt); ?>
+
                                     </div>
                                 </label>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
 
@@ -741,40 +744,40 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Keaktifan Pimpinan <span class="text-red-500">*</span></label>
                                 <div class="grid grid-cols-1 gap-2.5">
-                                    @foreach(['Pusat', 'Wilayah', 'Daerah', 'Cabang'] as $opt)
+                                    <?php $__currentLoopData = ['Pusat', 'Wilayah', 'Daerah', 'Cabang']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <label class="relative cursor-pointer group">
-                                        <input type="checkbox" name="keaktifan_muhammadiyah[]" value="Pimpinan {{ $opt }}" class="peer sr-only">
+                                        <input type="checkbox" name="keaktifan_muhammadiyah[]" value="Pimpinan <?php echo e($opt); ?>" class="peer sr-only">
                                         <div class="p-3 rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-sm text-slate-700 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm flex items-center justify-between gap-2">
-                                            <span>Pimpinan {{ $opt }}</span>
+                                            <span>Pimpinan <?php echo e($opt); ?></span>
                                             <div class="w-4 h-4 shrink-0 rounded border-2 border-slate-300 peer-checked:border-primary peer-checked:bg-primary transition-all flex items-center justify-center">
                                                 <svg class="w-3 h-3 text-white scale-0 peer-checked:scale-100 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                             </div>
                                         </div>
                                     </label>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Keaktifan ORTOM <span class="text-red-500">*</span></label>
                                 <div class="grid grid-cols-1 gap-2.5">
-                                    @foreach(['Aisyiyah', 'Hizbul Wathon', 'Tapak Suci', 'Pemuda Muhammadiyah'] as $opt)
+                                    <?php $__currentLoopData = ['Aisyiyah', 'Hizbul Wathon', 'Tapak Suci', 'Pemuda Muhammadiyah']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <label class="relative cursor-pointer group">
-                                        <input type="checkbox" name="keaktifan_ortom[]" value="{{ $opt }}" class="peer sr-only">
+                                        <input type="checkbox" name="keaktifan_ortom[]" value="<?php echo e($opt); ?>" class="peer sr-only">
                                         <div class="p-3 rounded-xl border-[1.5px] border-slate-200 bg-white font-medium text-sm text-slate-700 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm flex items-center justify-between gap-2">
-                                            <span>{{ $opt }}</span>
+                                            <span><?php echo e($opt); ?></span>
                                             <div class="w-4 h-4 shrink-0 rounded border-2 border-slate-300 peer-checked:border-primary peer-checked:bg-primary transition-all flex items-center justify-center">
                                                 <svg class="w-3 h-3 text-white scale-0 peer-checked:scale-100 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                             </div>
                                         </div>
                                     </label>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {{-- STEP 5: HARAPAN & FOTO --}}
+                
                 <section x-show="step === 5" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 5</span>
@@ -895,7 +898,7 @@
                                 <span class="text-slate-400 font-normal">(Opsional)</span>
                             </label>
 
-                            {{-- Error Alert --}}
+                            
                             <div x-show="hasError" x-transition
                                  class="mb-3 flex items-start gap-3 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3">
                                 <svg class="w-5 h-5 shrink-0 mt-0.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -904,7 +907,7 @@
                                 <p class="text-xs font-semibold leading-snug" x-text="errorMsg"></p>
                             </div>
 
-                            {{-- Upload Area --}}
+                            
                             <div class="p-8 rounded-2xl border-2 border-dashed transition-all relative overflow-hidden"
                                  :class="hasError
                                     ? 'bg-red-50 border-red-300'
@@ -912,7 +915,7 @@
 
                                 <div class="flex flex-col items-center text-center relative z-10">
 
-                                    {{-- Preview Box --}}
+                                    
                                     <div class="w-28 h-36 rounded-xl border shadow-md flex items-center justify-center overflow-hidden mb-4 transition-all"
                                          :class="preview ? 'border-emerald-300' : 'bg-white border-slate-200'">
                                         <template x-if="preview">
@@ -927,7 +930,7 @@
                                         </template>
                                     </div>
 
-                                    {{-- Status teks --}}
+                                    
                                     <template x-if="preview">
                                         <div>
                                             <div class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full mb-1">
@@ -964,7 +967,7 @@
                     </div>
                 </section>
 
-                {{-- NAV BAR (MOBILE FIXED, DESKTOP IN-FORM) --}}
+                
                 <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 sm:p-4 z-40 md:static md:bg-transparent md:border-none md:p-0 md:mt-10 flex items-center gap-3 shadow-[0_-4px_15px_rgba(0,0,0,0.05)] md:shadow-none" :class="step === 0 ? 'justify-center' : 'justify-between'">
                     
                     <button type="button" x-show="step > 1" @click="prevStep()" 
@@ -1011,7 +1014,7 @@ function registrationWizard() {
         selectedEdu: '',
         kabName: '', kecName: '',
         
-        cacheKey: 'arqam_reg_{{ $event->registration_token }}',
+        cacheKey: 'arqam_reg_<?php echo e($event->registration_token); ?>',
 
         init() { 
             this.fetchProvinsis();
@@ -1216,4 +1219,6 @@ function registrationWizard() {
     }
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\website\SKRIPSI\SISTEM\resources\views/registration/form.blade.php ENDPATH**/ ?>
