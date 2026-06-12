@@ -28,64 +28,72 @@ class EventRegistrationController extends Controller
     {
         $event = Event::where('registration_token', $token)->firstOrFail();
 
-        $request->validate([
+        $rules = [
+            'konfirmasi_kesediaan' => 'required|in:bersedia,tidak_bersedia',
             'nama_lengkap' => 'required|string|max:255',
-            'email'        => 'nullable|email|max:255',
             'no_hp'        => 'required|string|max:20',
-            'foto'         => 'nullable|image|max:2048',
-            'cropped_foto' => 'nullable|string',
-            
-            // Kolom baru
-            'nama_panggilan'   => 'nullable|string|max:255',
-            'arqam_ke'         => 'nullable|string|max:255',
-            'provinsi'         => 'nullable|string|max:255',
-            'jumlah_anak'      => 'nullable|integer',
-            'alamat_rumah'     => 'nullable|string',
-            'jenis_kelamin'    => 'nullable|in:L,P',
-            'nik'              => 'nullable|string',
-            'nbm'              => 'nullable|string',
-            'jabatan_aum'      => 'nullable|string',
-            'tempat_lahir'     => 'nullable|string',
-            'tanggal_lahir'    => 'nullable|date',
-            'umur'             => 'nullable|integer',
-            'status_pernikahan'=> 'nullable|string',
-            'desa_kelurahan'   => 'nullable|string',
-            'kecamatan'        => 'nullable|string',
-            'kabupaten'        => 'nullable|string',
-            'pendidikan_terakhir' => 'required|string',
-            'pendidikan_sd'    => 'nullable|string',
-            'pendidikan_smp'   => 'nullable|string',
-            'pendidikan_sma'   => 'nullable|string',
-            'pendidikan_s1'    => 'nullable|string',
-            'bahasa_dikuasai'  => 'nullable|array',
-            'kemampuan_baca_quran' => 'nullable|string',
-            'kompetensi_keberagamaan' => 'nullable|string',
-            'kompetensi_akademis'     => 'nullable|string',
-            'kompetensi_sosial'       => 'nullable|string',
-            'kompetensi_keorganisasian'=> 'nullable|string',
-            'hafalan_quran_1'  => 'nullable|string',
-            'hafalan_quran_2'  => 'nullable|string',
-            'aktivitas_sholat_masjid' => 'nullable|string',
-            'aktivitas_kajian_agama'  => 'nullable|string',
-            'jumlah_buku_agama'       => 'nullable|integer',
-            'sumber_info_muhammadiyah' => 'nullable|array',
-            'langganan_suara_muhammadiyah' => 'nullable|string',
-            'lembaga_zis_diikuti'     => 'nullable|array',
-            'tokoh_berpengaruh'       => 'nullable|string',
-            'alasan_pilih_tokoh'      => 'nullable|string',
-            'keaktifan_muhammadiyah'  => 'nullable|array',
-            'keaktifan_ortom'         => 'nullable|array',
-            'organisasi_lain'         => 'nullable|string',
-            'harapan_pcm'             => 'nullable|string',
-            'harapan_mengikuti_ba'    => 'nullable|string',
-            'ukuran_kaos'             => 'nullable|string',
-            'rencana_keberangkatan'   => 'nullable|string',
-            'aktivitas_duduk'         => 'nullable|string',
-            'aktivitas_tangga'        => 'nullable|string',
-            'aktivitas_sholat'        => 'nullable|string',
-            'catatan_makanan'         => 'nullable|string',
-            'catatan_kesehatan'       => 'nullable|string',
-        ]);
+            'nik'          => 'required|string',
+        ];
+
+        if ($request->konfirmasi_kesediaan === 'tidak_bersedia') {
+            $rules['alasan_tidak_hadir'] = 'required|string';
+        } else {
+            $rules = array_merge($rules, [
+                'email'        => 'nullable|email|max:255',
+                'foto'         => 'nullable|image|max:2048',
+                'cropped_foto' => 'nullable|string',
+                
+                'nama_panggilan'   => 'nullable|string|max:255',
+                'arqam_ke'         => 'nullable|string|max:255',
+                'provinsi'         => 'nullable|string|max:255',
+                'jumlah_anak'      => 'nullable|integer',
+                'alamat_rumah'     => 'nullable|string',
+                'jenis_kelamin'    => 'nullable|in:L,P',
+                'nbm'              => 'nullable|string',
+                'jabatan_aum'      => 'nullable|string',
+                'tempat_lahir'     => 'nullable|string',
+                'tanggal_lahir'    => 'nullable|date',
+                'umur'             => 'nullable|integer',
+                'status_pernikahan'=> 'nullable|string',
+                'desa_kelurahan'   => 'nullable|string',
+                'kecamatan'        => 'nullable|string',
+                'kabupaten'        => 'nullable|string',
+                'pendidikan_terakhir' => 'required|string',
+                'pendidikan_sd'    => 'nullable|string',
+                'pendidikan_smp'   => 'nullable|string',
+                'pendidikan_sma'   => 'nullable|string',
+                'pendidikan_s1'    => 'nullable|string',
+                'bahasa_dikuasai'  => 'nullable|array',
+                'kemampuan_baca_quran' => 'nullable|string',
+                'kompetensi_keberagamaan' => 'nullable|string',
+                'kompetensi_akademis'     => 'nullable|string',
+                'kompetensi_sosial'       => 'nullable|string',
+                'kompetensi_keorganisasian'=> 'nullable|string',
+                'hafalan_quran_1'  => 'nullable|string',
+                'hafalan_quran_2'  => 'nullable|string',
+                'aktivitas_sholat_masjid' => 'nullable|string',
+                'aktivitas_kajian_agama'  => 'nullable|string',
+                'jumlah_buku_agama'       => 'nullable|integer',
+                'sumber_info_muhammadiyah' => 'nullable|array',
+                'langganan_suara_muhammadiyah' => 'nullable|string',
+                'lembaga_zis_diikuti'     => 'nullable|array',
+                'tokoh_berpengaruh'       => 'nullable|string',
+                'alasan_pilih_tokoh'      => 'nullable|string',
+                'keaktifan_muhammadiyah'  => 'nullable|array',
+                'keaktifan_ortom'         => 'nullable|array',
+                'organisasi_lain'         => 'nullable|string',
+                'harapan_mengikuti_ba'    => 'nullable|string',
+                'ukuran_kaos'             => 'nullable|string',
+                'rencana_keberangkatan'   => 'nullable|string',
+                'aktivitas_duduk'         => 'nullable|string',
+                'aktivitas_tangga'        => 'nullable|string',
+                'aktivitas_sholat'        => 'nullable|string',
+                'catatan_makanan'         => 'nullable|string',
+                'catatan_kesehatan'       => 'nullable|string',
+            ]);
+        }
+
+        $request->validate($rules);
 
         // 1. Tangani pembuatan User (jika email disediakan) atau cari yang sudah ada
         $email = $request->email;
@@ -156,11 +164,11 @@ class EventRegistrationController extends Controller
             'hafalan_quran_1', 'hafalan_quran_2', 'aktivitas_sholat_masjid', 'aktivitas_kajian_agama',
             'langganan_suara_muhammadiyah',
             'tokoh_berpengaruh', 'alasan_pilih_tokoh',
-            'organisasi_lain', 'harapan_pcm', 'harapan_mengikuti_ba',
+            'organisasi_lain', 'harapan_mengikuti_ba',
             'ukuran_kaos', 'rencana_keberangkatan', 'aktivitas_duduk', 'aktivitas_tangga', 'aktivitas_sholat', 'catatan_makanan', 'catatan_kesehatan'
         ]);
 
-        // Tangani Input Array (Checkbox)
+        // Tangani Input Array (Checkbox) - Set null jika tidak ada di request
         $arrayFields = [
             'bahasa_dikuasai', 'sumber_info_muhammadiyah', 
             'lembaga_zis_diikuti', 'keaktifan_muhammadiyah', 'keaktifan_ortom'
@@ -170,6 +178,8 @@ class EventRegistrationController extends Controller
                 $dataPeserta[$field] = is_array($request->input($field)) 
                     ? implode(', ', $request->input($field)) 
                     : $request->input($field);
+            } else {
+                $dataPeserta[$field] = null;
             }
         }
 
@@ -212,11 +222,21 @@ class EventRegistrationController extends Controller
             ]));
 
             EventPeserta::create([
-                'event_id'    => $event->id,
-                'peserta_id'  => $peserta->id,
-                'qr_code'     => $qrCode,
-                'status_aktif'=> true,
+                'event_id'             => $event->id,
+                'peserta_id'           => $peserta->id,
+                'qr_code'              => $qrCode,
+                'status_aktif'         => true,
+                'konfirmasi_kesediaan' => $request->konfirmasi_kesediaan,
+                'alasan_tidak_hadir'   => $request->alasan_tidak_hadir,
             ]);
+        } else {
+            // Update jika sudah terdaftar tapi ingin mengubah konfirmasi
+            EventPeserta::where('event_id', $event->id)
+                ->where('peserta_id', $peserta->id)
+                ->update([
+                    'konfirmasi_kesediaan' => $request->konfirmasi_kesediaan,
+                    'alasan_tidak_hadir'   => $request->alasan_tidak_hadir,
+                ]);
         }
 
         return redirect()->route('registration.success', [

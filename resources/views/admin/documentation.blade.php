@@ -941,38 +941,49 @@
                     <div class="space-y-6 text-sm text-gray-600 leading-relaxed">
                         
                         {{-- Versi 2.0.1 --}}
-                        <div class="relative pl-6 border-l-2 border-primary">
-                            <div class="absolute w-3 h-3 bg-primary rounded-full -left-[7px] top-1.5 shadow-[0_0_0_4px_rgba(26,109,155,0.2)]"></div>
-                            <div class="mb-1 flex items-center justify-between">
-                                <h3 class="text-lg font-bold text-gray-800 font-heading">v2.0.1 (12 Juni 2026)</h3>
-                                <span class="text-[10px] font-bold px-2 py-1 bg-green-100 text-green-700 rounded-lg">Terbaru</span>
+                        <details class="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-4" open>
+                            <summary class="cursor-pointer p-4 bg-gray-50 flex items-center justify-between font-heading font-bold text-gray-800 hover:bg-gray-100 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_0_3px_rgba(26,109,155,0.2)]"></span>
+                                    v2.0.1 (12 Juni 2026) <span class="text-[10px] font-bold px-2 py-1 bg-green-100 text-green-700 rounded-lg ml-2">Terbaru</span>
+                                </div>
+                                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <div class="p-5 border-t border-gray-100">
+                                <p class="text-xs text-gray-500 mb-3">Rilis penyempurnaan UI/UX, penyesuaian form, dan perbaikan keamanan (*Security & Bug Fixes*).</p>
+                                <ul class="list-disc pl-4 text-xs space-y-1.5 text-gray-600">
+                                    <li><strong>Enhancement (Form Pendaftaran):</strong> Menambahkan fitur Konfirmasi Kehadiran di awal. Peserta yang "Tidak Bersedia" dapat memberikan alasan & submit tanpa memproses seluruh formulir.</li>
+                                    <li><strong>Enhancement (Alamat & Domisili):</strong> Pemisahan input <em>Alamat Sesuai KTP</em> dan <em>Wilayah Domisili</em>. Dropdown Provinsi sekarang mengambil data seluruh Indonesia dari API EMSIFA, bukan hanya Jawa Tengah.</li>
+                                    <li><strong>Bug Fix (Profil):</strong> Memperbaiki bug di mana input <em>checkbox</em> (contoh: Kemampuan Bahasa) tidak terhapus di profil ketika peserta mengosongkan pilihannya.</li>
+                                    <li><strong>Enhancement (Label):</strong> Penggantian label UI dari "Harapan PCM" menjadi "Harapan Baitul Arqam" (digabung) dan "NIK" menjadi "NIK / NBM".</li>
+                                    <li><strong>Redesain (Landing Page):</strong> Mengubah tampilan *event* menjadi model *Timeline Linimasa (Accordion)* interaktif.</li>
+                                    <li><strong>Fix (Kuota Logika):</strong> Memperbaiki bug persentase *progress bar* di mana event berkuota tak terbatas (0) salah dilabeli penuh.</li>
+                                    <li><strong>Enhancement (Dokumentasi):</strong> Merapikan antarmuka changelog menjadi model <em>dropdown (accordion)</em>.</li>
+                                    <li><strong>Security (Sistem):</strong> Menutup celah bypass IDOR pada EventController.</li>
+                                </ul>
                             </div>
-                            <p class="text-xs text-gray-500 mb-3">Rilis penyempurnaan UI/UX dan perbaikan keamanan sistem (*Security & Bug Fixes*).</p>
-                            <ul class="list-disc pl-4 text-xs space-y-1.5 text-gray-600">
-                                <li><strong>Fix (Pendaftaran):</strong> Menyelaraskan <em>form</em> pendaftaran (*landing page*) agar sinkron secara presisi dengan kebutuhan struktur data peserta, mencegah hilangnya data (*miss data*) saat submit.</li>
-                                <li><strong>Redesain (Landing Page):</strong> Mengubah tampilan antarmuka event yang sebelumnya *horizontal scroll* menjadi model <strong>Timeline Linimasa (Accordion)</strong> interaktif yang jauh lebih rapi, modern, dan profesional untuk menangani puluhan event sekaligus.</li>
-                                <li><strong>Fix (Kuota Logika):</strong> Memperbaiki bug persentase *progress bar* di mana event yang berkuota tak terbatas (`0`) sebelumnya salah dilabeli sebagai kuota penuh/error.</li>
-                                <li><strong>Enhancement (Lupa Password):</strong> Menyederhanakan alur antarmuka halaman lupa password agar terfokus memberikan instruksi manual menghubungi Fasilitator, meningkatkan keamanan operasional secara fisik.</li>
-                                <li><strong>Security (Sistem Login):</strong> Menambahkan validasi *backend* yang ketat (mencegah *form* kosong *bypass*) saat Autentikasi di `AuthController`.</li>
-                                <li><strong>Bug Fix (Admin Dashboard):</strong> Memperbaiki kueri `$latestEvent` pada *dashboard* admin yang sebelumnya mengambil rilis *event* terbaru secara global, diubah agar presisi memunculkan *event* terbaru milik admin yang sedang *login* saja berdasarkan <code>created_by</code>.</li>
-                            </ul>
-                        </div>
+                        </details>
 
                         {{-- Versi 2.0.0 --}}
-                        <div class="relative pl-6 border-l-2 border-gray-200">
-                            <div class="absolute w-3 h-3 bg-gray-300 rounded-full -left-[7px] top-1.5"></div>
-                            <div class="mb-1">
-                                <h3 class="text-base font-bold text-gray-600 font-heading">v2.0.0 (Rilis Stabil)</h3>
+                        <details class="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                            <summary class="cursor-pointer p-4 bg-gray-50 flex items-center justify-between font-heading font-bold text-gray-800 hover:bg-gray-100 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 bg-gray-400 rounded-full"></span>
+                                    v2.0.0 (Rilis Stabil)
+                                </div>
+                                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <div class="p-5 border-t border-gray-100">
+                                <p class="text-xs text-gray-500 mb-3">Rilis utama fungsionalitas AHP-SAW dan manajemen Baitul Arqam.</p>
+                                <ul class="list-disc pl-4 text-xs space-y-1.5 text-gray-500">
+                                    <li><strong>Fitur:</strong> Implementasi sistem pendukung keputusan (SPK) integrasi AHP dan SAW.</li>
+                                    <li><strong>Fitur:</strong> Presensi digital berbasis *QR-Code* dengan enkripsi *hash*.</li>
+                                    <li><strong>Fitur:</strong> Bank soal dinamis untuk ujian pretest dan posttest kognitif peserta.</li>
+                                    <li><strong>Fitur:</strong> Template rubrik dinamis untuk evaluasi afektif dan ujian psikomotorik.</li>
+                                    <li><strong>Fitur:</strong> Cetak sertifikat dinamis dan laporan format PDF & Excel terintegrasi.</li>
+                                </ul>
                             </div>
-                            <p class="text-xs text-gray-500 mb-3">Rilis utama fungsionalitas AHP-SAW dan manajemen Baitul Arqam.</p>
-                            <ul class="list-disc pl-4 text-xs space-y-1.5 text-gray-500">
-                                <li><strong>Fitur:</strong> Implementasi sistem pendukung keputusan (SPK) integrasi AHP (Analytic Hierarchy Process) dan SAW (Simple Additive Weighting).</li>
-                                <li><strong>Fitur:</strong> Presensi digital berbasis *QR-Code* dengan enkripsi *hash*.</li>
-                                <li><strong>Fitur:</strong> Bank soal dinamis untuk ujian pretest dan posttest kognitif peserta.</li>
-                                <li><strong>Fitur:</strong> Template rubrik dinamis untuk evaluasi afektif dan ujian psikomotorik (praktik ibadah).</li>
-                                <li><strong>Fitur:</strong> Cetak sertifikat dinamis dan laporan format PDF & Excel terintegrasi.</li>
-                            </ul>
-                        </div>
+                        </details>
 
                     </div>
                 </div>

@@ -256,59 +256,97 @@
                     </div>
                 </section>
 
-                {{-- STEP 1: BIODATA DASAR --}}
+                {{-- STEP 1: BIODATA DASAR & KONFIRMASI --}}
                 <section x-show="step === 1" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 1</span>
-                        <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Biodata Dasar</h2>
-                        <p class="text-sm text-slate-500 mt-1">Lengkapi informasi pribadi sesuai dengan identitas resmi (KTP).</p>
+                        <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Konfirmasi & Biodata</h2>
+                        <p class="text-sm text-slate-500 mt-1">Konfirmasi kehadiran Anda dan lengkapi identitas dasar.</p>
                     </div>
 
                     <div class="space-y-6">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Nama Lengkap & Gelar <span class="text-red-500">*</span></label>
-                                <input type="text" name="nama_lengkap" placeholder="Contoh: budiono siregar, S.Kpl" required class="input-modern">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Nama Panggilan</label>
-                                <input type="text" name="nama_panggilan" placeholder="Contoh: Budi" class="input-modern">
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">NIK <span class="text-red-500">*</span></label>
-                                <input type="tel" name="nik" placeholder="16 digit NIK" required pattern="[0-9]{16}" class="input-modern">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">NBM (Bila punya)</label>
-                                <input type="text" name="nbm" placeholder="Nomor Baku Muhammadiyah" class="input-modern">
+                        <!-- KONFIRMASI KEHADIRAN -->
+                        <div class="p-5 bg-blue-50/50 rounded-2xl border border-blue-100 mb-6">
+                            <label class="block text-sm font-bold text-slate-800 mb-3">Apakah Anda bersedia mengikuti kegiatan ini secara penuh? <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <label class="relative cursor-pointer group">
+                                    <input type="radio" name="konfirmasi_kesediaan" value="bersedia" x-model="kesediaan" required class="peer sr-only">
+                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 hover:border-slate-300 shadow-sm peer-checked:shadow-none">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <svg class="w-5 h-5 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Ya, Saya Bersedia
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="relative cursor-pointer group">
+                                    <input type="radio" name="konfirmasi_kesediaan" value="tidak_bersedia" x-model="kesediaan" required class="peer sr-only">
+                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-700 hover:border-slate-300 shadow-sm peer-checked:shadow-none">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <svg class="w-5 h-5 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            Tidak Bersedia
+                                        </div>
+                                    </div>
+                                </label>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Jenis Kelamin <span class="text-red-500">*</span></label>
-                                <div class="grid grid-cols-2 gap-3">
-                                    @foreach(['L' => 'Laki-laki', 'P' => 'Perempuan'] as $val => $label)
-                                    <label class="relative cursor-pointer group">
-                                        <input type="radio" name="jenis_kelamin" value="{{ $val }}" required class="peer sr-only">
-                                        <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm peer-checked:shadow-none">
-                                            {{ $label }}
-                                        </div>
-                                    </label>
-                                    @endforeach
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Umur <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <input type="number" name="umur" placeholder="Contoh: 30" required class="input-modern pr-16">
-                                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-xs">Tahun</span>
-                                </div>
-                            </div>
+                        <!-- ALASAN TIDAK HADIR -->
+                        <div x-show="kesediaan === 'tidak_bersedia'" x-transition x-cloak class="p-5 bg-red-50 rounded-2xl border border-red-100 mb-6">
+                            <label class="block text-sm font-bold text-red-800 mb-2">Alasan Tidak Hadir <span class="text-red-500">*</span></label>
+                            <textarea name="alasan_tidak_hadir" rows="3" placeholder="Sebutkan alasan Anda tidak dapat mengikuti kegiatan..." :required="kesediaan === 'tidak_bersedia'" class="input-modern resize-none border-red-200 focus:border-red-500 focus:ring-red-500"></textarea>
                         </div>
+
+                        <!-- BASIC FIELDS (ALWAYS SHOWN IF KESEDIAAN SELECTED) -->
+                        <div x-show="kesediaan" x-transition>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Nama Lengkap & Gelar <span class="text-red-500">*</span></label>
+                                    <input type="text" name="nama_lengkap" placeholder="Contoh: budiono siregar, S.Kpl" required class="input-modern">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">No WhatsApp <span class="text-red-500">*</span></label>
+                                    <div class="relative flex items-center">
+                                        <div class="absolute left-1.5 w-10 h-[calc(100%-12px)] bg-slate-50 rounded-l-lg flex items-center justify-center border-r border-slate-200 text-slate-600 font-bold text-xs pointer-events-none">+62</div>
+                                        <input type="tel" name="no_hp" placeholder="812xxxxxxxx" required class="input-modern pl-14">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">NIK / NBM <span class="text-red-500">*</span></label>
+                                    <input type="text" name="nik" placeholder="16 digit NIK atau NBM" required class="input-modern">
+                                </div>
+                                <div x-show="kesediaan === 'bersedia'">
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Nama Panggilan</label>
+                                    <input type="text" name="nama_panggilan" placeholder="Contoh: Budi" class="input-modern">
+                                </div>
+                            </div>
+
+                            <!-- ADDITIONAL FIELDS FOR BERSEDIA -->
+                            <div x-show="kesediaan === 'bersedia'" x-transition class="space-y-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Jenis Kelamin <span class="text-red-500">*</span></label>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            @foreach(['L' => 'Laki-laki', 'P' => 'Perempuan'] as $val => $label)
+                                            <label class="relative cursor-pointer group">
+                                                <input type="radio" name="jenis_kelamin" value="{{ $val }}" :required="kesediaan === 'bersedia'" class="peer sr-only">
+                                                <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm peer-checked:shadow-none">
+                                                    {{ $label }}
+                                                </div>
+                                            </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Umur <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <input type="number" name="umur" placeholder="Contoh: 30" :required="kesediaan === 'bersedia'" class="input-modern pr-16">
+                                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-xs">Tahun</span>
+                                        </div>
+                                    </div>
+                                </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
@@ -340,17 +378,30 @@
                         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-5">
                             <h4 class="text-xs font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-3">
                                 <svg class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"/></svg>
-                                Domisili (Jawa Tengah)
+                                Data Alamat & Domisili
                             </h4>
                             
                             <div class="space-y-4">
                                 <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Alamat Sesuai KTP <span class="text-red-500">*</span></label>
+                                    <textarea name="alamat_rumah" rows="2" placeholder="Nama Jalan, Blok, RT/RW Sesuai KTP" :required="kesediaan === 'bersedia'" class="input-modern resize-none text-sm"></textarea>
+                                </div>
+                                
+                                <div class="mt-4 pt-4 border-t border-slate-200">
+                                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">Wilayah Domisili Saat Ini</p>
+                                </div>
+                                
+                                <div>
                                     <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Provinsi <span class="text-red-500">*</span></label>
-                                    <input type="text" name="provinsi" value="Jawa Tengah" required class="input-modern py-2.5 text-sm" readonly>
+                                    <select name="provinsi" x-model="selectedProv" @change="fetchKabupatens()" :required="kesediaan === 'bersedia'" class="input-modern py-2.5 text-sm">
+                                        <option value="">Pilih Provinsi</option>
+                                        <template x-for="prov in provinsis" :key="prov.id"><option :value="prov.name" x-text="prov.name"></option></template>
+                                    </select>
+                                    <input type="hidden" name="provinsi_id" :value="selectedProvId">
                                 </div>
                                 <div>
                                     <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Kabupaten / Kota <span class="text-red-500">*</span></label>
-                                    <select name="kabupaten" x-model="selectedKab" @change="fetchKecamatans()" required class="input-modern py-2.5 text-sm">
+                                    <select name="kabupaten" x-model="selectedKab" @change="fetchKecamatans()" :disabled="!selectedProv" :required="kesediaan === 'bersedia'" class="input-modern py-2.5 text-sm disabled:bg-slate-100 disabled:opacity-60">
                                         <option value="">Pilih Kabupaten</option>
                                         <template x-for="kab in kabupatens" :key="kab.id"><option :value="kab.id" x-text="kab.name"></option></template>
                                     </select>
@@ -359,7 +410,7 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Kecamatan <span class="text-red-500">*</span></label>
-                                        <select name="kecamatan" x-model="selectedKec" @change="fetchDesas()" :disabled="!selectedKab" required class="input-modern py-2.5 text-sm disabled:bg-slate-100 disabled:opacity-60">
+                                        <select name="kecamatan" x-model="selectedKec" @change="fetchDesas()" :disabled="!selectedKab" :required="kesediaan === 'bersedia'" class="input-modern py-2.5 text-sm disabled:bg-slate-100 disabled:opacity-60">
                                             <option value="">Pilih Kecamatan</option>
                                             <template x-for="kec in kecamatans" :key="kec.id"><option :value="kec.id" x-text="kec.name"></option></template>
                                         </select>
@@ -367,18 +418,18 @@
                                     </div>
                                     <div>
                                         <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Desa / Kelurahan <span class="text-red-500">*</span></label>
-                                        <select name="desa_kelurahan" x-model="selectedDesa" :disabled="!selectedKec" required class="input-modern py-2.5 text-sm disabled:bg-slate-100 disabled:opacity-60">
+                                        <select name="desa_kelurahan" x-model="selectedDesa" :disabled="!selectedKec" :required="kesediaan === 'bersedia'" class="input-modern py-2.5 text-sm disabled:bg-slate-100 disabled:opacity-60">
                                             <option value="">Pilih Desa</option>
                                             <template x-for="desa in desas" :key="desa.id"><option :value="desa.name" x-text="desa.name"></option></template>
                                         </select>
                                     </div>
                                 </div>
-                                <div>
-                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Alamat Lengkap <span class="text-red-500">*</span></label>
-                                    <textarea name="alamat_rumah" rows="2" placeholder="Nama Jalan, Blok, RT/RW" required class="input-modern resize-none text-sm"></textarea>
-                                </div>
                             </div>
                         </div>
+
+                            </div> <!-- End of ADDITIONAL FIELDS FOR BERSEDIA -->
+                        </div> <!-- End of BASIC FIELDS (ALWAYS SHOWN IF KESEDIAAN SELECTED) -->
+
                     </div>
                 </section>
 
@@ -738,10 +789,6 @@
                                 <textarea name="organisasi_lain" rows="2" placeholder="Isi '-' jika tidak ada" required class="input-modern resize-none"></textarea>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Harapan Tentang PCM <span class="text-red-500">*</span></label>
-                                <textarea name="harapan_pcm" rows="2" required class="input-modern resize-none"></textarea>
-                            </div>
-                            <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Harapan Mengikuti Baitul Arqam <span class="text-red-500">*</span></label>
                                 <textarea name="harapan_mengikuti_ba" rows="2" required class="input-modern resize-none"></textarea>
                             </div>
@@ -957,7 +1004,9 @@ function registrationWizard() {
         step: 0,
         stepTitles: ['Biodata Dasar', 'Pekerjaan & Kontak', 'Latar Keagamaan', 'Kemuhammadiyahan', 'Harapan & Foto'],
         
-        kabupatens: [], kecamatans: [], desas: [],
+        kesediaan: '',
+        provinsis: [], kabupatens: [], kecamatans: [], desas: [],
+        selectedProv: '', selectedProvId: '',
         selectedKab: '', selectedKec: '', selectedDesa: '',
         selectedEdu: '',
         kabName: '', kecName: '',
@@ -965,14 +1014,27 @@ function registrationWizard() {
         cacheKey: 'arqam_reg_{{ $event->registration_token }}',
 
         init() { 
-            this.fetchKabupatens();
+            this.fetchProvinsis();
             this.restoreCache();
         },
 
-        async fetchKabupatens() {
+        async fetchProvinsis() {
             try {
-                const res = await fetch('https://www.emsifa.com/api-wilayah-indonesia/api/regencies/33.json');
-                this.kabupatens = await res.json();
+                const res = await fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json');
+                this.provinsis = await res.json();
+            } catch(e) { console.error("Gagal load API:", e); }
+        },
+
+        async fetchKabupatens() {
+            if (!this.selectedProv) return;
+            try {
+                const prov = this.provinsis.find(p => p.name === this.selectedProv);
+                if (prov) {
+                    this.selectedProvId = prov.id;
+                    const res = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${this.selectedProvId}.json`);
+                    this.kabupatens = await res.json();
+                    this.desas = []; this.selectedKec = ''; this.selectedDesa = '';
+                }
             } catch(e) { console.error("Gagal load API:", e); }
         },
 
@@ -1073,24 +1135,33 @@ function registrationWizard() {
                     const form = document.getElementById('regForm');
                     if(!form) return;
                     
-                    if(cached.kabupaten) {
-                        this.selectedKab = cached.kabupaten;
-                        await this.fetchKecamatans();
-                        if(cached.kecamatan) {
-                            this.selectedKec = cached.kecamatan;
-                            await this.fetchDesas();
-                            if(cached.desa_kelurahan) {
-                                this.selectedDesa = cached.desa_kelurahan;
+                    if(cached.konfirmasi_kesediaan) {
+                        this.kesediaan = cached.konfirmasi_kesediaan;
+                    }
+
+                    if(cached.provinsi) {
+                        this.selectedProv = cached.provinsi;
+                        await this.fetchKabupatens();
+                        if(cached.kabupaten) {
+                            this.selectedKab = cached.kabupaten;
+                            await this.fetchKecamatans();
+                            if(cached.kecamatan) {
+                                this.selectedKec = cached.kecamatan;
+                                await this.fetchDesas();
+                                if(cached.desa_kelurahan) {
+                                    this.selectedDesa = cached.desa_kelurahan;
+                                }
                             }
                         }
                     }
 
                     for(let key in cached) {
-                        if(key === '_step' || key === 'kabupaten' || key === 'kecamatan' || key === 'desa_kelurahan') continue;
+                        if(key === '_step' || key === 'provinsi' || key === 'kabupaten' || key === 'kecamatan' || key === 'desa_kelurahan') continue;
                         let val = cached[key];
                         if(Array.isArray(val)) {
                             val.forEach(v => {
-                                let el = form.querySelector(`[name="${key}"][value="${v}"]`);
+                                let el = form.querySelector(`[name="${key}[]"][value="${v}"]`);
+                                if(!el) el = form.querySelector(`[name="${key}"][value="${v}"]`);
                                 if(el) el.checked = true;
                             });
                         } else {
