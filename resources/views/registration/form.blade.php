@@ -271,7 +271,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label class="relative cursor-pointer group">
                                     <input type="radio" name="konfirmasi_kesediaan" value="bersedia" x-model="kesediaan" required class="peer sr-only">
-                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-slate-50 peer-checked:text-primary hover:border-slate-300 shadow-sm peer-checked:shadow-none">
+                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary hover:border-slate-300 shadow-sm peer-checked:shadow-none">
                                         <div class="flex items-center justify-center gap-2">
                                             <svg class="w-5 h-5 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                             Ya, Saya Bersedia
@@ -280,7 +280,7 @@
                                 </label>
                                 <label class="relative cursor-pointer group">
                                     <input type="radio" name="konfirmasi_kesediaan" value="tidak_bersedia" x-model="kesediaan" required class="peer sr-only">
-                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-red-500 peer-checked:bg-slate-50 peer-checked:text-red-600 hover:border-slate-300 shadow-sm peer-checked:shadow-none">
+                                    <div class="p-3 text-center rounded-xl border-[1.5px] border-slate-200 bg-white font-semibold text-sm text-slate-600 transition-all peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-600 hover:border-slate-300 shadow-sm peer-checked:shadow-none">
                                         <div class="flex items-center justify-center gap-2">
                                             <svg class="w-5 h-5 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                             Tidak Bersedia
