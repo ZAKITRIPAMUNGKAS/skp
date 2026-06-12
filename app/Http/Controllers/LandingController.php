@@ -19,13 +19,14 @@ class LandingController extends Controller
         $totalSertifikat = \App\Models\PenilaianAkhir::where('status_kelulusan', 'lulus')->count();
         
         // Event aktif atau event mendatang terbaru
-        $activeEvent = Event::whereIn('status', ['berlangsung', 'persiapan'])
+        $activeEvents = Event::whereIn('status', ['berlangsung', 'persiapan'])
             ->orderBy('tanggal_mulai', 'asc')
-            ->first();
+            ->take(5)
+            ->get();
 
         // Jika tidak ada yang aktif, ambil yang terbaru
-        if (!$activeEvent) {
-            $activeEvent = Event::latest('tanggal_mulai')->first();
+        if ($activeEvents->isEmpty()) {
+            $activeEvents = Event::latest('tanggal_mulai')->take(3)->get();
         }
 
         $galleries = Gallery::orderBy('urutan')->get();
@@ -36,7 +37,7 @@ class LandingController extends Controller
             'totalAlumni', 
             'totalMitra', 
             'totalSertifikat', 
-            'activeEvent',
+            'activeEvents',
             'galleries',
             'testimonials'
         ));

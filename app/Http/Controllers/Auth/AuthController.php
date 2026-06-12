@@ -24,6 +24,11 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
         $loginValue = $request->input('email');
         $field = filter_var($loginValue, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 

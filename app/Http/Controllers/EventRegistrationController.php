@@ -36,6 +36,10 @@ class EventRegistrationController extends Controller
             'cropped_foto' => 'nullable|string',
             
             // Kolom baru
+            'nama_panggilan'   => 'nullable|string|max:255',
+            'arqam_ke'         => 'nullable|string|max:255',
+            'provinsi'         => 'nullable|string|max:255',
+            'jumlah_anak'      => 'nullable|integer',
             'alamat_rumah'     => 'nullable|string',
             'jenis_kelamin'    => 'nullable|in:L,P',
             'nik'              => 'nullable|string',
@@ -55,6 +59,10 @@ class EventRegistrationController extends Controller
             'pendidikan_s1'    => 'nullable|string',
             'bahasa_dikuasai'  => 'nullable|array',
             'kemampuan_baca_quran' => 'nullable|string',
+            'kompetensi_keberagamaan' => 'nullable|string',
+            'kompetensi_akademis'     => 'nullable|string',
+            'kompetensi_sosial'       => 'nullable|string',
+            'kompetensi_keorganisasian'=> 'nullable|string',
             'hafalan_quran_1'  => 'nullable|string',
             'hafalan_quran_2'  => 'nullable|string',
             'aktivitas_sholat_masjid' => 'nullable|string',
@@ -70,6 +78,13 @@ class EventRegistrationController extends Controller
             'organisasi_lain'         => 'nullable|string',
             'harapan_pcm'             => 'nullable|string',
             'harapan_mengikuti_ba'    => 'nullable|string',
+            'ukuran_kaos'             => 'nullable|string',
+            'rencana_keberangkatan'   => 'nullable|string',
+            'aktivitas_duduk'         => 'nullable|string',
+            'aktivitas_tangga'        => 'nullable|string',
+            'aktivitas_sholat'        => 'nullable|string',
+            'catatan_makanan'         => 'nullable|string',
+            'catatan_kesehatan'       => 'nullable|string',
         ]);
 
         // 1. Tangani pembuatan User (jika email disediakan) atau cari yang sudah ada
@@ -133,15 +148,16 @@ class EventRegistrationController extends Controller
         }
 
         $dataPeserta = $request->only([
-            'nama_lengkap', 'email', 'no_hp', 'unit_kerja',
+            'nama_lengkap', 'nama_panggilan', 'email', 'no_hp', 'unit_kerja', 'arqam_ke',
             'alamat_rumah', 'jenis_kelamin', 'nik', 'nbm', 'jabatan_aum',
-            'tempat_lahir', 'tanggal_lahir', 'umur', 'status_pernikahan',
-            'desa_kelurahan', 'pendidikan_terakhir', 'pendidikan_sd', 'pendidikan_smp', 'pendidikan_sma', 'pendidikan_s1',
-            'kemampuan_baca_quran', 'hafalan_quran_1',
-            'aktivitas_sholat_masjid', 'aktivitas_kajian_agama',
+            'tempat_lahir', 'tanggal_lahir', 'umur', 'status_pernikahan', 'jumlah_anak',
+            'provinsi', 'desa_kelurahan', 'pendidikan_terakhir', 'pendidikan_sd', 'pendidikan_smp', 'pendidikan_sma', 'pendidikan_s1',
+            'kemampuan_baca_quran', 'kompetensi_keberagamaan', 'kompetensi_akademis', 'kompetensi_sosial', 'kompetensi_keorganisasian',
+            'hafalan_quran_1', 'hafalan_quran_2', 'aktivitas_sholat_masjid', 'aktivitas_kajian_agama',
             'langganan_suara_muhammadiyah',
             'tokoh_berpengaruh', 'alasan_pilih_tokoh',
-            'organisasi_lain', 'harapan_pcm', 'harapan_mengikuti_ba'
+            'organisasi_lain', 'harapan_pcm', 'harapan_mengikuti_ba',
+            'ukuran_kaos', 'rencana_keberangkatan', 'aktivitas_duduk', 'aktivitas_tangga', 'aktivitas_sholat', 'catatan_makanan', 'catatan_kesehatan'
         ]);
 
         // Tangani Input Array (Checkbox)

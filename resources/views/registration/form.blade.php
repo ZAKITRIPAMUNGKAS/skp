@@ -265,9 +265,15 @@
                     </div>
 
                     <div class="space-y-6">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Nama Lengkap & Gelar <span class="text-red-500">*</span></label>
-                            <input type="text" name="nama_lengkap" placeholder="Contoh: budiono siregar, S.Kpl" required class="input-modern">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Nama Lengkap & Gelar <span class="text-red-500">*</span></label>
+                                <input type="text" name="nama_lengkap" placeholder="Contoh: budiono siregar, S.Kpl" required class="input-modern">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Nama Panggilan</label>
+                                <input type="text" name="nama_panggilan" placeholder="Contoh: Budi" class="input-modern">
+                            </div>
                         </div>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -315,14 +321,20 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Status Pernikahan <span class="text-red-500">*</span></label>
-                            <select name="status_pernikahan" required class="input-modern">
-                                <option value="">Pilih Status</option>
-                                <option value="Menikah">Menikah</option>
-                                <option value="Belum Menikah">Belum Menikah</option>
-                                <option value="Janda/Duda">Janda/Duda</option>
-                            </select>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Status Pernikahan <span class="text-red-500">*</span></label>
+                                <select name="status_pernikahan" required class="input-modern">
+                                    <option value="">Pilih Status</option>
+                                    <option value="Menikah">Menikah</option>
+                                    <option value="Belum Menikah">Belum Menikah</option>
+                                    <option value="Janda/Duda">Janda/Duda</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Jumlah Anak</label>
+                                <input type="number" name="jumlah_anak" placeholder="0 jika belum ada" min="0" class="input-modern">
+                            </div>
                         </div>
 
                         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-5">
@@ -332,6 +344,10 @@
                             </h4>
                             
                             <div class="space-y-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Provinsi <span class="text-red-500">*</span></label>
+                                    <input type="text" name="provinsi" value="Jawa Tengah" required class="input-modern py-2.5 text-sm" readonly>
+                                </div>
                                 <div>
                                     <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Kabupaten / Kota <span class="text-red-500">*</span></label>
                                     <select name="kabupaten" x-model="selectedKab" @change="fetchKecamatans()" required class="input-modern py-2.5 text-sm">
@@ -411,15 +427,21 @@
                                 return map[lvl] <= map[selectedEdu];
                             }
                         }">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Pendidikan Terakhir <span class="text-red-500">*</span></label>
-                                <select name="pendidikan_terakhir" x-model="selectedEdu" required class="input-modern">
-                                    <option value="">Pilih Pendidikan Terakhir</option>
-                                    <option value="SD">SD</option>
-                                    <option value="SMP">SMP / MTs</option>
-                                    <option value="SMA">SMA / SMK / MA</option>
-                                    <option value="S1">S1 (Sarjana)</option>
-                                </select>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Pendidikan Terakhir <span class="text-red-500">*</span></label>
+                                    <select name="pendidikan_terakhir" x-model="selectedEdu" required class="input-modern">
+                                        <option value="">Pilih Pendidikan Terakhir</option>
+                                        <option value="SD">SD</option>
+                                        <option value="SMP">SMP / MTs</option>
+                                        <option value="SMA">SMA / SMK / MA</option>
+                                        <option value="S1">S1 (Sarjana)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Mengikuti BA ke <span class="text-red-500">*</span></label>
+                                    <input type="text" name="arqam_ke" placeholder="Contoh: 1, 2, dst" required class="input-modern">
+                                </div>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5" x-show="shouldShow('SD')" x-transition>
@@ -472,6 +494,52 @@
                     </div>
 
                     <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Penilaian Diri Kompetensi <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Keberagamaan</label>
+                                    <select name="kompetensi_keberagamaan" required class="input-modern py-2 text-sm">
+                                        <option value="">Pilih</option>
+                                        <option value="Sangat Baik">Sangat Baik</option>
+                                        <option value="Baik">Baik</option>
+                                        <option value="Cukup">Cukup</option>
+                                        <option value="Kurang">Kurang</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Akademis</label>
+                                    <select name="kompetensi_akademis" required class="input-modern py-2 text-sm">
+                                        <option value="">Pilih</option>
+                                        <option value="Sangat Baik">Sangat Baik</option>
+                                        <option value="Baik">Baik</option>
+                                        <option value="Cukup">Cukup</option>
+                                        <option value="Kurang">Kurang</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Sosial</label>
+                                    <select name="kompetensi_sosial" required class="input-modern py-2 text-sm">
+                                        <option value="">Pilih</option>
+                                        <option value="Sangat Baik">Sangat Baik</option>
+                                        <option value="Baik">Baik</option>
+                                        <option value="Cukup">Cukup</option>
+                                        <option value="Kurang">Kurang</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Keorganisasian</label>
+                                    <select name="kompetensi_keorganisasian" required class="input-modern py-2 text-sm">
+                                        <option value="">Pilih</option>
+                                        <option value="Sangat Baik">Sangat Baik</option>
+                                        <option value="Baik">Baik</option>
+                                        <option value="Cukup">Cukup</option>
+                                        <option value="Kurang">Kurang</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-2.5 ml-1">Kemampuan Membaca Al-Qur'an <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -678,7 +746,73 @@
                                 <textarea name="harapan_mengikuti_ba" rows="2" required class="input-modern resize-none"></textarea>
                             </div>
                         </div>
-                        
+
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-5">
+                            <h4 class="text-xs font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-3">
+                                <svg class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                Informasi Kesehatan & Logistik
+                            </h4>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Ukuran Kaos <span class="text-red-500">*</span></label>
+                                    <select name="ukuran_kaos" required class="input-modern py-2.5 text-sm">
+                                        <option value="">Pilih Ukuran</option>
+                                        <option value="S">S</option>
+                                        <option value="M">M</option>
+                                        <option value="L">L</option>
+                                        <option value="XL">XL</option>
+                                        <option value="XXL">XXL</option>
+                                        <option value="XXXL">XXXL</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Rencana Transportasi Keberangkatan <span class="text-red-500">*</span></label>
+                                    <select name="rencana_keberangkatan" required class="input-modern py-2.5 text-sm">
+                                        <option value="">Pilih Rencana</option>
+                                        <option value="Bersama Rombongan UMS">Bersama Rombongan UMS</option>
+                                        <option value="Mandiri (Kendaraan Pribadi)">Mandiri (Kendaraan Pribadi)</option>
+                                        <option value="Mandiri (Kendaraan Umum)">Mandiri (Kendaraan Umum)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Kemampuan Duduk Lama <span class="text-red-500">*</span></label>
+                                    <select name="aktivitas_duduk" required class="input-modern py-2.5 text-sm">
+                                        <option value="Bisa (Tanpa Keluhan)">Bisa (Tanpa Keluhan)</option>
+                                        <option value="Bisa (Sesekali Berdiri)">Bisa (Sesekali Berdiri)</option>
+                                        <option value="Tidak Bisa (Sakit Punggung/Pinggang)">Tidak Bisa (Sakit)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Kemampuan Naik Tangga <span class="text-red-500">*</span></label>
+                                    <select name="aktivitas_tangga" required class="input-modern py-2.5 text-sm">
+                                        <option value="Bisa (Tanpa Keluhan)">Bisa (Tanpa Keluhan)</option>
+                                        <option value="Bisa (Perlu Pegangan/Sangat Pelan)">Bisa (Perlu Bantuan)</option>
+                                        <option value="Tidak Bisa (Sakit Lutut/Sendi)">Tidak Bisa (Sakit)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Posisi Sholat <span class="text-red-500">*</span></label>
+                                    <select name="aktivitas_sholat" required class="input-modern py-2.5 text-sm">
+                                        <option value="Normal">Normal</option>
+                                        <option value="Duduk di Kursi">Duduk di Kursi</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Catatan Pantangan/Alergi Makanan (Bila Ada)</label>
+                                    <input type="text" name="catatan_makanan" placeholder="Contoh: Alergi udang, asam urat, dll. Kosongkan jika tidak ada." class="input-modern py-2.5 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1.5 ml-1">Catatan Kesehatan Tambahan (Bila Ada)</label>
+                                    <input type="text" name="catatan_kesehatan" placeholder="Contoh: Ada riwayat maag akut, dsb. Kosongkan jika tidak ada." class="input-modern py-2.5 text-sm">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mt-4"
                              x-data="{
                                 preview: null,

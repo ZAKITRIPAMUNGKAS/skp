@@ -134,6 +134,16 @@
                         </svg>
                         <span class="truncate">10. Pemeliharaan Sistem</span>
                     </button>
+
+                    
+                    <button @click="activePage = 'changelog'" 
+                            :class="activePage === 'changelog' ? 'bg-primary/10 text-primary font-bold' : 'text-gray-600 hover:text-primary hover:bg-gray-50'"
+                            class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left text-sm transition-all group">
+                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="truncate">11. Changelog & Riwayat Pembaruan</span>
+                    </button>
                 </nav>
             </div>
         </div>
@@ -915,6 +925,53 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                
+                <div x-show="activePage === 'changelog'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-1 rounded-md">Riwayat Pembaruan</span>
+                        <h2 class="text-xl font-bold text-gray-800 font-heading mt-2">11. Changelog & Riwayat Pembaruan Sistem</h2>
+                        <p class="text-xs text-gray-400">Pencatatan rilis versi (versioning) dan perbaikan bug/fitur yang telah diimplementasikan.</p>
+                    </div>
+                    <hr class="border-gray-100">
+                    <div class="space-y-6 text-sm text-gray-600 leading-relaxed">
+                        
+                        
+                        <div class="relative pl-6 border-l-2 border-primary">
+                            <div class="absolute w-3 h-3 bg-primary rounded-full -left-[7px] top-1.5 shadow-[0_0_0_4px_rgba(26,109,155,0.2)]"></div>
+                            <div class="mb-1 flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-gray-800 font-heading">v2.0.1 (12 Juni 2026)</h3>
+                                <span class="text-[10px] font-bold px-2 py-1 bg-green-100 text-green-700 rounded-lg">Terbaru</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">Rilis penyempurnaan UI/UX dan perbaikan keamanan sistem (*Security & Bug Fixes*).</p>
+                            <ul class="list-disc pl-4 text-xs space-y-1.5 text-gray-600">
+                                <li><strong>Fix (Pendaftaran):</strong> Menyelaraskan <em>form</em> pendaftaran (*landing page*) agar sinkron secara presisi dengan kebutuhan struktur data peserta, mencegah hilangnya data (*miss data*) saat submit.</li>
+                                <li><strong>Redesain (Landing Page):</strong> Mengubah tampilan antarmuka event yang sebelumnya *horizontal scroll* menjadi model <strong>Timeline Linimasa (Accordion)</strong> interaktif yang jauh lebih rapi, modern, dan profesional untuk menangani puluhan event sekaligus.</li>
+                                <li><strong>Fix (Kuota Logika):</strong> Memperbaiki bug persentase *progress bar* di mana event yang berkuota tak terbatas (`0`) sebelumnya salah dilabeli sebagai kuota penuh/error.</li>
+                                <li><strong>Enhancement (Lupa Password):</strong> Menyederhanakan alur antarmuka halaman lupa password agar terfokus memberikan instruksi manual menghubungi Fasilitator, meningkatkan keamanan operasional secara fisik.</li>
+                                <li><strong>Security (Sistem Login):</strong> Menambahkan validasi *backend* yang ketat (mencegah *form* kosong *bypass*) saat Autentikasi di `AuthController`.</li>
+                                <li><strong>Bug Fix (Admin Dashboard):</strong> Memperbaiki kueri `$latestEvent` pada *dashboard* admin yang sebelumnya mengambil rilis *event* terbaru secara global, diubah agar presisi memunculkan *event* terbaru milik admin yang sedang *login* saja berdasarkan <code>created_by</code>.</li>
+                            </ul>
+                        </div>
+
+                        
+                        <div class="relative pl-6 border-l-2 border-gray-200">
+                            <div class="absolute w-3 h-3 bg-gray-300 rounded-full -left-[7px] top-1.5"></div>
+                            <div class="mb-1">
+                                <h3 class="text-base font-bold text-gray-600 font-heading">v2.0.0 (Rilis Stabil)</h3>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">Rilis utama fungsionalitas AHP-SAW dan manajemen Baitul Arqam.</p>
+                            <ul class="list-disc pl-4 text-xs space-y-1.5 text-gray-500">
+                                <li><strong>Fitur:</strong> Implementasi sistem pendukung keputusan (SPK) integrasi AHP (Analytic Hierarchy Process) dan SAW (Simple Additive Weighting).</li>
+                                <li><strong>Fitur:</strong> Presensi digital berbasis *QR-Code* dengan enkripsi *hash*.</li>
+                                <li><strong>Fitur:</strong> Bank soal dinamis untuk ujian pretest dan posttest kognitif peserta.</li>
+                                <li><strong>Fitur:</strong> Template rubrik dinamis untuk evaluasi afektif dan ujian psikomotorik (praktik ibadah).</li>
+                                <li><strong>Fitur:</strong> Cetak sertifikat dinamis dan laporan format PDF & Excel terintegrasi.</li>
+                            </ul>
+                        </div>
+
                     </div>
                 </div>
 

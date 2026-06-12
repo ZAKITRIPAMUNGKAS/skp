@@ -27,7 +27,7 @@ class DashboardController extends Controller
         if (auth()->user()->isFasilitator()) {
             $latestEvent = auth()->user()->assignedEvents()->latest()->first();
         } else {
-            $latestEvent = Event::latest()->first();
+            $latestEvent = Event::where('created_by', auth()->id())->latest()->first();
         }
 
         return view('admin.dashboard', compact('greeting', 'latestEvent'));

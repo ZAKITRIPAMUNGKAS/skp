@@ -848,59 +848,82 @@
                         </div>
                     </div>
 
-                    <div class="relative" data-aos="fade-up" data-aos-delay="500">
-                        <?php if($activeEvent): ?>
-                            
-                            <?php
-                                $totalPeserta = $activeEvent->peserta()->count();
-                                $kuota = $activeEvent->kuota ?: 100; // Default 100 if not set
-                                $persen = min(100, round(($totalPeserta / $kuota) * 100));
-                                $isFull = $totalPeserta >= $kuota;
-                            ?>
-                            <div class="bg-white rounded-3xl p-8 shadow-2xl relative z-10 border border-gray-100 transform hover:-translate-y-1 transition-transform duration-300">
-                                <div class="flex items-center justify-between mb-8">
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2 h-2 rounded-full <?php echo e($activeEvent->status === 'berlangsung' ? 'bg-green-500' : 'bg-blue-500'); ?> animate-pulse"></span>
-                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                            <?php echo e($activeEvent->status === 'persiapan' ? 'Pendaftaran Dibuka' : 'Event Sedang Berlangsung'); ?>
+                    <div class="relative w-full" data-aos="fade-up" data-aos-delay="500">
+                        <?php if(isset($activeEvents) && $activeEvents->isNotEmpty()): ?>
+                            <div class="bg-[#0A2E42]/80 backdrop-blur-md border border-white/10 rounded-[2rem] p-6 lg:p-8 shadow-2xl relative z-10" x-data="{ activeTimeline: 0 }">
+                                <div class="relative border-l-[3px] border-accent/40 ml-3 md:ml-4 space-y-6 pb-2">
+                                    <?php $__currentLoopData = $activeEvents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
+                                            $totalPeserta = $event->peserta()->count();
+                                            $hasKuota = $event->kuota > 0;
+                                            if ($hasKuota) {
+                                                $persen = min(100, round(($totalPeserta / $event->kuota) * 100));
+                                                $isFull = $totalPeserta >= $event->kuota;
+                                            } else {
+                                                $persen = 0;
+                                                $isFull = false;
+                                            }
+                                        ?>
+                                        <div class="relative pl-8 md:pl-10">
+                                            <!-- Timeline Dot -->
+                                            <div class="absolute -left-[10px] top-1.5 w-4 h-4 rounded-full border-2 transition-all duration-300"
+                                                 :class="activeTimeline === <?php echo e($index); ?> ? 'bg-accent border-[#0A2E42] scale-150 ring-4 ring-accent/30' : 'bg-gray-400 border-gray-500'"></div>
+                                            
+                                            <!-- Event Header (Clickable) -->
+                                            <button @click="activeTimeline = activeTimeline === <?php echo e($index); ?> ? null : <?php echo e($index); ?>" class="w-full text-left flex flex-col group focus:outline-none">
+                                                <span class="text-[11px] font-bold uppercase tracking-widest mb-1 transition-colors" :class="activeTimeline === <?php echo e($index); ?> ? 'text-accent' : 'text-gray-400'"><?php echo e($event->tanggal_mulai->format('d M Y')); ?></span>
+                                                <div class="flex justify-between items-start w-full gap-4">
+                                                    <h3 class="text-lg md:text-xl font-bold text-white leading-tight group-hover:text-accent transition-colors pr-4"><?php echo e($event->nama_event); ?></h3>
+                                                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-white/10 transition-colors">
+                                                        <svg class="w-4 h-4 text-white/70 transition-transform duration-300" :class="activeTimeline === <?php echo e($index); ?> ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                            
+                                            <!-- Event Details (Accordion) -->
+                                            <div x-show="activeTimeline === <?php echo e($index); ?>" x-collapse x-cloak>
+                                                <div class="bg-white rounded-2xl p-5 mt-5 shadow-xl border border-gray-100">
+                                                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="w-2 h-2 rounded-full <?php echo e($event->status === 'berlangsung' ? 'bg-green-500' : 'bg-blue-500'); ?> animate-pulse"></span>
+                                                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                                                <?php echo e($event->status === 'persiapan' ? 'Pendaftaran Dibuka' : 'Sedang Berlangsung'); ?>
 
-                                        </span>
-                                    </div>
-                                    <span class="px-3 py-1 <?php echo e($isFull ? 'bg-red-50 text-red-600' : 'bg-primary-50 text-primary-600'); ?> rounded-full text-[9px] font-bold uppercase tracking-wider">
-                                        <?php echo e($isFull ? 'Kuota Penuh' : 'Kuota Terbatas'); ?>
+                                                            </span>
+                                                        </div>
+                                                        <span class="px-2 py-1 <?php echo e($isFull ? 'bg-red-50 text-red-600' : 'bg-primary-50 text-primary-600'); ?> rounded-md text-[9px] font-bold uppercase tracking-wider">
+                                                            <?php echo e(!$hasKuota ? 'Terbuka Umum' : ($isFull ? 'Kuota Penuh' : 'Kuota Terbatas')); ?>
 
-                                    </span>
-                                </div>
-                                
-                                <div class="flex gap-6 mb-8">
-                                    <div class="w-20 h-20 bg-gray-50 rounded-2xl flex flex-col items-center justify-center border border-gray-100 flex-shrink-0">
-                                        <span class="text-3xl font-black text-primary leading-none"><?php echo e($activeEvent->tanggal_mulai->format('d')); ?></span>
-                                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-tighter"><?php echo e($activeEvent->tanggal_mulai->format('M Y')); ?></span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h3 class="text-xl md:text-2xl font-bold text-gray-900 leading-tight mb-2"><?php echo e($activeEvent->nama_event); ?></h3>
-                                        <div class="flex items-center gap-1.5 text-gray-500">
-                                            <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                            <span class="text-sm font-medium"><?php echo e($activeEvent->lokasi); ?></span>
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <div class="flex items-center gap-2 text-gray-500 mb-5">
+                                                        <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                        <span class="text-sm font-medium"><?php echo e($event->lokasi); ?></span>
+                                                    </div>
+                                                    
+                                                    <div class="pt-4 border-t border-gray-100">
+                                                        <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider mb-2">
+                                                            <span class="text-gray-400"><?php echo e($hasKuota ? 'Progress Pendaftaran' : 'Jumlah Pendaftar'); ?></span>
+                                                            <span class="text-primary-600"><?php echo e($hasKuota ? 'Terisi ' . $persen . '%' : $totalPeserta . ' Peserta'); ?></span>
+                                                        </div>
+                                                        <?php if($hasKuota): ?>
+                                                        <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                                            <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: <?php echo e($persen); ?>%"></div>
+                                                        </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="pt-6 border-t border-gray-100">
-                                    <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider mb-2">
-                                        <span class="text-gray-400">Progress Pendaftaran</span>
-                                        <span class="text-primary-600">Terisi <?php echo e($persen); ?>%</span>
-                                    </div>
-                                    <div class="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: <?php echo e($persen); ?>%"></div>
-                                    </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
                         <?php endif; ?>
 
                         
-                        <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-white/5 rounded-2xl z-0 border border-white/10"></div>
-                        <div class="absolute -top-6 -left-6 w-16 h-16 bg-accent/10 rounded-full z-0 border border-white/5"></div>
+                        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-white/5 rounded-2xl z-0 border border-white/10 hidden lg:block pointer-events-none"></div>
+                        <div class="absolute -top-4 -left-4 w-16 h-16 bg-accent/10 rounded-full z-0 border border-white/5 hidden lg:block pointer-events-none"></div>
                     </div>
                 </div>
             </div>

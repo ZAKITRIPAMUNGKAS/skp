@@ -79,6 +79,8 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
+        $this->authorizeEventAccess($event);
+
         $event->loadCount('eventPesertaAktif', 'sesi');
 
         // Statistik
@@ -215,6 +217,8 @@ class EventController extends Controller
 
     public function statistics(Event $event)
     {
+        $this->authorizeEventAccess($event);
+
         $event->loadCount('eventPesertaAktif');
         $totalPeserta = $event->event_peserta_aktif_count;
 
@@ -271,17 +275,13 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        if (auth()->user()->isFasilitator()) {
-            abort(403, 'Akses ditolak. Fasilitator tidak diizinkan mengubah event.');
-        }
+        $this->authorizeEventAccess($event, false);
         return view('admin.events.edit', compact('event'));
     }
 
     public function update(Request $request, Event $event)
     {
-        if (auth()->user()->isFasilitator()) {
-            abort(403, 'Akses ditolak. Fasilitator tidak diizinkan mengubah event.');
-        }
+        $this->authorizeEventAccess($event, false);
 
         $validated = $request->validate([
             'nama_event'      => 'required|string|max:255',
@@ -301,24 +301,24 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
-        if (auth()->user()->isFasilitator()) {
-            abort(403, 'Akses ditolak. Fasilitator tidak diizinkan menghapus event.');
-        }
+        $this->authorizeEventAccess($event, false);
 
         $event->delete();
 
         return redirect()->route('admin.events.index')
-            ->with('success', 'Event berhasil dihapus!');
+            ->with('success', 'Event berhasil dihapus.');
     }
 
     public function downloadReport(Event $event)
     {
+        $this->authorizeEventAccess($event);
+
         $penilaian = PenilaianAkhir::where('event_id', $event->id)
             ->whereHas('peserta.eventPeserta', function ($q) use ($event) {
                 $q->where('event_id', $event->id)->where('status_aktif', true);
             })
             ->with('peserta')
-            ->orderBy('ranking', 'asc') // Peringkat 1 = terbaik
+            ->orderBy('ranking', 'asc')
             ->get();
 
         $pdf = Pdf::loadView('admin.events.report-pdf', compact('event', 'penilaian'))
@@ -329,6 +329,8 @@ class EventController extends Controller
 
     public function downloadWinnersReport(Event $event)
     {
+        $this->authorizeEventAccess($event);
+
         $winners = PenilaianAkhir::where('event_id', $event->id)
             ->whereHas('peserta.eventPeserta', function ($q) use ($event) {
                 $q->where('event_id', $event->id)->where('status_aktif', true)->where('konfirmasi_kesediaan', 'bersedia');
@@ -346,6 +348,8 @@ class EventController extends Controller
 
     public function downloadAngketReport(Event $event)
     {
+        $this->authorizeEventAccess($event);
+
         $participants = EventPeserta::where('event_id', $event->id)
             ->where('status_aktif', true)
             ->where('konfirmasi_kesediaan', 'bersedia')
@@ -364,16 +368,15 @@ class EventController extends Controller
 
     public function exportExcel(Event $event)
     {
+        $this->authorizeEventAccess($event);
+
         $fileName = 'Laporan_Hasil_Baitul_Arqam_' . str_replace(' ', '_', $event->nama_event) . '.xlsx';
         return Excel::download(new PenilaianExport($event->id), $fileName);
     }
 
     public function assignFacilitators(Request $request, Event $event)
     {
-        // Hanya bisa dilakukan oleh Admin
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Akses ditolak.');
-        }
+        $this->authorizeEventAccess($event, false);
 
         $validated = $request->validate([
             'facilitators' => 'nullable|array',
@@ -414,6 +417,8 @@ class EventController extends Controller
 
     public function downloadSuratTugas(Event $event)
     {
+        $this->authorizeEventAccess($event);
+
         $facilitators = $event->facilitators()->get();
 
         $pdf = Pdf::loadView('admin.events.surat-tugas-pdf', compact('event', 'facilitators'))
@@ -425,6 +430,8 @@ class EventController extends Controller
 
     public function updateStatus(Request $request, Event $event)
     {
+        $this->authorizeEventAccess($event, false);
+
         $request->validate([
             'status' => 'required|in:persiapan,berlangsung,selesai'
         ]);
@@ -457,9 +464,7 @@ class EventController extends Controller
 
     public function resetEvent(Event $event)
     {
-        if (auth()->user()->isFasilitator()) {
-            abort(403, 'Akses ditolak.');
-        }
+        $this->authorizeEventAccess($event, false);
 
         \Illuminate\Support\Facades\DB::beginTransaction();
         try {
