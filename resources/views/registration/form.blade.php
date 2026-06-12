@@ -320,7 +320,7 @@
                             </div>
 
                             <!-- ADDITIONAL FIELDS FOR BERSEDIA -->
-                            <div x-show="kesediaan === 'bersedia'" x-transition class="space-y-6">
+                            <fieldset x-show="kesediaan === 'bersedia'" x-transition class="space-y-6" :disabled="kesediaan !== 'bersedia'">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                     <div>
                                         <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Jenis Kelamin <span class="text-red-500">*</span></label>
@@ -423,14 +423,14 @@
                             </div>
                         </div>
 
-                            </div> <!-- End of ADDITIONAL FIELDS FOR BERSEDIA -->
+                            </fieldset> <!-- End of ADDITIONAL FIELDS FOR BERSEDIA -->
                         </div> <!-- End of BASIC FIELDS (ALWAYS SHOWN IF KESEDIAAN SELECTED) -->
 
                     </div>
                 </section>
 
                 {{-- STEP 2: PEKERJAAN & KONTAK --}}
-                <section x-show="step === 2" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <fieldset x-show="step === 2" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" :disabled="kesediaan !== 'bersedia'">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 2</span>
                         <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Pekerjaan & Kontak</h2>
@@ -530,10 +530,10 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </fieldset>
 
                 {{-- STEP 3: LATAR KEAGAMAAN --}}
-                <section x-show="step === 3" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <fieldset x-show="step === 3" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" :disabled="kesediaan !== 'bersedia'">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 3</span>
                         <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Latar Keagamaan</h2>
@@ -661,10 +661,10 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </fieldset>
 
                 {{-- STEP 4: KEMUHAMMADIYAHAN --}}
-                <section x-show="step === 4" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <fieldset x-show="step === 4" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" :disabled="kesediaan !== 'bersedia'">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 4</span>
                         <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Kemuhammadiyahan</h2>
@@ -768,10 +768,10 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </fieldset>
 
                 {{-- STEP 5: HARAPAN & FOTO --}}
-                <section x-show="step === 5" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <fieldset x-show="step === 5" x-cloak x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" :disabled="kesediaan !== 'bersedia'">
                     <div class="mb-8 border-b border-slate-100 pb-5">
                         <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2">Tahap 5</span>
                         <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Harapan & Dokumen</h2>
@@ -954,7 +954,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </fieldset>
 
                 {{-- NAV BAR (MOBILE FIXED, DESKTOP IN-FORM) --}}
                 <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 sm:p-4 z-40 md:static md:bg-transparent md:border-none md:p-0 md:mt-10 flex items-center gap-3 shadow-[0_-4px_15px_rgba(0,0,0,0.05)] md:shadow-none" :class="step === 0 ? 'justify-center' : 'justify-between'">
