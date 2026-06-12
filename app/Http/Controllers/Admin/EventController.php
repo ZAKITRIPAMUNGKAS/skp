@@ -352,7 +352,9 @@ class EventController extends Controller
 
         $participants = EventPeserta::where('event_id', $event->id)
             ->where('status_aktif', true)
-            ->where('konfirmasi_kesediaan', 'bersedia')
+            ->whereHas('peserta.angketJawaban', function($q) use ($event) {
+                $q->where('event_id', $event->id);
+            })
             ->with(['peserta'])
             ->get();
 

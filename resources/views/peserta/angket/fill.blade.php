@@ -12,6 +12,7 @@
         'E' => 'Konsumsi',
         'F' => 'Kepuasan Pengguna',
     ];
+    $totalItems = $items->sum(function($group) { return $group->count(); });
 @endphp
 <div class="max-w-3xl mx-auto py-8 px-4" x-data="angketFill()">
 
@@ -226,31 +227,54 @@ function angketFill() {
         setAnswer(itemId, jawaban) { this.answers[itemId] = jawaban; },
 
         async submitAll() {
+            // Cek apakah semua pertanyaan sudah dijawab
+            const answeredCount = Object.values(this.answers).filter(v => v !== '' && v !== null).length;
+            if (answeredCount < {{ $totalItems }}) {
+                alert('Silakan jawab semua pertanyaan kuisioner terlebih dahulu! Anda baru menjawab ' + answeredCount + ' dari {{ $totalItems }} pertanyaan.');
+                return;
+            }
+
             if (!this.nominasi_disiplin_id || !this.nominasi_aktif_id || !this.nominasi_favorit_id) {
                 alert('Silakan pilih nominasi peserta terdisiplin, teraktif, dan terfavorit!');
                 return;
             }
+            
             this.isSubmitting = true;
-            const payload = Object.entries(this.answers).map(([item_id, jawaban]) => ({ item_id: parseInt(item_id), jawaban }));
-            const res = await fetch('{{ route("peserta.angket.save", $event) }}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
-                body: JSON.stringify({ 
-                    answers: payload, 
-                    komentar: this.komentar,
-                    nominasi_disiplin_id: parseInt(this.nominasi_disiplin_id),
-                    nominasi_aktif_id: parseInt(this.nominasi_aktif_id),
-                    nominasi_favorit_id: parseInt(this.nominasi_favorit_id)
-                }),
-            });
-            if (res.ok) { 
-                this.showSuccess = true;
-                setTimeout(() => {
-                    window.location.href = '{{ route("peserta.dashboard") }}';
-                }, 2500);
+            
+            const payload = Object.entries(this.answers)
+                .filter(([id, val]) => val !== '' && val !== null)
+                .map(([item_id, jawaban]) => ({ item_id: parseInt(item_id), jawaban: String(jawaban) }));
+                
+            try {
+                const res = await fetch('{{ route("peserta.angket.save", $event) }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
+                    body: JSON.stringify({ 
+                        answers: payload, 
+                        komentar: this.komentar || '',
+                        nominasi_disiplin_id: parseInt(this.nominasi_disiplin_id),
+                        nominasi_aktif_id: parseInt(this.nominasi_aktif_id),
+                        nominasi_favorit_id: parseInt(this.nominasi_favorit_id)
+                    }),
+                });
+
+                if (res.ok) { 
+                    this.showSuccess = true;
+                    setTimeout(() => {
+                        window.location.href = '{{ route("peserta.dashboard") }}';
+                    }, 2500);
+                } else {
+                    const err = await res.json();
+                    console.error(err);
+                    alert('Gagal menyimpan: ' + (err.message || 'Periksa kembali isian Anda.'));
+                    this.isSubmitting = false;
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Terjadi kesalahan jaringan saat menyimpan.');
+                this.isSubmitting = false;
             }
-            else { this.isSubmitting = false; alert('Gagal menyimpan.'); }
-        },
+        }
     };
 }
 </script>
