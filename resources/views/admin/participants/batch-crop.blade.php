@@ -30,7 +30,7 @@
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        Mulai Selaraskan Semua Foto
+                        Mulai Selaraskan Foto Terpilih
                     </button>
                 </div>
             </div>
@@ -82,6 +82,9 @@
                 <table class="w-full text-sm text-left">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-100">
+                            <th class="px-6 py-4 w-10">
+                                <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2">
+                            </th>
                             <th class="px-6 py-4 font-semibold text-gray-600">Peserta</th>
                             <th class="px-6 py-4 font-semibold text-gray-600">Foto Asli</th>
                             <th class="px-6 py-4 font-semibold text-gray-600">Hasil Pemotongan</th>
@@ -91,6 +94,9 @@
                     <tbody class="divide-y divide-gray-50" id="participantsTableBody">
                         @forelse($participants as $p)
                             <tr id="row-{{ $p->id }}" class="hover:bg-gray-50/30 transition-colors group">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" name="selected_participants[]" value="{{ $p->id }}" class="participant-checkbox w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2">
+                                </td>
                                 <td class="px-6 py-4 font-semibold text-gray-800">{{ $p->nama_lengkap }}</td>
                                 <td class="px-6 py-4">
                                     <img src="{{ $p->foto_url }}" class="w-12 h-16 object-cover rounded-lg border border-gray-200 shadow-sm">
@@ -108,7 +114,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-12 text-center text-gray-400">
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
                                     Tidak ada data peserta yang memiliki foto.
                                 </td>
                             </tr>
@@ -129,7 +135,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.js"></script>
 <script>
     const csrfToken = '{{ csrf_token() }}';
-    const participants = @json($participants);
+    const allParticipants = @json($participants);
+    let participantsToProcess = [];
     
     let isProcessing = false;
     let faceapiLoaded = false;
@@ -139,6 +146,13 @@
     let successCount = 0;
     let noFaceCount = 0;
     let failedCount = 0;
+
+    function toggleSelectAll() {
+        const selectAll = document.getElementById('selectAllCheckbox').checked;
+        const checkboxes = document.querySelectorAll('.participant-checkbox');
+        checkboxes.forEach(cb => cb.checked = selectAll);
+    }
+
     async function initFaceApi() {
         if (faceapiLoaded) return;
         try {
@@ -153,10 +167,17 @@
 
     async function startBatchProcessing() {
         if (isProcessing) return;
-        if (participants.length === 0) {
-            alert('Tidak ada foto untuk diselaraskan.');
+        
+        const checkedBoxes = Array.from(document.querySelectorAll('.participant-checkbox:checked'));
+        if (checkedBoxes.length === 0) {
+            alert('Pilih minimal satu peserta untuk diselaraskan.');
             return;
         }
+
+        const selectedIds = checkedBoxes.map(cb => parseInt(cb.value));
+        participantsToProcess = allParticipants.filter(p => selectedIds.includes(p.id));
+
+        document.getElementById('statTotal').innerText = participantsToProcess.length;
 
         isProcessing = true;
         document.getElementById('startBatchBtn').disabled = true;
@@ -180,13 +201,13 @@
     }
 
     async function processNext() {
-        if (index >= participants.length) {
+        if (index >= participantsToProcess.length) {
             document.getElementById('progressStatus').innerText = "Selesai memproses seluruh foto!";
             isProcessing = false;
             return;
         }
 
-        const participant = participants[index];
+        const participant = participantsToProcess[index];
         const row = document.getElementById(`row-${participant.id}`);
         const statusCell = document.getElementById(`status-cell-${participant.id}`);
         const croppedCell = document.getElementById(`cropped-cell-${participant.id}`);
@@ -316,10 +337,10 @@
 
         // Update Progress Bar
         index++;
-        const percent = Math.round((index / participants.length) * 100);
+        const percent = Math.round((index / participantsToProcess.length) * 100);
         document.getElementById('progressPercent').innerText = `${percent}%`;
         document.getElementById('progressBar').style.width = `${percent}%`;
-        document.getElementById('progressStatus').innerText = `Memproses foto ke-${index} dari ${participants.length}...`;
+        document.getElementById('progressStatus').innerText = `Memproses foto ke-${index} dari ${participantsToProcess.length}...`;
 
         // Process next delay
         setTimeout(processNext, 500);
