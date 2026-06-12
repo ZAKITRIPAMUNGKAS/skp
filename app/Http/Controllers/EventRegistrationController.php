@@ -95,12 +95,38 @@ class EventRegistrationController extends Controller
 
         $request->validate($rules);
 
+        // Cari peserta yang sudah ada berdasarkan NIK terlebih dahulu
+        // Ini mencegah duplikasi akun ketika orang yang sama daftar di event berbeda
+        $nikClean = preg_replace('/[^0-9]/', '', $request->nik);
+        $existingPeserta = null;
+        if (!empty($nikClean)) {
+            $existingPeserta = Peserta::where('nik', $nikClean)->first();
+        }
+
         // 1. Tangani pembuatan User (jika email disediakan) atau cari yang sudah ada
         $email = $request->email;
         $nameForUsername = !empty($request->nama_panggilan) ? $request->nama_panggilan : explode(' ', trim($request->nama_lengkap))[0];
-        $username = $this->generateUsername($nameForUsername, $email);
-        if (empty($email)) {
-            $email = $username . '@arqam.test';
+
+        if ($existingPeserta) {
+            // Gunakan user yang sudah ada, perbarui email jika sebelumnya dummy
+            $user = User::find($existingPeserta->user_id);
+            // Jika sebelumnya email dummy dan sekarang ada email asli, perbarui
+            if ($user && !empty($email) && str_ends_with($user->email, '@arqam.test')) {
+                // Pastikan email baru belum dipakai user lain
+                $emailConflict = User::where('email', $email)->where('id', '!=', $user->id)->exists();
+                if (!$emailConflict) {
+                    $user->update(['email' => $email, 'name' => $request->nama_lengkap]);
+                }
+            }
+            $username = $user ? $user->username : $this->generateUsername($nameForUsername, $email);
+            if (empty($email)) {
+                $email = $user ? $user->email : ($username . '@arqam.test');
+            }
+        } else {
+            $username = $this->generateUsername($nameForUsername, $email);
+            if (empty($email)) {
+                $email = $username . '@arqam.test';
+            }
         }
         
         $password = config('app.default_participant_password', 'peserta123');
@@ -113,7 +139,11 @@ class EventRegistrationController extends Controller
             }
         }
 
-        $user = User::where('email', $email)->orWhere('username', $username)->first();
+        if ($existingPeserta) {
+            $user = User::find($existingPeserta->user_id);
+        } else {
+            $user = User::where('email', $email)->orWhere('username', $username)->first();
+        }
 
         if (!$user) {
             $user = User::create([
@@ -125,8 +155,8 @@ class EventRegistrationController extends Controller
             ]);
         }
 
-        // 2. Handle Peserta creation/update
-        $peserta = Peserta::where('user_id', $user->id)->first();
+        // 2. Handle Peserta creation/update — prioritaskan yang ditemukan lewat NIK
+        $peserta = $existingPeserta ?? Peserta::where('user_id', $user->id)->first();
         
         $fotoPath = null;
         if ($request->filled('cropped_foto')) {
