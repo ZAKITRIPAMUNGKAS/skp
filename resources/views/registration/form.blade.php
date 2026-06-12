@@ -1148,24 +1148,35 @@ function registrationWizard() {
                     }
 
                     for(let key in cached) {
-                        if(key === '_step' || key === 'provinsi' || key === 'kabupaten' || key === 'kecamatan' || key === 'desa_kelurahan') continue;
+                        if(key === '_step' || key === 'provinsi' || key === 'kabupaten' || key === 'kecamatan' || key === 'desa_kelurahan' || key === 'konfirmasi_kesediaan') continue;
                         let val = cached[key];
                         if(Array.isArray(val)) {
                             val.forEach(v => {
                                 let el = form.querySelector(`[name="${key}[]"][value="${v}"]`);
                                 if(!el) el = form.querySelector(`[name="${key}"][value="${v}"]`);
-                                if(el) el.checked = true;
+                                if(el) {
+                                    el.checked = true;
+                                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                                }
                             });
                         } else {
                             let el = form.querySelector(`[name="${key}"]`);
                             if(!el) continue;
                             if(el.type === 'radio') {
                                 let radio = form.querySelector(`[name="${key}"][value="${val}"]`);
-                                if(radio) radio.checked = true;
+                                if(radio) {
+                                    radio.checked = true;
+                                    radio.dispatchEvent(new Event('change', { bubbles: true }));
+                                }
                             } else if(el.type === 'checkbox') {
-                                if(el.value === val) el.checked = true;
+                                if(el.value === val) {
+                                    el.checked = true;
+                                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                                }
                             } else {
                                 el.value = val;
+                                el.dispatchEvent(new Event('input', { bubbles: true }));
+                                el.dispatchEvent(new Event('change', { bubbles: true }));
                             }
                         }
                     }
