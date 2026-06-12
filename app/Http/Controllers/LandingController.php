@@ -20,7 +20,7 @@ class LandingController extends Controller
         
         // Event aktif atau event mendatang terbaru
         $activeEvents = Event::whereIn('status', ['berlangsung', 'persiapan'])
-            ->orderBy('tanggal_mulai', 'asc')
+            ->orderBy('tanggal_mulai', 'desc')
             ->take(5)
             ->get();
 

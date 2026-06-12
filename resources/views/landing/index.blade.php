@@ -877,64 +877,93 @@
 
                     <div class="relative w-full" data-aos="fade-up" data-aos-delay="500">
                         @if(isset($activeEvents) && $activeEvents->isNotEmpty())
-                            <div class="bg-[#0A2E42]/80 backdrop-blur-md border border-white/10 rounded-[2rem] p-6 lg:p-8 shadow-2xl relative z-10" x-data="{ activeTimeline: 0 }">
-                                <div class="relative border-l-[3px] border-accent/40 ml-3 md:ml-4 space-y-6 pb-2">
+                            <div class="bg-[#0A2E42]/80 backdrop-blur-md border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl relative z-10" x-data="{ activeTimeline: 0 }">
+                                
+                                {{-- Header --}}
+                                <div class="px-6 pt-5 pb-4 border-b border-white/10 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+                                        <span class="text-[11px] font-bold text-accent uppercase tracking-widest">Jadwal Mendatang</span>
+                                    </div>
+                                    <span class="text-[10px] text-white/40 font-medium">{{ $activeEvents->count() }} Event</span>
+                                </div>
+
+                                {{-- Timeline List --}}
+                                <div class="divide-y divide-white/5">
                                     @foreach($activeEvents as $index => $event)
                                         @php
                                             $totalPeserta = $event->peserta()->count();
                                             $hasKuota = $event->kuota > 0;
-                                            if ($hasKuota) {
-                                                $persen = min(100, round(($totalPeserta / $event->kuota) * 100));
-                                                $isFull = $totalPeserta >= $event->kuota;
-                                            } else {
-                                                $persen = 0;
-                                                $isFull = false;
-                                            }
+                                            $persen = $hasKuota ? min(100, round(($totalPeserta / $event->kuota) * 100)) : 0;
+                                            $isFull = $hasKuota && $totalPeserta >= $event->kuota;
+                                            $isBerlangsung = $event->status === 'berlangsung';
                                         @endphp
-                                        <div class="relative pl-8 md:pl-10">
-                                            <!-- Timeline Dot -->
-                                            <div class="absolute -left-[10px] top-1.5 w-4 h-4 rounded-full border-2 transition-all duration-300"
-                                                 :class="activeTimeline === {{ $index }} ? 'bg-accent border-[#0A2E42] scale-150 ring-4 ring-accent/30' : 'bg-gray-400 border-gray-500'"></div>
-                                            
-                                            <!-- Event Header (Clickable) -->
-                                            <button @click="activeTimeline = activeTimeline === {{ $index }} ? null : {{ $index }}" class="w-full text-left flex flex-col group focus:outline-none">
-                                                <span class="text-[11px] font-bold uppercase tracking-widest mb-1 transition-colors" :class="activeTimeline === {{ $index }} ? 'text-accent' : 'text-gray-400'">{{ $event->tanggal_mulai->format('d M Y') }}</span>
-                                                <div class="flex justify-between items-start w-full gap-4">
-                                                    <h3 class="text-lg md:text-xl font-bold text-white leading-tight group-hover:text-accent transition-colors pr-4">{{ $event->nama_event }}</h3>
-                                                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-white/10 transition-colors">
-                                                        <svg class="w-4 h-4 text-white/70 transition-transform duration-300" :class="activeTimeline === {{ $index }} ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                                                    </div>
+
+                                        <div>
+                                            {{-- Row Header (Clickable) --}}
+                                            <button @click="activeTimeline = activeTimeline === {{ $index }} ? null : {{ $index }}"
+                                                    class="w-full text-left px-6 py-4 flex items-center gap-4 hover:bg-white/5 transition-colors group focus:outline-none">
+                                                
+                                                {{-- Status Dot --}}
+                                                <div class="shrink-0 w-3 h-3 rounded-full border-2 transition-all duration-300 mt-0.5"
+                                                     :class="activeTimeline === {{ $index }} ? 'bg-accent border-accent/40 scale-125 ring-2 ring-accent/30' : '{{ $isBerlangsung ? 'bg-green-400 border-green-600' : 'bg-gray-500 border-gray-600' }}'">
+                                                </div>
+
+                                                {{-- Info --}}
+                                                <div class="flex-1 min-w-0">
+                                                    <span class="text-[10px] font-bold uppercase tracking-widest transition-colors"
+                                                          :class="activeTimeline === {{ $index }} ? 'text-accent' : 'text-gray-500'">
+                                                        {{ $event->tanggal_mulai->format('d M Y') }}
+                                                    </span>
+                                                    <p class="text-sm font-bold text-white leading-snug truncate group-hover:text-accent transition-colors">
+                                                        {{ $event->nama_event }}
+                                                    </p>
+                                                </div>
+
+                                                {{-- Badge + Chevron --}}
+                                                <div class="shrink-0 flex items-center gap-2">
+                                                    @if($index === 0)
+                                                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-full {{ $isBerlangsung ? 'bg-green-500/20 text-green-400' : 'bg-accent/20 text-accent' }} border {{ $isBerlangsung ? 'border-green-500/30' : 'border-accent/30' }}">
+                                                            {{ $isBerlangsung ? 'Berlangsung' : 'Terbaru' }}
+                                                        </span>
+                                                    @endif
+                                                    <svg class="w-4 h-4 text-white/40 transition-transform duration-300" :class="activeTimeline === {{ $index }} ? 'rotate-180 text-accent' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                                    </svg>
                                                 </div>
                                             </button>
-                                            
-                                            <!-- Event Details (Accordion) -->
+
+                                            {{-- Accordion Detail --}}
                                             <div x-show="activeTimeline === {{ $index }}" x-collapse x-cloak>
-                                                <div class="bg-white rounded-2xl p-5 mt-5 shadow-xl border border-gray-100">
-                                                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                                                        <div class="flex items-center gap-2">
-                                                            <span class="w-2 h-2 rounded-full {{ $event->status === 'berlangsung' ? 'bg-green-500' : 'bg-blue-500' }} animate-pulse"></span>
+                                                <div class="mx-4 mb-4 bg-white rounded-2xl p-4 shadow-lg">
+                                                    {{-- Status & Kuota --}}
+                                                    <div class="flex items-center justify-between mb-3">
+                                                        <div class="flex items-center gap-1.5">
+                                                            <span class="w-1.5 h-1.5 rounded-full {{ $isBerlangsung ? 'bg-green-500' : 'bg-blue-500' }} animate-pulse"></span>
                                                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                                                {{ $event->status === 'persiapan' ? 'Pendaftaran Dibuka' : 'Sedang Berlangsung' }}
+                                                                {{ $isBerlangsung ? 'Sedang Berlangsung' : 'Pendaftaran Dibuka' }}
                                                             </span>
                                                         </div>
-                                                        <span class="px-2 py-1 {{ $isFull ? 'bg-red-50 text-red-600' : 'bg-primary-50 text-primary-600' }} rounded-md text-[9px] font-bold uppercase tracking-wider">
+                                                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-md {{ $isFull ? 'bg-red-50 text-red-600' : 'bg-primary/10 text-primary' }}">
                                                             {{ !$hasKuota ? 'Terbuka Umum' : ($isFull ? 'Kuota Penuh' : 'Kuota Terbatas') }}
                                                         </span>
                                                     </div>
-                                                    
-                                                    <div class="flex items-center gap-2 text-gray-500 mb-5">
-                                                        <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                                        <span class="text-sm font-medium">{{ $event->lokasi }}</span>
+
+                                                    {{-- Lokasi --}}
+                                                    <div class="flex items-center gap-2 text-gray-500 mb-3">
+                                                        <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                        <span class="text-xs font-medium truncate">{{ $event->lokasi }}</span>
                                                     </div>
-                                                    
-                                                    <div class="pt-4 border-t border-gray-100">
-                                                        <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider mb-2">
+
+                                                    {{-- Progress --}}
+                                                    <div class="pt-3 border-t border-gray-100">
+                                                        <div class="flex justify-between text-[10px] font-bold uppercase tracking-wider mb-1.5">
                                                             <span class="text-gray-400">{{ $hasKuota ? 'Progress Pendaftaran' : 'Jumlah Pendaftar' }}</span>
-                                                            <span class="text-primary-600">{{ $hasKuota ? 'Terisi ' . $persen . '%' : $totalPeserta . ' Peserta' }}</span>
+                                                            <span class="text-primary">{{ $hasKuota ? 'Terisi ' . $persen . '%' : $totalPeserta . ' Peserta' }}</span>
                                                         </div>
                                                         @if($hasKuota)
                                                         <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                                                            <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: {{ $persen }}%"></div>
+                                                            <div class="h-full {{ $isFull ? 'bg-red-400' : 'bg-primary' }} rounded-full transition-all duration-1000" style="width: {{ $persen }}%"></div>
                                                         </div>
                                                         @endif
                                                     </div>
