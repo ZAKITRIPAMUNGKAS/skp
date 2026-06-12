@@ -510,4 +510,23 @@ class EventController extends Controller
                 ->with('error', 'Gagal meriset data event: ' . $e->getMessage());
         }
     }
+
+    private function authorizeEventAccess(Event $event, $allowFasilitator = true)
+    {
+        $user = auth()->user();
+        if ($user->isAdmin()) {
+            if ($event->created_by !== $user->id) {
+                abort(403, 'Akses ditolak. Anda tidak berhak mengelola event ini.');
+            }
+        } elseif ($user->isFasilitator()) {
+            if (!$allowFasilitator) {
+                abort(403, 'Akses ditolak. Fasilitator tidak diizinkan melakukan tindakan ini.');
+            }
+            if (!$event->facilitators()->where('users.id', $user->id)->exists()) {
+                abort(403, 'Akses ditolak. Anda tidak ditugaskan pada event ini.');
+            }
+        } else {
+            abort(403, 'Akses ditolak.');
+        }
+    }
 }
