@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARQAM App — Sistem Evaluasi Terpadu Baitul Arqam</title>
-    <link rel="icon" type="image/png" href="{{ asset('Logoums.png') }}">
+    <link rel="icon" type="image/png" href="<?php echo e(asset('Logoums.png')); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    {{-- Lenis Smooth Scroll CDN --}}
+    
     <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script>
@@ -96,12 +96,12 @@
       @scroll.window="scrolled = (window.pageYOffset > 20)"
       :class="{'overflow-hidden': showDev}">
 
-    {{-- Navigation --}}
+    
     <nav :class="{'glass-nav shadow-sm': scrolled, 'bg-transparent': !scrolled}" class="fixed w-full z-50 transition-all duration-300 py-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3 flex-1">
-                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-10 object-contain transition-all" :class="{'brightness-0 invert': !scrolled, 'brightness-100': scrolled}">
+                    <img src="<?php echo e(asset('logo.webp')); ?>" alt="Logo" class="h-10 object-contain transition-all" :class="{'brightness-0 invert': !scrolled, 'brightness-100': scrolled}">
                 </div>
                 <div class="hidden lg:flex space-x-8">
                     <a href="#tentang" class="text-base font-semibold transition-colors" :class="scrolled ? 'text-gray-600 hover:text-primary' : 'text-primary-100 hover:text-white'">Tentang</a>
@@ -112,27 +112,27 @@
                     <a href="#faq" class="text-base font-semibold transition-colors" :class="scrolled ? 'text-gray-600 hover:text-primary' : 'text-primary-100 hover:text-white'">FAQ</a>
                 </div>
                 <div class="flex flex-1 justify-end">
-                    @auth
-                        <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('peserta.dashboard') }}" 
+                    <?php if(auth()->guard()->check()): ?>
+                        <a href="<?php echo e(auth()->user()->isAdmin() ? route('admin.dashboard') : route('peserta.dashboard')); ?>" 
                            class="px-6 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg hover:-translate-y-0.5"
                            :class="scrolled ? 'bg-primary text-white hover:shadow-primary/30' : 'bg-white text-primary hover:bg-white/90'">
                             Dashboard →
                         </a>
-                    @else
-                        <a href="{{ route('login') }}" 
+                    <?php else: ?>
+                        <a href="<?php echo e(route('login')); ?>" 
                            class="px-6 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg hover:-translate-y-0.5 border-2"
                            :class="scrolled ? 'bg-primary text-white border-primary hover:shadow-primary/30' : 'bg-transparent text-white border-white/30 hover:bg-white hover:text-primary'">
                             Masuk
                         </a>
-                    @endauth
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </nav>
 
-    {{-- Hero Section --}}
+    
     <section class="hero-mesh min-h-screen pt-32 pb-20 flex items-center relative overflow-hidden">
-        {{-- Background Decorations --}}
+        
         <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
             <div class="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-primary-400 rounded-full mix-blend-color-dodge filter blur-[100px] opacity-40 animate-blob"></div>
             <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent rounded-full mix-blend-color-dodge filter blur-[120px] opacity-30 animate-blob animation-delay-2000"></div>
@@ -153,7 +153,7 @@
                         Transformasi digital perkaderan untuk penilaian kognitif, afektif, dan psikomotor yang objektif dan transparan bagi setiap kader.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start" data-aos="fade-up" data-aos-delay="300">
-                        <a href="{{ route('login') }}" class="px-8 py-4 bg-accent text-white rounded-full font-bold text-lg hover:bg-accent-600 transition-all shadow-lg shadow-accent/30 hover:-translate-y-1 hover:shadow-xl text-center">
+                        <a href="<?php echo e(route('login')); ?>" class="px-8 py-4 bg-accent text-white rounded-full font-bold text-lg hover:bg-accent-600 transition-all shadow-lg shadow-accent/30 hover:-translate-y-1 hover:shadow-xl text-center">
                             Mulai Sekarang
                         </a>
                         <a href="#fitur" class="px-8 py-4 bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full font-bold text-lg hover:bg-white/20 transition-all text-center group flex items-center justify-center gap-2">
@@ -163,24 +163,24 @@
                     </div>
                 </div>
                 
-                {{-- Hero Mockup Image --}}
+                
                 <div class="relative animate-floating-slow hidden lg:block perspective-1000">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary-900 to-transparent rounded-3xl transform rotate-3 scale-105 opacity-40 blur-xl"></div>
                     <div class="bg-gray-900 rounded-[2.5rem] border-[12px] border-gray-800 shadow-2xl overflow-hidden relative z-10 aspect-[4/3] group transform hover:rotate-0 transition-transform duration-700">
-                        <img src="{{ asset('hero.webp') }}" alt="ARQAM Training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="<?php echo e(asset('hero.webp')); ?>" alt="ARQAM Training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
                             <p class="text-white text-sm font-medium">Baitul Arqam Dosen UMS</p>
                         </div>
                     </div>
                     
-                    {{-- Mascot Arka Floating --}}
+                    
                     <div class="absolute -top-20 -left-20 w-48 h-48 z-30 animate-floating-fast">
                         <div class="w-full h-full bg-white rounded-full border-8 border-white shadow-2xl overflow-hidden p-3 flex items-center justify-center">
-                            <img src="{{ asset('images/arka/arka_pemandu.webp') }}" alt="Arka" class="w-full h-full object-contain">
+                            <img src="<?php echo e(asset('images/arka/arka_pemandu.webp')); ?>" alt="Arka" class="w-full h-full object-contain">
                         </div>
                     </div>
                     
-                    {{-- Floating Badges --}}
+                    
                     <div class="absolute -top-10 -right-12 bg-white rounded-2xl p-4 shadow-2xl border border-gray-100 flex items-center gap-4 z-20 animate-floating-fast">
                         <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-inner">✓</div>
                         <div>
@@ -202,7 +202,7 @@
             </div>
         </div>
         
-        {{-- Wave --}}
+        
         <div class="absolute bottom-0 w-full leading-[0] z-20 pointer-events-none transform translate-y-1">
             <svg class="w-full h-12 sm:h-24 lg:h-32" viewBox="0 0 1440 320" preserveAspectRatio="none">
                 <path fill="#f8fafc" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,192C384,181,480,139,576,144C672,149,768,203,864,213.3C960,224,1056,192,1152,165.3C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
@@ -210,32 +210,32 @@
         </div>
     </section>
 
-    {{-- Stats Section --}}
+    
     <section id="statistik" class="relative -mt-16 z-30 pb-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8 sm:p-12">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-gray-100">
                     <div class="text-center px-4 pt-4 md:pt-0" data-aos="fade-up" data-aos-delay="0">
                         <p class="text-4xl md:text-5xl font-heading font-black text-primary mb-2 flex justify-center items-baseline">
-                            <span class="counter" data-target="{{ $totalEvents }}">0</span><span class="text-accent text-3xl">+</span>
+                            <span class="counter" data-target="<?php echo e($totalEvents); ?>">0</span><span class="text-accent text-3xl">+</span>
                         </p>
                         <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Event Terlaksana</p>
                     </div>
                     <div class="text-center px-4 pt-8 md:pt-0" data-aos="fade-up" data-aos-delay="100">
                         <p class="text-4xl md:text-5xl font-heading font-black text-primary mb-2 flex justify-center items-baseline">
-                            <span class="counter" data-target="{{ $totalAlumni }}">0</span><span class="text-accent text-3xl">+</span>
+                            <span class="counter" data-target="<?php echo e($totalAlumni); ?>">0</span><span class="text-accent text-3xl">+</span>
                         </p>
                         <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Keikutsertaan Kader</p>
                     </div>
                     <div class="text-center px-4 pt-8 md:pt-0" data-aos="fade-up" data-aos-delay="200">
                         <p class="text-4xl md:text-5xl font-heading font-black text-primary mb-2 flex justify-center items-baseline">
-                            <span class="counter" data-target="{{ $totalSertifikat }}">0</span><span class="text-accent text-3xl">+</span>
+                            <span class="counter" data-target="<?php echo e($totalSertifikat); ?>">0</span><span class="text-accent text-3xl">+</span>
                         </p>
                         <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Sertifikat Terbit</p>
                     </div>
                     <div class="text-center px-4 pt-8 md:pt-0" data-aos="fade-up" data-aos-delay="300">
                         <p class="text-4xl md:text-5xl font-heading font-black text-primary mb-2 flex justify-center items-baseline">
-                            <span class="counter" data-target="{{ $totalMitra }}">0</span><span class="text-accent text-3xl">+</span>
+                            <span class="counter" data-target="<?php echo e($totalMitra); ?>">0</span><span class="text-accent text-3xl">+</span>
                         </p>
                         <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Sebaran Unit</p>
                     </div>
@@ -244,7 +244,7 @@
         </div>
     </section>
 
-    {{-- Tentang Section --}}
+    
     <section id="tentang" class="py-24 bg-white relative overflow-hidden">
         <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
             <div class="absolute top-1/2 -right-32 w-80 h-80 bg-primary/5 rounded-full filter blur-3xl"></div>
@@ -255,18 +255,18 @@
                 <div class="relative" data-aos="fade-right">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary/15 to-accent/15 rounded-[2rem] transform rotate-3 scale-105 filter blur-lg"></div>
                     <div class="relative z-10 bg-white rounded-[2rem] border border-slate-100 shadow-soft overflow-hidden aspect-[4/3] group">
-                        @php
+                        <?php
                             $headerImages = json_decode(\App\Models\SystemSetting::get('landing_header_images', '[]'), true);
                             if (empty($headerImages)) {
-                                $headerImages = [asset('kegiatan.webp')]; // Fallback
+                                $headerImages = ['kegiatan.webp']; // Fallback
                             } else {
                                 $headerImages = array_map(function($img) { return asset('storage/' . $img); }, $headerImages);
                             }
-                        @endphp
+                        ?>
 
                         <div x-data="{
                                 activeSlide: 0,
-                                slides: {{ json_encode($headerImages) }},
+                                slides: <?php echo e(json_encode($headerImages)); ?>,
                                 interval: null,
                                 init() {
                                     if(this.slides.length > 1) {
@@ -280,7 +280,7 @@
                         >
                             <template x-for="(slide, index) in slides" :key="index">
                                 <img :src="slide" 
-                                     alt="{{ \App\Models\SystemSetting::get('landing_header_subtitle', 'Baitul Arqam LP3A UMS') }}" 
+                                     alt="<?php echo e(\App\Models\SystemSetting::get('landing_header_subtitle', 'Baitul Arqam LP3A UMS')); ?>" 
                                      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 group-hover:scale-105"
                                      :class="activeSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0'"
                                 >
@@ -296,7 +296,7 @@
                             </div>
 
                             <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-6 z-20 pointer-events-none">
-                                <p class="text-white text-sm font-semibold font-heading">{{ \App\Models\SystemSetting::get('landing_header_title', 'Kegiatan Baitul Arqam LP3A UMS') }}</p>
+                                <p class="text-white text-sm font-semibold font-heading"><?php echo e(\App\Models\SystemSetting::get('landing_header_title', 'Kegiatan Baitul Arqam LP3A UMS')); ?></p>
                             </div>
                         </div>
                     </div>
@@ -305,14 +305,15 @@
                 <!-- Column 2: Text & Features (Right) -->
                 <div class="relative" data-aos="fade-left">
                     <div class="absolute -top-4 -left-4 w-12 h-12 bg-accent/20 rounded-2xl -z-10 animate-pulse"></div>
-                    <span class="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">{{ \App\Models\SystemSetting::get('landing_about_subtitle', 'Tentang Aplikasi') }}</span>
-                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6 leading-tight">{{ \App\Models\SystemSetting::get('landing_about_title', 'Sistem Evaluasi Perkaderan Baitul Arqam Terpadu') }}</h2>
+                    <span class="text-primary font-bold tracking-wider uppercase text-sm mb-2 block"><?php echo e(\App\Models\SystemSetting::get('landing_about_subtitle', 'Tentang Aplikasi')); ?></span>
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-6 leading-tight"><?php echo e(\App\Models\SystemSetting::get('landing_about_title', 'Sistem Evaluasi Perkaderan Baitul Arqam Terpadu')); ?></h2>
                     <p class="text-gray-600 leading-relaxed mb-6">
-                        {!! \App\Models\SystemSetting::get('landing_about_description', '<strong>ARQAM App</strong> merupakan sistem resmi milik <strong>LP3A (Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni)</strong> UMS yang dirancang dan dikembangkan secara khusus untuk mendukung penyelenggaraan serta evaluasi kegiatan <strong>Baitul Arqam</strong>. Sebagai unit kerja di bawah naungan Wakil Rektor III Bidang Al Islam Kemuhammadiyahan, Pengkaderan dan Alumni (sejak tahun 2025), LP3A bertugas membina, menyiapkan, dan memberdayakan kader persyarikatan secara presisi, objektif, dan transparan.') !!}
+                        <?php echo \App\Models\SystemSetting::get('landing_about_description', '<strong>ARQAM App</strong> merupakan sistem resmi milik <strong>LP3A (Lembaga Pengembangan Persyarikatan Pengkaderan & Alumni)</strong> UMS yang dirancang dan dikembangkan secara khusus untuk mendukung penyelenggaraan serta evaluasi kegiatan <strong>Baitul Arqam</strong>. Sebagai unit kerja di bawah naungan Wakil Rektor III Bidang Al Islam Kemuhammadiyahan, Pengkaderan dan Alumni (sejak tahun 2025), LP3A bertugas membina, menyiapkan, dan memberdayakan kader persyarikatan secara presisi, objektif, dan transparan.'); ?>
+
                     </p>
                     
                     <div class="mt-8 space-y-4">
-                        @php
+                        <?php
                             $defaultFeatures = [
                                 ['title' => 'Standardisasi Penilaian', 'description' => 'Menggunakan indikator penilaian terukur untuk objektivitas hasil evaluasi.'],
                                 ['title' => 'Kemudahan Akses', 'description' => 'Antarmuka yang dioptimalkan untuk perangkat mobile memudahkan peserta dan instruktur.'],
@@ -327,27 +328,27 @@
                                 ['bg' => 'bg-purple-100', 'text' => 'text-purple-700'],
                                 ['bg' => 'bg-rose-100', 'text' => 'text-rose-700'],
                             ];
-                        @endphp
+                        ?>
                         
-                        @foreach($features as $index => $feature)
-                            @php
+                        <?php $__currentLoopData = $features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
                                 $color = $colors[$index % count($colors)];
-                            @endphp
+                            ?>
                             <div class="flex gap-4">
-                                <div class="w-8 h-8 rounded-lg {{ $color['bg'] }} {{ $color['text'] }} flex items-center justify-center shrink-0 font-bold text-sm">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</div>
+                                <div class="w-8 h-8 rounded-lg <?php echo e($color['bg']); ?> <?php echo e($color['text']); ?> flex items-center justify-center shrink-0 font-bold text-sm"><?php echo e(str_pad($index + 1, 2, '0', STR_PAD_LEFT)); ?></div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading">{{ $feature['title'] ?? '' }}</h4>
-                                    <p class="text-xs text-slate-500 leading-relaxed">{{ $feature['description'] ?? '' }}</p>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-1 font-heading"><?php echo e($feature['title'] ?? ''); ?></h4>
+                                    <p class="text-xs text-slate-500 leading-relaxed"><?php echo e($feature['description'] ?? ''); ?></p>
                                 </div>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- Alur Sistem Section --}}
+    
     <section id="alur" class="py-24 bg-surface relative overflow-hidden bg-grid-pattern">
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -358,13 +359,13 @@
             </div>
 
             <div class="grid md:grid-cols-4 gap-12 md:gap-8 relative">
-                {{-- Connector Line (Desktop Only) --}}
+                
                 <div class="hidden md:block absolute top-16 left-[10%] w-[80%] h-0.5 border-t-2 border-dashed border-primary/20 z-0"></div>
 
                 <div class="relative z-10 flex flex-col items-center text-center group" data-aos="fade-up" data-aos-delay="0">
                     <div class="w-32 h-32 bg-white rounded-3xl shadow-soft border border-gray-100 flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-300 relative z-10 p-4">
                         <div class="absolute inset-0 bg-primary/5 rounded-3xl transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        <img src="{{ asset('images/arka/arka_pemandu.webp') }}" alt="Step 1" class="w-full h-full object-contain relative z-10">
+                        <img src="<?php echo e(asset('images/arka/arka_pemandu.webp')); ?>" alt="Step 1" class="w-full h-full object-contain relative z-10">
                         <div class="absolute -top-3 -right-3 w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold border-4 border-surface shadow-sm">1</div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Registrasi & Profil</h3>
@@ -375,7 +376,7 @@
                 <div class="relative z-10 flex flex-col items-center text-center group" data-aos="fade-up" data-aos-delay="100">
                     <div class="w-32 h-32 bg-white rounded-3xl shadow-soft border border-gray-100 flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-300 relative z-10 p-4">
                         <div class="absolute inset-0 bg-primary/5 rounded-3xl transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        <img src="{{ asset('images/arka/arka_scan.webp') }}" alt="Step 2" class="w-full h-full object-contain relative z-10">
+                        <img src="<?php echo e(asset('images/arka/arka_scan.webp')); ?>" alt="Step 2" class="w-full h-full object-contain relative z-10">
                         <div class="absolute -top-3 -right-3 w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold border-4 border-surface shadow-sm">2</div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Pelaksanaan Event</h3>
@@ -386,7 +387,7 @@
                 <div class="relative z-10 flex flex-col items-center text-center group" data-aos="fade-up" data-aos-delay="200">
                     <div class="w-32 h-32 bg-white rounded-3xl shadow-soft border border-gray-100 flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-300 relative z-10 p-4">
                         <div class="absolute inset-0 bg-primary/5 rounded-3xl transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        <img src="{{ asset('images/arka/arka_fokus.webp') }}" alt="Step 3" class="w-full h-full object-contain relative z-10">
+                        <img src="<?php echo e(asset('images/arka/arka_fokus.webp')); ?>" alt="Step 3" class="w-full h-full object-contain relative z-10">
                         <div class="absolute -top-3 -right-3 w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold border-4 border-surface shadow-sm">3</div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Evaluasi Perilaku</h3>
@@ -396,7 +397,7 @@
                 <!-- Step 4 -->
                 <div class="relative z-10 flex flex-col items-center text-center group" data-aos="fade-up" data-aos-delay="300">
                     <div class="w-32 h-32 bg-primary rounded-3xl shadow-glow-primary flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-300 relative z-10 p-4">
-                        <img src="{{ asset('images/arka/arka_selebrasi.webp') }}" alt="Step 4" class="w-full h-full object-contain relative z-10">
+                        <img src="<?php echo e(asset('images/arka/arka_selebrasi.webp')); ?>" alt="Step 4" class="w-full h-full object-contain relative z-10">
                         <div class="absolute -top-3 -right-3 w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold border-4 border-surface shadow-sm">4</div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Hasil & Sertifikat</h3>
@@ -461,7 +462,7 @@
         </div>
     </section>
 
-    {{-- Features Section --}}
+    
     <section id="fitur" class="py-24 bg-white relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
@@ -540,7 +541,7 @@
         </div>
     </section>
 
-    {{-- Gallery Section --}}
+    
     <section id="galeri" class="py-24 bg-surface relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
@@ -549,43 +550,43 @@
                 <p class="text-gray-500 text-lg">Momen-momen inspiratif dalam proses perkaderan dan pembinaan ideologi.</p>
             </div>
 
-            @if(isset($galleries) && $galleries->count() > 0)
-                @php
+            <?php if(isset($galleries) && $galleries->count() > 0): ?>
+                <?php
                     $cols = [[], [], [], []];
                     foreach($galleries as $idx => $g) {
                         $cols[$idx % 4][] = $g;
                     }
-                @endphp
+                ?>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    @foreach($cols as $colIdx => $colItems)
-                        <div class="space-y-4 {{ $colIdx == 1 ? 'pt-8' : ($colIdx == 3 ? 'pt-12' : '') }}">
-                            @foreach($colItems as $itemIdx => $gallery)
-                                @php
+                    <?php $__currentLoopData = $cols; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $colIdx => $colItems): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="space-y-4 <?php echo e($colIdx == 1 ? 'pt-8' : ($colIdx == 3 ? 'pt-12' : '')); ?>">
+                            <?php $__currentLoopData = $colItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $itemIdx => $gallery): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $aspect = (($colIdx + $itemIdx) % 2 == 0) ? 'aspect-[3/4]' : 'aspect-square';
-                                @endphp
-                                <div class="group relative overflow-hidden rounded-2xl {{ $aspect }}" data-aos="zoom-in" data-aos-delay="{{ $colIdx * 100 }}">
-                                    <img src="{{ $gallery->image_url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $gallery->title }}">
+                                ?>
+                                <div class="group relative overflow-hidden rounded-2xl <?php echo e($aspect); ?>" data-aos="zoom-in" data-aos-delay="<?php echo e($colIdx * 100); ?>">
+                                    <img src="<?php echo e($gallery->image_url); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="<?php echo e($gallery->title); ?>">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
-                                        <p class="font-bold">{{ $gallery->title }}</p>
-                                        <p class="text-xs">{{ $gallery->event_name ?? 'Baitul Arqam' }}</p>
+                                        <p class="font-bold"><?php echo e($gallery->title); ?></p>
+                                        <p class="text-xs"><?php echo e($gallery->event_name ?? 'Baitul Arqam'); ?></p>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="space-y-4">
                         <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in">
-                            <img src="{{ asset('images/gallery/gallery_discussion.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="<?php echo e(asset('images/gallery/gallery_discussion.webp')); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Sesi Diskusi</p>
                                 <p class="text-xs">Baitul Arqam PDM</p>
                             </div>
                         </div>
                         <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="100">
-                            <img src="{{ asset('images/gallery/gallery_lecture.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="<?php echo e(asset('images/gallery/gallery_lecture.webp')); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Materi Ideologi</p>
                                 <p class="text-xs">Aula Utama</p>
@@ -594,14 +595,14 @@
                     </div>
                     <div class="space-y-4 pt-8">
                         <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="200">
-                            <img src="{{ asset('images/gallery/gallery_opening.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="<?php echo e(asset('images/gallery/gallery_opening.webp')); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Opening Ceremony</p>
                                 <p class="text-xs">Muhammadiyah Center</p>
                             </div>
                         </div>
                         <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="300">
-                            <img src="{{ asset('images/gallery/gallery_focus_group.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="<?php echo e(asset('images/gallery/gallery_focus_group.webp')); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Focus Group</p>
                                 <p class="text-xs">Rapat Komisi</p>
@@ -610,14 +611,14 @@
                     </div>
                     <div class="space-y-4">
                         <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="400">
-                            <img src="{{ asset('images/gallery/gallery_outbound.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="<?php echo e(asset('images/gallery/gallery_outbound.webp')); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Outbound Session</p>
                                 <p class="text-xs">Training Ground</p>
                             </div>
                         </div>
                         <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="500">
-                            <img src="{{ asset('images/gallery/gallery_closing.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="<?php echo e(asset('images/gallery/gallery_closing.webp')); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Sesi Selebrasi</p>
                                 <p class="text-xs">Penutupan</p>
@@ -626,14 +627,14 @@
                     </div>
                     <div class="space-y-4 pt-12">
                         <div class="group relative overflow-hidden rounded-2xl aspect-square" data-aos="zoom-in" data-aos-delay="600">
-                            <img src="{{ asset('images/gallery/gallery_discussion.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="<?php echo e(asset('images/gallery/gallery_discussion.webp')); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Penutupan</p>
                                 <p class="text-xs">Sesi Selebrasi</p>
                             </div>
                         </div>
                         <div class="group relative overflow-hidden rounded-2xl aspect-[3/4]" data-aos="zoom-in" data-aos-delay="700">
-                            <img src="{{ asset('images/gallery/gallery_lecture.webp') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
+                            <img src="<?php echo e(asset('images/gallery/gallery_lecture.webp')); ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gallery">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end text-white">
                                 <p class="font-bold">Ramah Tamah</p>
                                 <p class="text-xs">Kebersamaan</p>
@@ -641,13 +642,13 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </section>
 
-    {{-- Testimonials Section --}}
+    
     <section id="testimoni" class="py-24 bg-[#06293F] relative overflow-hidden">
-        {{-- Background Pattern --}}
+        
         <div class="absolute inset-0 opacity-10 pointer-events-none">
             <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
         </div>
@@ -660,34 +661,34 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
-                @if(isset($testimonials) && $testimonials->count() > 0)
-                    @foreach($testimonials as $idx => $testimonial)
-                        <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="{{ $idx * 100 }}">
-                            <img src="{{ $testimonial->photo_url }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="{{ $testimonial->name }}">
+                <?php if(isset($testimonials) && $testimonials->count() > 0): ?>
+                    <?php $__currentLoopData = $testimonials; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $testimonial): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="<?php echo e($idx * 100); ?>">
+                            <img src="<?php echo e($testimonial->photo_url); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="<?php echo e($testimonial->name); ?>">
                             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
                             
-                            {{-- Default State: Name & Role --}}
+                            
                             <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
-                                <h3 class="text-2xl font-heading font-bold text-white mb-1">{{ $testimonial->name }}</h3>
-                                <p class="text-accent font-medium">{{ $testimonial->role }}</p>
+                                <h3 class="text-2xl font-heading font-bold text-white mb-1"><?php echo e($testimonial->name); ?></h3>
+                                <p class="text-accent font-medium"><?php echo e($testimonial->role); ?></p>
                             </div>
 
-                            {{-- Hover State: The "Words" --}}
+                            
                             <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
                                 <div class="mb-4">
-                                    <img src="{{ asset('Logoums.png') }}" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
+                                    <img src="<?php echo e(asset('Logoums.png')); ?>" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
                                 </div>
-                                <h3 class="text-xl font-heading font-bold text-white mb-2">{{ $testimonial->name }}</h3>
-                                <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">{{ $testimonial->role }}</p>
+                                <h3 class="text-xl font-heading font-bold text-white mb-2"><?php echo e($testimonial->name); ?></h3>
+                                <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold"><?php echo e($testimonial->role); ?></p>
                                 <p class="text-white/90 leading-relaxed italic">
-                                    "{{ $testimonial->quote }}"
+                                    "<?php echo e($testimonial->quote); ?>"
                                 </p>
                             </div>
                         </div>
-                    @endforeach
-                @else
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php else: ?>
                     <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="0">
-                        <img src="{{ asset('images/testimonials/testimonial_1.webp') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <img src="<?php echo e(asset('images/testimonials/testimonial_1.webp')); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
                         
                         <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
@@ -697,7 +698,7 @@
 
                         <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
                             <div class="mb-4">
-                                <img src="{{ asset('Logoums.png') }}" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
+                                <img src="<?php echo e(asset('Logoums.png')); ?>" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
                             </div>
                             <h3 class="text-xl font-heading font-bold text-white mb-2">Ahmad Mujahid</h3>
                             <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Master of Training</p>
@@ -708,7 +709,7 @@
                     </div>
 
                     <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="100">
-                        <img src="{{ asset('images/testimonials/testimonial_2.webp') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <img src="<?php echo e(asset('images/testimonials/testimonial_2.webp')); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
                         
                         <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
@@ -718,7 +719,7 @@
 
                         <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
                             <div class="mb-4">
-                                <img src="{{ asset('Logoums.png') }}" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
+                                <img src="<?php echo e(asset('Logoums.png')); ?>" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
                             </div>
                             <h3 class="text-xl font-heading font-bold text-white mb-2">Siti Nurhaliza</h3>
                             <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Peserta Baitul Arqam</p>
@@ -729,7 +730,7 @@
                     </div>
 
                     <div class="group relative h-[450px] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10" data-aos="fade-up" data-aos-delay="200">
-                        <img src="{{ asset('images/testimonials/testimonial_3.webp') }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
+                        <img src="<?php echo e(asset('images/testimonials/testimonial_3.webp')); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40" alt="Testimonial">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
                         
                         <div class="absolute bottom-0 left-0 w-full p-8 transition-all duration-500 transform group-hover:translate-y-[-20px] group-hover:opacity-0">
@@ -739,7 +740,7 @@
 
                         <div class="absolute inset-0 p-8 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-primary/20 backdrop-blur-sm">
                             <div class="mb-4">
-                                <img src="{{ asset('Logoums.png') }}" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
+                                <img src="<?php echo e(asset('Logoums.png')); ?>" class="h-12 w-auto mx-auto object-contain" alt="Logo UMS">
                             </div>
                             <h3 class="text-xl font-heading font-bold text-white mb-2">Rahmat Wijaya</h3>
                             <p class="text-primary-100 text-sm mb-6 uppercase tracking-widest font-bold">Pimpinan Wilayah</p>
@@ -748,12 +749,12 @@
                             </p>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </section>
 
-    {{-- FAQ Section --}}
+    
     <section id="faq" class="py-24 bg-surface">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16" data-aos="fade-up">
@@ -868,11 +869,11 @@
         </div>
     </section>
 
-    {{-- CTA / Active Event Section --}}
+    
     <section class="py-24 bg-white relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="bg-[#0A2E42] rounded-[2.5rem] p-8 md:p-16 shadow-2xl relative overflow-hidden border border-white/5" data-aos="fade-up">
-                {{-- Subtle professional background gradient --}}
+                
                 <div class="absolute inset-0 bg-gradient-to-br from-primary-900 to-primary-800 opacity-50"></div>
                 
                 <div class="grid lg:grid-cols-2 gap-16 items-center relative z-10">
@@ -889,7 +890,7 @@
                         </p>
                         
                         <div class="flex flex-col sm:flex-row gap-4" data-aos="fade-up" data-aos-delay="400">
-                            <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-accent text-white rounded-xl font-bold text-lg hover:bg-accent-600 transition-all shadow-lg hover:shadow-accent/20 group">
+                            <a href="<?php echo e(route('login')); ?>" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-accent text-white rounded-xl font-bold text-lg hover:bg-accent-600 transition-all shadow-lg hover:shadow-accent/20 group">
                                 Masuk ke Sistem
                                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                             </a>
@@ -897,11 +898,11 @@
                     </div>
 
                     <div class="relative w-full" data-aos="fade-up" data-aos-delay="500">
-                        @if(isset($activeEvents) && $activeEvents->isNotEmpty())
+                        <?php if(isset($activeEvents) && $activeEvents->isNotEmpty()): ?>
                             <div class="bg-[#0A2E42]/80 backdrop-blur-md border border-white/10 rounded-[2rem] p-6 lg:p-8 shadow-2xl relative z-10" x-data="{ activeTimeline: 0 }">
                                 <div class="relative border-l-[3px] border-accent/40 ml-3 md:ml-4 space-y-6 pb-2">
-                                    @foreach($activeEvents as $index => $event)
-                                        @php
+                                    <?php $__currentLoopData = $activeEvents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
                                             $totalPeserta = $event->peserta()->count();
                                             $hasKuota = $event->kuota > 0;
                                             if ($hasKuota) {
@@ -911,63 +912,65 @@
                                                 $persen = 0;
                                                 $isFull = false;
                                             }
-                                        @endphp
+                                        ?>
                                         <div class="relative pl-8 md:pl-10">
                                             <!-- Timeline Dot -->
                                             <div class="absolute -left-[10px] top-1.5 w-4 h-4 rounded-full border-2 transition-all duration-300"
-                                                 :class="activeTimeline === {{ $index }} ? 'bg-accent border-[#0A2E42] scale-150 ring-4 ring-accent/30' : 'bg-gray-400 border-gray-500'"></div>
+                                                 :class="activeTimeline === <?php echo e($index); ?> ? 'bg-accent border-[#0A2E42] scale-150 ring-4 ring-accent/30' : 'bg-gray-400 border-gray-500'"></div>
                                             
                                             <!-- Event Header (Clickable) -->
-                                            <button @click="activeTimeline = activeTimeline === {{ $index }} ? null : {{ $index }}" class="w-full text-left flex flex-col group focus:outline-none">
-                                                <span class="text-[11px] font-bold uppercase tracking-widest mb-1 transition-colors" :class="activeTimeline === {{ $index }} ? 'text-accent' : 'text-gray-400'">{{ $event->tanggal_mulai->format('d M Y') }}</span>
+                                            <button @click="activeTimeline = activeTimeline === <?php echo e($index); ?> ? null : <?php echo e($index); ?>" class="w-full text-left flex flex-col group focus:outline-none">
+                                                <span class="text-[11px] font-bold uppercase tracking-widest mb-1 transition-colors" :class="activeTimeline === <?php echo e($index); ?> ? 'text-accent' : 'text-gray-400'"><?php echo e($event->tanggal_mulai->format('d M Y')); ?></span>
                                                 <div class="flex justify-between items-start w-full gap-4">
-                                                    <h3 class="text-lg md:text-xl font-bold text-white leading-tight group-hover:text-accent transition-colors pr-4">{{ $event->nama_event }}</h3>
+                                                    <h3 class="text-lg md:text-xl font-bold text-white leading-tight group-hover:text-accent transition-colors pr-4"><?php echo e($event->nama_event); ?></h3>
                                                     <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-white/10 transition-colors">
-                                                        <svg class="w-4 h-4 text-white/70 transition-transform duration-300" :class="activeTimeline === {{ $index }} ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                                        <svg class="w-4 h-4 text-white/70 transition-transform duration-300" :class="activeTimeline === <?php echo e($index); ?> ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                                     </div>
                                                 </div>
                                             </button>
                                             
                                             <!-- Event Details (Accordion) -->
-                                            <div x-show="activeTimeline === {{ $index }}" x-collapse x-cloak>
+                                            <div x-show="activeTimeline === <?php echo e($index); ?>" x-collapse x-cloak>
                                                 <div class="bg-white rounded-2xl p-5 mt-5 shadow-xl border border-gray-100">
                                                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                                                         <div class="flex items-center gap-2">
-                                                            <span class="w-2 h-2 rounded-full {{ $event->status === 'berlangsung' ? 'bg-green-500' : 'bg-blue-500' }} animate-pulse"></span>
+                                                            <span class="w-2 h-2 rounded-full <?php echo e($event->status === 'berlangsung' ? 'bg-green-500' : 'bg-blue-500'); ?> animate-pulse"></span>
                                                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                                                {{ $event->status === 'persiapan' ? 'Pendaftaran Dibuka' : 'Sedang Berlangsung' }}
+                                                                <?php echo e($event->status === 'persiapan' ? 'Pendaftaran Dibuka' : 'Sedang Berlangsung'); ?>
+
                                                             </span>
                                                         </div>
-                                                        <span class="px-2 py-1 {{ $isFull ? 'bg-red-50 text-red-600' : 'bg-primary-50 text-primary-600' }} rounded-md text-[9px] font-bold uppercase tracking-wider">
-                                                            {{ !$hasKuota ? 'Terbuka Umum' : ($isFull ? 'Kuota Penuh' : 'Kuota Terbatas') }}
+                                                        <span class="px-2 py-1 <?php echo e($isFull ? 'bg-red-50 text-red-600' : 'bg-primary-50 text-primary-600'); ?> rounded-md text-[9px] font-bold uppercase tracking-wider">
+                                                            <?php echo e(!$hasKuota ? 'Terbuka Umum' : ($isFull ? 'Kuota Penuh' : 'Kuota Terbatas')); ?>
+
                                                         </span>
                                                     </div>
                                                     
                                                     <div class="flex items-center gap-2 text-gray-500 mb-5">
                                                         <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                                        <span class="text-sm font-medium">{{ $event->lokasi }}</span>
+                                                        <span class="text-sm font-medium"><?php echo e($event->lokasi); ?></span>
                                                     </div>
                                                     
                                                     <div class="pt-4 border-t border-gray-100">
                                                         <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider mb-2">
-                                                            <span class="text-gray-400">{{ $hasKuota ? 'Progress Pendaftaran' : 'Jumlah Pendaftar' }}</span>
-                                                            <span class="text-primary-600">{{ $hasKuota ? 'Terisi ' . $persen . '%' : $totalPeserta . ' Peserta' }}</span>
+                                                            <span class="text-gray-400"><?php echo e($hasKuota ? 'Progress Pendaftaran' : 'Jumlah Pendaftar'); ?></span>
+                                                            <span class="text-primary-600"><?php echo e($hasKuota ? 'Terisi ' . $persen . '%' : $totalPeserta . ' Peserta'); ?></span>
                                                         </div>
-                                                        @if($hasKuota)
+                                                        <?php if($hasKuota): ?>
                                                         <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                                                            <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: {{ $persen }}%"></div>
+                                                            <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: <?php echo e($persen); ?>%"></div>
                                                         </div>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
-                        {{-- Subtle depth layer --}}
+                        
                         <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-white/5 rounded-2xl z-0 border border-white/10 hidden lg:block pointer-events-none"></div>
                         <div class="absolute -top-4 -left-4 w-16 h-16 bg-accent/10 rounded-full z-0 border border-white/5 hidden lg:block pointer-events-none"></div>
                     </div>
@@ -976,12 +979,12 @@
         </div>
     </section>
 
-    {{-- Footer --}}
+    
     <footer class="bg-white border-t border-gray-100 pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-10 grayscale hover:grayscale-0 transition-all">
+                    <img src="<?php echo e(asset('logo.webp')); ?>" alt="Logo" class="h-10 grayscale hover:grayscale-0 transition-all">
                 </div>
                 <div class="text-sm text-gray-500 font-medium">
                     &copy; 2026 <button @click="showDev = true" class="text-primary/70 hover:text-primary font-bold transition-all hover:underline decoration-accent underline-offset-4">LP3A UMS</button>  All rights reserved.
@@ -1080,3 +1083,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH D:\website\SKRIPSI\SISTEM\resources\views/landing/index.blade.php ENDPATH**/ ?>
