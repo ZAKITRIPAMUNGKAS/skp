@@ -53,7 +53,7 @@
                     @endif
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-3">
+            <div class="flex flex-wrap items-center lg:justify-end gap-3">
                 @if($event->status === 'persiapan')
                     <form method="POST" action="{{ route('admin.events.updateStatus', $event) }}" class="inline-block">
                         @csrf

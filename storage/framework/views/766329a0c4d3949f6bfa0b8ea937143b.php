@@ -57,7 +57,7 @@
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-3">
+            <div class="flex flex-wrap items-center lg:justify-end gap-3">
                 <?php if($event->status === 'persiapan'): ?>
                     <form method="POST" action="<?php echo e(route('admin.events.updateStatus', $event)); ?>" class="inline-block">
                         <?php echo csrf_field(); ?>
