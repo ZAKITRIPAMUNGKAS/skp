@@ -39,7 +39,7 @@
             @foreach($rtl->jawaban as $jw)
                 <div class="space-y-2">
                     <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">{{ $jw->soal?->pertanyaan }}</h3>
-                    @if($jw->soal?->tipe === 'upload')
+                    @if($jw->soal?->tipe === 'upload' && (str_starts_with($jw->jawaban, 'uploads/') || str_starts_with($jw->jawaban, 'http')))
                         <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center justify-center">
                             <img src="{{ asset($jw->jawaban) }}" alt="Bukti Upload" class="max-h-60 rounded-xl object-contain shadow-sm border border-gray-200">
                         </div>

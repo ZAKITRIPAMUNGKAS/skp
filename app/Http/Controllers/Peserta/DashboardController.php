@@ -436,6 +436,17 @@ class DashboardController extends Controller
         }
 
         $rtlSoal = \App\Models\RtlSoal::where('event_id', $event->id)->orderBy('urutan')->get();
+
+        // Migrate old default questions if found
+        if ($rtlSoal->count() === 5 && $rtlSoal->first()->pertanyaan === 'Tujuan Rencana Aksi') {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($event, $rtlSoal) {
+                $soalIds = $rtlSoal->pluck('id');
+                \App\Models\RtlJawaban::whereIn('rtl_soal_id', $soalIds)->delete();
+                \App\Models\RtlSoal::whereIn('id', $soalIds)->delete();
+            });
+            $rtlSoal = collect(); // force empty to trigger recreation
+        }
+
         if ($rtlSoal->isEmpty()) {
             // Gunakan DB transaction untuk menghindari race condition ketika banyak
             // peserta membuka halaman RTL bersamaan saat soal belum tersedia
@@ -444,17 +455,15 @@ class DashboardController extends Controller
                 $existing = \App\Models\RtlSoal::where('event_id', $event->id)->exists();
                 if (!$existing) {
                     $defaultQuestions = [
-                        'Tujuan Rencana Aksi',
-                        'Sasaran Utama Penerima Dampak',
-                        'Indikator Keberhasilan',
-                        'Waktu Pelaksanaan',
-                        'Mitra & Pihak Terlibat'
+                        'Log-In Muhammadiyah (mengurus pendaftaran/konversi E-KTAM)',
+                        'Merencanakan 1 Penelitian/Pengabdian di Cabang dan Ranting',
+                        'Rencana komitmen Implementasi AIK di kampus UMS (dalam mendampingi mahasiswa)'
                     ];
                     foreach ($defaultQuestions as $index => $qText) {
                         \App\Models\RtlSoal::create([
                             'event_id'   => $event->id,
                             'pertanyaan' => $qText,
-                            'tipe'       => 'essay',
+                            'tipe'       => $index === 0 ? 'upload' : 'essay',
                             'urutan'     => $index + 1,
                         ]);
                     }
@@ -478,18 +487,14 @@ class DashboardController extends Controller
         $rtlSoals = \App\Models\RtlSoal::where('event_id', $event->id)->get();
 
         // Build validation rules dynamically
-        $rules = [
-            'judul_kegiatan' => 'required|string|max:255',
-            'kategori_rtl'   => 'required|string|max:100',
-            'steps'          => 'required|array|min:1',
-            'steps.*.deskripsi'      => 'required|string|max:255',
-            'steps.*.target_tanggal' => 'required|string|max:100',
-        ];
+        $rules = [];
 
         foreach ($rtlSoals as $soal) {
-            if ($soal->tipe === 'essay') {
+            $tipe = $soal->urutan == 1 ? 'upload' : 'essay';
+
+            if ($tipe === 'essay') {
                 $rules["answers.{$soal->id}"] = 'required|string';
-            } elseif ($soal->tipe === 'upload') {
+            } elseif ($tipe === 'upload') {
                 $rules["answers.{$soal->id}"] = $request->hasFile("answers.{$soal->id}") ? 'required|image|max:5120' : 'nullable';
             }
         }
@@ -499,7 +504,9 @@ class DashboardController extends Controller
         // Proses upload file di luar transaction (I/O tidak boleh dalam transaction)
         $uploadedFiles = [];
         foreach ($rtlSoals as $soal) {
-            if ($soal->tipe === 'upload' && $request->hasFile("answers.{$soal->id}")) {
+            $tipe = $soal->urutan == 1 ? 'upload' : 'essay';
+
+            if ($tipe === 'upload' && $request->hasFile("answers.{$soal->id}")) {
                 $file = $request->file("answers.{$soal->id}");
                 $filename = time() . '_' . $peserta->id . '_' . $soal->id . '.' . $file->getClientOriginalExtension();
                 $uploadPath = public_path('uploads/rtl');
@@ -511,14 +518,13 @@ class DashboardController extends Controller
             }
         }
 
-        $steps = [];
-        foreach ($request->input('steps') as $index => $step) {
-            $steps[] = [
-                'step'           => $index + 1,
-                'deskripsi'      => $step['deskripsi'],
-                'target_tanggal' => $step['target_tanggal']
-            ];
-        }
+        $steps = [
+            [
+                'step'           => 1,
+                'deskripsi'      => 'Realisasi Rencana Tindak Lanjut',
+                'target_tanggal' => 'Sesuai Target'
+            ]
+        ];
 
         // Bungkus semua operasi database dalam satu transaction untuk mencegah data partial
         try {
@@ -529,8 +535,8 @@ class DashboardController extends Controller
                         'peserta_id' => $peserta->id,
                     ],
                     [
-                        'judul_kegiatan'  => $request->judul_kegiatan,
-                        'kategori_rtl'    => $request->kategori_rtl,
+                        'judul_kegiatan'  => $request->judul_kegiatan ?? 'Rencana Tindak Lanjut',
+                        'kategori_rtl'    => $request->kategori_rtl ?? 'Umum',
                         'langkah_langkah' => $steps,
                         'status'          => 'submitted',
                     ]
@@ -538,15 +544,17 @@ class DashboardController extends Controller
 
                 // Save answers
                 foreach ($rtlSoals as $soal) {
-                    if ($soal->tipe === 'deskripsi') {
+                    $tipe = $soal->urutan == 1 ? 'upload' : 'essay';
+
+                    if ($tipe === 'deskripsi') {
                         continue;
                     }
 
                     $jawabanText = '';
 
-                    if ($soal->tipe === 'essay') {
+                    if ($tipe === 'essay') {
                         $jawabanText = $request->input("answers.{$soal->id}");
-                    } elseif ($soal->tipe === 'upload') {
+                    } elseif ($tipe === 'upload') {
                         if (isset($uploadedFiles[$soal->id])) {
                             $jawabanText = $uploadedFiles[$soal->id];
                         } else {

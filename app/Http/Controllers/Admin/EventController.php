@@ -179,18 +179,28 @@ class EventController extends Controller
 
         // Load or initialize RTL questions
         $rtlSoal = \App\Models\RtlSoal::where('event_id', $event->id)->orderBy('urutan')->get();
+        
+        // Migrate old default questions if found
+        if ($rtlSoal->count() === 5 && $rtlSoal->first()->pertanyaan === 'Tujuan Rencana Aksi') {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($event, $rtlSoal) {
+                $soalIds = $rtlSoal->pluck('id');
+                \App\Models\RtlJawaban::whereIn('rtl_soal_id', $soalIds)->delete();
+                \App\Models\RtlSoal::whereIn('id', $soalIds)->delete();
+            });
+            $rtlSoal = collect(); // force empty to trigger recreation
+        }
+
         if ($rtlSoal->isEmpty()) {
             $defaultQuestions = [
-                'Tujuan Rencana Aksi',
-                'Sasaran Utama Penerima Dampak',
-                'Indikator Keberhasilan',
-                'Waktu Pelaksanaan',
-                'Mitra & Pihak Terlibat'
+                'Log-In Muhammadiyah (mengurus pendaftaran/konversi E-KTAM)',
+                'Merencanakan 1 Penelitian/Pengabdian di Cabang dan Ranting',
+                'Rencana komitmen Implementasi AIK di kampus UMS (dalam mendampingi mahasiswa)'
             ];
             foreach ($defaultQuestions as $index => $qText) {
                 \App\Models\RtlSoal::create([
                     'event_id' => $event->id,
                     'pertanyaan' => $qText,
+                    'tipe' => $index === 0 ? 'upload' : 'essay',
                     'urutan' => $index + 1,
                 ]);
             }
