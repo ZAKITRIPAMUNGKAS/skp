@@ -386,6 +386,14 @@ class EventController extends Controller
         return Excel::download(new PenilaianExport($event->id), $fileName);
     }
 
+    public function exportSusExcel(Event $event)
+    {
+        $this->authorizeEventAccess($event);
+
+        $fileName = 'Laporan_Evaluasi_SUS_' . str_replace(' ', '_', $event->nama_event) . '.xlsx';
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\SusExport($event->id), $fileName);
+    }
+
     public function assignFacilitators(Request $request, Event $event)
     {
         $this->authorizeEventAccess($event, false);

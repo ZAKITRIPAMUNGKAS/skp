@@ -1,5 +1,54 @@
 {{-- Laporan Tab Content --}}
-<div class="space-y-6">
+<div class="space-y-6" x-data="laporanSusManager()" x-init="fetchSusSummary()">
+
+    {{-- SUS Summary Card --}}
+    <div x-show="susSummary" class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-6 text-white shadow-xl mb-6" style="display: none;">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <span class="px-3 py-1 bg-white/20 text-white/95 text-[10px] font-bold uppercase rounded-full tracking-wider">System Usability Scale (SUS)</span>
+                <h3 class="text-lg font-bold font-heading mt-2">Hasil Evaluasi Usability Arqam App</h3>
+                <p class="text-xs text-white/70 mt-1" x-text="'Dihitung berdasarkan ' + (susSummary ? susSummary.count : 0) + ' responden peserta yang mengisi kuesioner'"></p>
+            </div>
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-6">
+                    <div class="text-center bg-white/10 px-5 py-3 rounded-2xl backdrop-blur-md">
+                        <span class="text-3xl font-black font-heading block" x-text="susSummary ? susSummary.average : 0"></span>
+                        <span class="text-[9px] uppercase font-bold text-white/60 tracking-wider">Rata-rata Skor</span>
+                    </div>
+                    <div class="text-center bg-white/10 px-5 py-3 rounded-2xl backdrop-blur-md">
+                        <span class="text-3xl font-black font-heading block text-yellow-300" x-text="susSummary ? susSummary.grade : 'F'"></span>
+                        <span class="text-[9px] uppercase font-bold text-white/60 tracking-wider">Grade</span>
+                    </div>
+                </div>
+                <a href="{{ route('admin.events.exportSusExcel', $event) }}" 
+                   class="inline-flex items-center gap-2 px-4.5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-bold shadow-lg shadow-emerald-950/20 transition-all active:scale-95 border border-emerald-500/20">
+                    <svg class="w-4 h-4 text-emerald-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Download Excel SUS
+                </a>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-white/15 text-xs text-white/80">
+            <div class="space-y-2">
+                <div class="flex justify-between pb-1 border-b border-white/10">
+                    <span>Adjective Rating:</span>
+                    <strong class="text-yellow-300" x-text="susSummary ? susSummary.adjective : ''"></strong>
+                </div>
+                <div class="flex justify-between pb-1 border-b border-white/10">
+                    <span>Acceptability:</span>
+                    <strong class="text-yellow-300" x-text="susSummary ? susSummary.acceptability : ''"></strong>
+                </div>
+            </div>
+            <div class="bg-black/20 rounded-2xl p-3">
+                <h4 class="font-bold text-[10px] uppercase text-white/60 mb-1 tracking-wider">Keterangan Standar SUS:</h4>
+                <p class="text-[10px] leading-relaxed">
+                    Skor di atas 68 dianggap Acceptable (Layak digunakan). Arqam App dievaluasi menggunakan SUS untuk mengukur kebergunaan sistem secara obyektif berdasarkan persepsi peserta.
+                </p>
+            </div>
+        </div>
+    </div>
 
     {{-- Download Actions --}}
     <div class="space-y-4">
@@ -83,3 +132,24 @@
     </div>
 
 </div>
+
+@push('scripts')
+<script>
+function laporanSusManager() {
+    return {
+        susSummary: null,
+        async fetchSusSummary() {
+            try {
+                const res = await fetch('{{ route("admin.angket.summary", $event) }}');
+                const data = await res.json();
+                if (data.sus_summary) {
+                    this.susSummary = data.sus_summary;
+                }
+            } catch (error) {
+                console.error('Failed to fetch SUS summary:', error);
+            }
+        }
+    };
+}
+</script>
+@endpush

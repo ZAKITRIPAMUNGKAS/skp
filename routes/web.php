@@ -169,6 +169,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/settings/landing', [\App\Http\Controllers\Admin\LandingSettingController::class, 'edit'])->name('settings.landing');
         Route::post('/settings/landing', [\App\Http\Controllers\Admin\LandingSettingController::class, 'update'])->name('settings.landing.update');
         
+        // Pengaturan Sertifikat
+        Route::get('/settings/certificate', [\App\Http\Controllers\Admin\CertificateSettingController::class, 'edit'])->name('settings.certificate');
+        Route::post('/settings/certificate', [\App\Http\Controllers\Admin\CertificateSettingController::class, 'update'])->name('settings.certificate.update');
+        
         // Rute untuk membuat event baru dan menyimpannya (hanya admin utama)
         Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
         Route::post('/events', [EventController::class, 'store'])->name('events.store');
@@ -196,6 +200,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/events/{event}/winners-report', [EventController::class, 'downloadWinnersReport'])->name('events.winnersReport');
         Route::get('/events/{event}/angket-report', [EventController::class, 'downloadAngketReport'])->name('events.angketReport');
         Route::get('/events/{event}/export-excel', [EventController::class, 'exportExcel'])->name('events.exportExcel');
+        Route::get('/events/{event}/export-sus-excel', [EventController::class, 'exportSusExcel'])->name('events.exportSusExcel');
         Route::get('/events/{event}/facilitators/pdf', [EventController::class, 'downloadSuratTugas'])->name('events.facilitatorsPdf');
         Route::get('/events/{event}/presentasi', [\App\Http\Controllers\Admin\PresentasiController::class, 'show'])->name('events.presentasi');
         Route::get('/events/{event}/statistics', [EventController::class, 'statistics'])->name('events.statistics');
@@ -275,6 +280,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::delete('/events/{event}/angket/item/{item}', [AngketController::class, 'destroyItem'])->name('angket.destroyItem');
             Route::post('/events/{event}/angket/reorder', [AngketController::class, 'reorderItems'])->name('angket.reorder');
             Route::get('/events/{event}/angket/summary', [AngketController::class, 'summary'])->name('angket.summary');
+            Route::post('/events/{event}/angket/generate-sus', [AngketController::class, 'generateSus'])->name('angket.generateSus');
 
             // AHP & SAW
             Route::post('/events/{event}/ahp/calculate', [AhpSawController::class, 'calculateAhp'])->name('ahp.calculate');
