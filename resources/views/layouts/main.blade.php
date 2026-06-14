@@ -385,16 +385,38 @@
             if (activeEl && activeEl.tagName === 'A') {
                 const href = activeEl.getAttribute('href');
                 const target = activeEl.getAttribute('target');
-                if (href && !href.startsWith('#') && !href.startsWith('javascript:') && target !== '_blank') {
+                const isDownload = href && (
+                    href.includes('export') || 
+                    href.includes('download') || 
+                    href.includes('pdf') || 
+                    href.includes('report') || 
+                    activeEl.hasAttribute('download')
+                );
+                if (href && !href.startsWith('#') && !href.startsWith('javascript:') && target !== '_blank' && !isDownload) {
                     window.dispatchEvent(new CustomEvent('page-loading'));
                 }
             } else if (activeEl && (activeEl.tagName === 'BUTTON' || activeEl.getAttribute('type') === 'submit')) {
+                const form = activeEl.closest('form');
+                if (form) {
+                    const action = form.getAttribute('action') || '';
+                    if (action.includes('export') || action.includes('download') || action.includes('pdf') || action.includes('report')) {
+                        return;
+                    }
+                }
                 window.dispatchEvent(new CustomEvent('page-loading'));
             }
         });
         
         // Also capture form submits to show loading, but check if the event was prevented/cancelled (e.g. by confirm() alert)
         document.addEventListener('submit', function(event) {
+            const form = event.target;
+            const action = form.getAttribute('action') || '';
+            const isDownload = action.includes('export') || action.includes('download') || action.includes('pdf') || action.includes('report');
+            
+            if (isDownload) {
+                return;
+            }
+            
             setTimeout(function() {
                 if (!event.defaultPrevented) {
                     window.dispatchEvent(new CustomEvent('page-loading'));
