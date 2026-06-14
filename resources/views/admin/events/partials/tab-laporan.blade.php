@@ -8,25 +8,25 @@
                 <span class="px-3 py-1 bg-white/20 text-white/95 text-[10px] font-bold uppercase rounded-full tracking-wider">System Usability Scale (SUS)</span>
                 <h3 class="text-lg font-bold font-heading mt-2">Hasil Evaluasi Usability Arqam App</h3>
                 <p class="text-xs text-white/70 mt-1" x-text="'Dihitung berdasarkan ' + (susSummary ? susSummary.count : 0) + ' responden peserta yang mengisi kuesioner'"></p>
-            </div>
-            <div class="flex flex-wrap items-center gap-4">
-                <div class="flex items-center gap-6">
-                    <div class="text-center bg-white/10 px-5 py-3 rounded-2xl backdrop-blur-md">
-                        <span class="text-3xl font-black font-heading block" x-text="susSummary ? susSummary.average : 0"></span>
-                        <span class="text-[9px] uppercase font-bold text-white/60 tracking-wider">Rata-rata Skor</span>
-                    </div>
-                    <div class="text-center bg-white/10 px-5 py-3 rounded-2xl backdrop-blur-md">
-                        <span class="text-3xl font-black font-heading block text-yellow-300" x-text="susSummary ? susSummary.grade : 'F'"></span>
-                        <span class="text-[9px] uppercase font-bold text-white/60 tracking-wider">Grade</span>
-                    </div>
+                <div class="mt-3.5">
+                    <a href="{{ route('admin.events.exportSusExcel', $event) }}" 
+                       class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 hover:text-white rounded-xl text-xs font-bold transition-all active:scale-95 border border-emerald-500/30">
+                        <svg class="w-3.5 h-3.5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Download Excel SUS
+                    </a>
                 </div>
-                <a href="{{ route('admin.events.exportSusExcel', $event) }}" 
-                   class="inline-flex items-center gap-2 px-4.5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-bold shadow-lg shadow-emerald-950/20 transition-all active:scale-95 border border-emerald-500/20">
-                    <svg class="w-4 h-4 text-emerald-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    Download Excel SUS
-                </a>
+            </div>
+            <div class="flex items-center gap-4.5">
+                <div class="text-center bg-white/10 px-5 py-3 rounded-2xl backdrop-blur-md min-w-[100px]">
+                    <span class="text-3xl font-black font-heading block" x-text="susSummary ? susSummary.average : 0"></span>
+                    <span class="text-[9px] uppercase font-bold text-white/60 tracking-wider">Rata-rata Skor</span>
+                </div>
+                <div class="text-center bg-white/10 px-5 py-3 rounded-2xl backdrop-blur-md min-w-[70px]">
+                    <span class="text-3xl font-black font-heading block text-yellow-300" x-text="susSummary ? susSummary.grade : 'F'"></span>
+                    <span class="text-[9px] uppercase font-bold text-white/60 tracking-wider">Grade</span>
+                </div>
             </div>
         </div>
         
